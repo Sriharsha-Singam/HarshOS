@@ -1,3 +1,0 @@
-/Users/INT_ACC/Desktop/os-32/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/INT_ACC/Desktop/os-32/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/INT_ACC/Desktop/os-32/cmake-build-debug/CMakeFiles/os_32.dir
