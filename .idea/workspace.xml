@@ -10,57 +10,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="127a3817-8745-4c74-8d07-aa98becd2bd5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/debugger.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build_files.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/cursor.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/cursor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/port_access.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/port_access.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/screen_control.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/screen_control.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_asm_files/boot_sector_disk.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/boot_sector_disk.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_asm_files/boot_sector_print.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/boot_sector_print.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_asm_files/boot_sector_print_16bit.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/boot_sector_print_16bit.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_asm_files/convert_to_32bit_mode.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/convert_to_32bit_mode.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_asm_files/gdt.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/gdt.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_main.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/boot_sector_main.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_main.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CompilerIdC/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.15.3/CompilerIdCXX/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/os_32.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/os_32.cbp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kernel.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/debugger.sh" beforeDir="false" afterPath="$PROJECT_DIR$/debugger.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel.sh" beforeDir="false" afterPath="$PROJECT_DIR$/kernel.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/old_16_bit_files/boot_sector.bin" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/old_16_bit_files/boot_sector.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old_16_bit_files/boot_sector_disk_read.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/old_16_bit_files/boot_sector_disk_read.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old_16_bit_files/boot_sector_disk_write.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/old_16_bit_files/boot_sector_disk_write.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_kernel.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_kernel.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/start_kernel.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/kernel.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kernel.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/convert_to_32bit_mode.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_asm_files/convert_to_32bit_mode.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/on_boot/boot_sector_main.s" beforeDir="false" afterPath="$PROJECT_DIR$/on_boot/boot_sector_main.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/on_boot/old_16_bit_files/boot_sector.bin" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +33,13 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -85,6 +56,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/build_os" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -95,6 +67,9 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/build_os" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/on_boot" />
       <recent name="$PROJECT_DIR$/kernel" />
@@ -103,7 +78,7 @@
       <recent name="$PROJECT_DIR$/old_16_bit_files" />
     </key>
   </component>
-  <component name="RunManager" selected="Bash.kernel_emulator">
+  <component name="RunManager" selected="Makefile.run">
     <configuration name="debugger" type="BashConfigurationType" factoryName="Bash">
       <module name="os-32" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -137,11 +112,33 @@
       <option name="PARAMETERS" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="debug" type="CLion_Remote" debugger="/usr/local/i386elfgcc/bin/i386-elf-gdb" remoteCommand="target remote localhost:1234" symbolFile="$PROJECT_DIR$/build_os/kernel.elf" sysroot="">
+      <method v="2" />
+    </configuration>
+    <configuration name="builder" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="run" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="clean &amp;&amp; run" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Bash.debugger" />
       <item itemvalue="Bash.kernel_emulator" />
       <item itemvalue="Bash.run_simulator" />
+      <item itemvalue="CMake Application.builder" />
+      <item itemvalue="GDB Remote Debug.debug" />
+      <item itemvalue="Makefile.run" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Makefile.run" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -175,20 +172,74 @@
       <workItem from="1585780719983" duration="690000" />
       <workItem from="1586189486878" duration="316000" />
       <workItem from="1586221937101" duration="42000" />
-      <workItem from="1586983175892" duration="1259000" />
+      <workItem from="1586983175892" duration="24798000" />
+      <workItem from="1587418016791" duration="3395000" />
+      <workItem from="1587450313366" duration="5520000" />
+      <workItem from="1587456655182" duration="481000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="1">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="OPEN_TABS">
+      <set>
+        <option value="1" />
+      </set>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
-    <state x="369" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585705583164">
+    <state x="320" y="100" key="#New_File_Extensions" timestamp="1587265966554">
+      <screen x="0" y="23" width="1440" height="829" />
+    </state>
+    <state x="320" y="100" key="#New_File_Extensions/0.23.1440.829@0.23.1440.829" timestamp="1587265966554" />
+    <state x="168" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587456832040">
       <screen x="0" y="23" width="1440" height="823" />
     </state>
-    <state x="369" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.823@0.23.1440.823" timestamp="1585705583164" />
+    <state x="168" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.823@0.23.1440.823" timestamp="1587456832040" />
     <state x="-1816" y="-190" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.825/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585601344386" />
     <state x="-1816" y="-190" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.827/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585534878086" />
+    <state x="369" y="171" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.829@0.23.1440.829" timestamp="1587335227537" />
     <state x="478" y="244" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586983209041">
       <screen x="0" y="23" width="1440" height="829" />
     </state>
@@ -197,44 +248,61 @@
       <screen x="0" y="23" width="1440" height="829" />
     </state>
     <state x="458" y="188" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1440.829@0.23.1440.829" timestamp="1587017952950" />
-    <state width="1398" height="377" key="GridCell.Tab.0.bottom" timestamp="1587018628650">
-      <screen x="0" y="23" width="1440" height="829" />
+    <state x="100" y="123" width="1240" height="624" key="DiffContextDialog" timestamp="1587358664187">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
-    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.823@0.23.1440.823" timestamp="1585706392672" />
-    <state width="1398" height="380" key="GridCell.Tab.0.bottom/0.23.1440.824@0.23.1440.824" timestamp="1585641930284" />
+    <state x="100" y="123" width="1240" height="623" key="DiffContextDialog/0.23.1440.829@0.23.1440.829" timestamp="1587335286535" />
+    <state x="100" y="123" width="1240" height="624" key="DiffContextDialog/0.23.1440.830@0.23.1440.830" timestamp="1587358664187" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom" timestamp="1587456858791">
+      <screen x="0" y="23" width="1440" height="823" />
+    </state>
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.823@0.23.1440.823" timestamp="1587456858791" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.824@0.23.1440.824" timestamp="1587452960193" />
     <state width="2518" height="380" key="GridCell.Tab.0.bottom/0.23.1440.825/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585601346786" />
-    <state width="1398" height="380" key="GridCell.Tab.0.bottom/0.23.1440.827@0.23.1440.827" timestamp="1585621071238" />
-    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1587018628650" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.825@0.23.1440.825" timestamp="1587421275641" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.827@0.23.1440.827" timestamp="1587421489530" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.828@0.23.1440.828" timestamp="1587362772250" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1587362925513" />
+    <state width="1398" height="377" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1587359844893" />
     <state width="2518" height="380" key="GridCell.Tab.0.bottom/0.23.1440.877/-2560.-517.2560.1330@-2560.-517.2560.1330" timestamp="1585603649719" />
     <state width="2518" height="380" key="GridCell.Tab.0.bottom/0.23.1440.877/-2560.-517.2560.1332@-2560.-517.2560.1332" timestamp="1585542008379" />
-    <state width="1398" height="377" key="GridCell.Tab.0.center" timestamp="1587018628645">
-      <screen x="0" y="23" width="1440" height="829" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center" timestamp="1587456858789">
+      <screen x="0" y="23" width="1440" height="823" />
     </state>
-    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.823@0.23.1440.823" timestamp="1585706392670" />
-    <state width="1398" height="380" key="GridCell.Tab.0.center/0.23.1440.824@0.23.1440.824" timestamp="1585641930282" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.823@0.23.1440.823" timestamp="1587456858789" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.824@0.23.1440.824" timestamp="1587452960192" />
     <state width="2518" height="380" key="GridCell.Tab.0.center/0.23.1440.825/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585601346785" />
-    <state width="1398" height="380" key="GridCell.Tab.0.center/0.23.1440.827@0.23.1440.827" timestamp="1585621071236" />
-    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1587018628645" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.825@0.23.1440.825" timestamp="1587421275640" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.827@0.23.1440.827" timestamp="1587421489528" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.828@0.23.1440.828" timestamp="1587362772249" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1587362925512" />
+    <state width="1398" height="377" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1587359844892" />
     <state width="2518" height="380" key="GridCell.Tab.0.center/0.23.1440.877/-2560.-517.2560.1330@-2560.-517.2560.1330" timestamp="1585603649713" />
     <state width="2518" height="380" key="GridCell.Tab.0.center/0.23.1440.877/-2560.-517.2560.1332@-2560.-517.2560.1332" timestamp="1585542008369" />
-    <state width="1398" height="377" key="GridCell.Tab.0.left" timestamp="1587018628645">
-      <screen x="0" y="23" width="1440" height="829" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left" timestamp="1587456858787">
+      <screen x="0" y="23" width="1440" height="823" />
     </state>
-    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.823@0.23.1440.823" timestamp="1585706392668" />
-    <state width="1398" height="380" key="GridCell.Tab.0.left/0.23.1440.824@0.23.1440.824" timestamp="1585641930280" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.823@0.23.1440.823" timestamp="1587456858787" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.824@0.23.1440.824" timestamp="1587452960191" />
     <state width="2518" height="380" key="GridCell.Tab.0.left/0.23.1440.825/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585601346781" />
-    <state width="1398" height="380" key="GridCell.Tab.0.left/0.23.1440.827@0.23.1440.827" timestamp="1585621071235" />
-    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1587018628645" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.825@0.23.1440.825" timestamp="1587421275640" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.827@0.23.1440.827" timestamp="1587421489527" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.828@0.23.1440.828" timestamp="1587362772248" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1587362925511" />
+    <state width="1398" height="377" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1587359844892" />
     <state width="2518" height="380" key="GridCell.Tab.0.left/0.23.1440.877/-2560.-517.2560.1330@-2560.-517.2560.1330" timestamp="1585603649712" />
     <state width="2518" height="380" key="GridCell.Tab.0.left/0.23.1440.877/-2560.-517.2560.1332@-2560.-517.2560.1332" timestamp="1585542008368" />
-    <state width="1398" height="377" key="GridCell.Tab.0.right" timestamp="1587018628646">
-      <screen x="0" y="23" width="1440" height="829" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right" timestamp="1587456858790">
+      <screen x="0" y="23" width="1440" height="823" />
     </state>
-    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.823@0.23.1440.823" timestamp="1585706392671" />
-    <state width="1398" height="380" key="GridCell.Tab.0.right/0.23.1440.824@0.23.1440.824" timestamp="1585641930283" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.823@0.23.1440.823" timestamp="1587456858790" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.824@0.23.1440.824" timestamp="1587452960193" />
     <state width="2518" height="380" key="GridCell.Tab.0.right/0.23.1440.825/-2560.-517.2560.1417@-2560.-517.2560.1417" timestamp="1585601346785" />
-    <state width="1398" height="380" key="GridCell.Tab.0.right/0.23.1440.827@0.23.1440.827" timestamp="1585621071237" />
-    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1587018628646" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.825@0.23.1440.825" timestamp="1587421275641" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.827@0.23.1440.827" timestamp="1587421489529" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.828@0.23.1440.828" timestamp="1587362772250" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1587362925513" />
+    <state width="1398" height="377" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1587359844893" />
     <state width="2518" height="380" key="GridCell.Tab.0.right/0.23.1440.877/-2560.-517.2560.1330@-2560.-517.2560.1330" timestamp="1585603649715" />
     <state width="2518" height="380" key="GridCell.Tab.0.right/0.23.1440.877/-2560.-517.2560.1332@-2560.-517.2560.1332" timestamp="1585542008375" />
   </component>
