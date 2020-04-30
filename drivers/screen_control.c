@@ -1,4 +1,5 @@
 #include "cursor.h"
+#include "../kernel/util.h"
 #include "screen_control.h"
 
 int print_single_char(char c, int col, int row, char attr);
@@ -52,10 +53,20 @@ int print_single_char(char c, int col, int row, char attr) {
 
     if (c == '\n') {
         row = get_offset_row(current_offset);
-        current_offset = get_offset(0, ((row+1 >= MAX_ROWS) ? 0 : row+1));
+        current_offset = get_offset(0, (row+1));
     } else {
         vga[current_offset++] = c;
         vga[current_offset++] = attr;
+    }
+
+    if (current_offset >= (MAX_COLS*MAX_ROWS*2)) {
+        for (int i = 1; i < MAX_ROWS; i++){
+            memory_copy(get_vga_address(0, i), get_vga_address(0, i-1), MAX_COLS * 2);
+        }
+        char *last_line = get_vga_address(0, MAX_ROWS-1);
+        for (int i = 0; i < MAX_COLS * 2; i++) last_line[i] = 0;
+
+        current_offset -= 2 * MAX_COLS;
     }
 
     set_cursor_location_offset(current_offset); //setting new offset

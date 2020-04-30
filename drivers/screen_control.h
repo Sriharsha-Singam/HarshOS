@@ -1,4 +1,3 @@
-#define VIDEO_ADDRESS 0xb8000
 #define WHITE_ON_BLACK 0x0F
 #define RED_ON_WHITE 0xF4
 

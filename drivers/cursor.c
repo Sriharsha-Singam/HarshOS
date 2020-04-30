@@ -43,3 +43,7 @@ int get_offset_row(int offset) {
 int get_offset_col(int offset) {
     return ((offset - (get_offset_row(offset)*2*MAX_COLS))/2);
 }
+
+char* get_vga_address(int col, int row) {
+    return (get_offset(col, row) + VIDEO_ADDRESS);
+}
