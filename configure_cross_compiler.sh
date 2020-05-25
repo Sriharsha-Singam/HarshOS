@@ -15,6 +15,7 @@ sudo apt-get install flex -y
 sudo apt-get install texinfo -y
 sudo apt-get install automake -y
 sudo apt-get install autotools-dev -y
+sudo apt-get install nasm -y
 
 export CC=gcc
 export LD=ld
@@ -57,3 +58,10 @@ cd gdb-build
 ../gdb-9.2/configure --target="$TARGET" --prefix="$PREFIX" --program-prefix=i386-elf-
 sudo make
 sudo make install
+
+cd /usr/local
+tar -czvf /home/runner/work/kernel/kernel/i386-elf-gcc-ubuntu.tar.gz i386elfgcc
+cd /home/runner/work/kernel/kernel
+/usr/bin/git add .
+/usr/bin/git commit -m adding-ubuntu-cross-compiler
+/usr/bin/git push
