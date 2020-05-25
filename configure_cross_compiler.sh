@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+pwd
+
 set -x
 
 sudo apt-get install curl --force-yes
 sudo apt-get install gcc --force-yes
 sudo apt-get install build-essential --force-yes
-sudo apt-get install	libgmp-dev --force-yes
+sudo apt-get install libgmp-dev --force-yes
 sudo apt-get install libmpc-dev --force-yes
 sudo apt-get install libmpfr-dev --force-yes
 
@@ -37,7 +39,16 @@ mkdir gcc-build
 cd gcc-build
 pwd
 ../gcc-10.1.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c --without-headers --with-mpfr=/usr/lib/x86_64-linux-gnu --with-gmp=/usr/lib/x86_64-linux-gnu --with-mpc=/usr/lib/x86_64-linux-gnu
-make all-gcc
-make all-target-libgcc
-make install-gcc
-make install-target-libgcc
+sudo make all-gcc
+sudo make all-target-libgcc
+sudo make install-gcc
+sudo make install-target-libgcc
+
+cd /tmp/src
+curl -O http://ftp.rediris.es/mirror/GNU/gdb/gdb-9.2.tar.gz
+tar xf gdb-9.2.tar.gz
+mkdir gdb-build
+cd gdb-build
+../gdb-9.2/configure --target="$TARGET" --prefix="$PREFIX" --program-prefix=i386-elf-
+sudo make
+sudo make install
