@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-apt-get install curl --force-yes
-apt-get install gcc --force-yes
-apt-get install build-essential --force-yes
-apt-get install	libgmp-dev --force-yes
-apt-get install libmpc-dev --force-yes
-apt-get install libmpfr-dev --force-yes
+set -x
+
+sudo apt-get install curl --force-yes
+sudo apt-get install gcc --force-yes
+sudo apt-get install build-essential --force-yes
+sudo apt-get install	libgmp-dev --force-yes
+sudo apt-get install libmpc-dev --force-yes
+sudo apt-get install libmpfr-dev --force-yes
 
 export CC=gcc
 export LD=ld
