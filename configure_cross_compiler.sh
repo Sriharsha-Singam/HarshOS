@@ -4,12 +4,17 @@ pwd
 
 set -x
 
-sudo apt-get install curl --force-yes
-sudo apt-get install gcc --force-yes
-sudo apt-get install build-essential --force-yes
-sudo apt-get install libgmp-dev --force-yes
-sudo apt-get install libmpc-dev --force-yes
-sudo apt-get install libmpfr-dev --force-yes
+sudo apt-get install curl -y
+sudo apt-get install gcc -y
+sudo apt-get install build-essential -y
+sudo apt-get install libgmp-dev -y
+sudo apt-get install libmpc-dev -y
+sudo apt-get install libmpfr-dev -y
+sudo apt-get install bison -y
+sudo apt-get install flex -y
+sudo apt-get install texinfo -y
+sudo apt-get install automake -y
+sudo apt-get install autotools-dev -y
 
 export CC=gcc
 export LD=ld
@@ -30,9 +35,9 @@ make all install 2>&1 | tee make.log
 
 cd /tmp/src
 pwd
-apt-cache policy libgmp-dev
-apt-cache policy libmpc-dev
-apt-cache policy libmpfr-dev
+#apt-cache policy libgmp-dev
+#apt-cache policy libmpc-dev
+#apt-cache policy libmpfr-dev
 curl -O https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
 tar xf gcc-10.1.0.tar.gz
 mkdir gcc-build
