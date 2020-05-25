@@ -45,5 +45,5 @@ int get_offset_col(int offset) {
 }
 
 char* get_vga_address(int col, int row) {
-    return (get_offset(col, row) + VIDEO_ADDRESS);
+    return ((char *)(get_offset(col, row) + VIDEO_ADDRESS));
 }

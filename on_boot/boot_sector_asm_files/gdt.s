@@ -1,4 +1,7 @@
 [bits 32]
+
+; TODO: make a kernel and user-space differentiation in code/data segments.
+
 gdt_start: ; don't remove the labels, they're needed to compute sizes and jumps
     ; the GDT starts with a null 8-byte
     dd 0x0 ; 4 byte
@@ -10,8 +13,8 @@ gdt_code:
     dw 0xffff    ; segment length, bits 0-15
     dw 0x0       ; segment base, bits 0-15
     db 0x0       ; segment base, bits 16-23
-    db 10011010b ; flags (8 bits)
-    db 11001111b ; flags (4 bits) + segment length, bits 16-19
+    db 10011010b ; flags (8 bits) present[1bit], descriptor-privelege-type[2bits], descriptor-type[1bit], segment-type[4bits]
+    db 11001111b ; flags (4 bits) - granularity[1bit set=4gb], operand-size[1bit], always-zero[1bit], available-for-system-use[1bit] + segment length, bits 16-19
     db 0x0       ; segment base, bits 24-31
 
 ; GDT for data segment. base and length identical to code segment
@@ -20,8 +23,8 @@ gdt_data:
     dw 0xffff
     dw 0x0
     db 0x0
-    db 10010010b
-    db 11001111b
+    db 10010010b ; flags (8 bits) present[1bit], descriptor-privelege-type[2bits], descriptor-type[1bit], segment-type[4bits]
+    db 11001111b ; flags (4 bits) - granularity[1bit set=4gb], operand-size[1bit], always-zero[1bit], available-for-system-use[1bit] + segment length, bits 16-19
     db 0x0
 
 gdt_end:

@@ -41,3 +41,24 @@ void int_to_ascii(int val, char array[]) {
 
     reverse_string(array);
 }
+
+void u8_to_hex_ascii(u8 val, char array[]) {
+    int i = 0;
+//    , sign = 0;
+//    if (val < 0) {
+//        val = -val;
+//        sign = 1;
+//    }
+
+    do {
+        if ((val % 16) < 10) {array[i++] = (val % 16) + 0x30;}
+        else {array[i++] = ((val % 16) - 10) + 0x41;}
+    } while ((val/=16) > 0);
+
+//    if (sign) array[i++] = '-';
+    array[i++] = 'x';
+    array[i++] = '0';
+    array[i] = '\0';
+
+    reverse_string(array);
+}

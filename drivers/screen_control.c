@@ -4,9 +4,23 @@
 
 int print_single_char(char c, int col, int row, char attr);
 
+void backspace() {
+    int offset = get_cursor_location_offset();
+    if (offset) offset-=2;
+    char *vga = (char *) VIDEO_ADDRESS;
+    vga[offset] = ' ';
+    set_cursor_location_offset(offset);
+}
+
+void tab() {
+    int offset = get_cursor_location_offset();
+    offset+=(2*4);
+    set_cursor_location_offset(offset);
+}
+
 void clear_screen() {
     int overall_screen_size = MAX_ROWS * MAX_COLS;
-    char *vga = VIDEO_ADDRESS;
+    char *vga = (char *) VIDEO_ADDRESS;
 
     int i = 0;
     for (i = 0; i < overall_screen_size; i++) {

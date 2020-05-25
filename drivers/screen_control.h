@@ -5,3 +5,5 @@
 void clear_screen();
 void kernel_print_string_at(char *message, int col, int row);
 void kernel_print_string(char *message);
+void backspace();
+void tab();

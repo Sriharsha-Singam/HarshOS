@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
 BUILD_DIR = build_os
 # Nice syntax for file extension replacement
 OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
@@ -9,6 +9,8 @@ CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 # -g: Use debugging symbols in gcc
 CFLAGS = -g
+#-m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
+		 -Wall -Wextra -Werror
 
 # First rule is run by default
 os.bin: build_os/boot_sector_main.bin kernel.bin
@@ -16,11 +18,11 @@ os.bin: build_os/boot_sector_main.bin kernel.bin
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
-kernel.bin: build_os/start_kernel.o ${OBJ}
+kernel.bin: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
 	i386-elf-ld -o ./build_os/kernel.bin -Ttext 0x1000 $^ --oformat binary
 
 # Used for debugging purposes
-kernel.elf: build_os/start_kernel.o ${OBJ}
+kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
 	i386-elf-ld -o ./build_os/kernel.elf -Ttext 0x1000 $^
 
 run: os.bin
@@ -40,6 +42,12 @@ $(BUILD_DIR)/%.o: drivers/%.c drivers/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: on_boot/%.s
+	nasm $< -f elf -o $@
+
+$(BUILD_DIR)/%.o: cpu/%.c
+	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
+
+$(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
 
 $(BUILD_DIR)/%.bin: on_boot/%.s
