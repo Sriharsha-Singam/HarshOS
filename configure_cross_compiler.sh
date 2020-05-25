@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
+set -x
 
 pwd
 
-sudo tar xf i386-elf-gcc-cross-compile-ubuntu.tar -C /usr/local/
+curl https://drive.google.com/file/d/1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL/view?usp=sharing -o /tmp/test.tar.gz
+sudo tar xf /tmp/test.tar.gz -C /usr/local/
 
-set -x
+
 
 sudo apt-get install curl -y
 sudo apt-get install gcc -y
