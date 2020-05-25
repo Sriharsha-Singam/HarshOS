@@ -2,7 +2,7 @@
 
 pwd
 
-sudo tar xf i386-elf-gcc-ubuntu.tar.gz -C /usr/local/
+sudo tar xf i386-elf-gcc-cross-compile-ubuntu.tar.gz -C /usr/local/
 
 set -x
 
