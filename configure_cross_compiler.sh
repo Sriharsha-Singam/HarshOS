@@ -31,7 +31,7 @@ tar xf gcc-10.1.0.tar.bz2
 mkdir gcc-build
 cd gcc-build
 pwd
-../gcc-10.1.0./configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c --without-headers
+../gcc-10.1.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c --without-headers
 make all-gcc
 make all-target-libgcc
 make install-gcc
