@@ -3,6 +3,7 @@ set -x
 
 pwd
 
+sudo mkdir build_os
 pip install gdown
 
 pushd /tmp
