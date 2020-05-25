@@ -1,5 +1,8 @@
 #include "idt.h"
 
+idt_entry_t idt[NUMBER_OF_IDT_INTERRUPTS]; // Make an array for the possible 256 interrupts
+idt_register_t idt_reg; // Value for the Address location of the Interrupt Array
+
 void set_idt_interrupt_entry(int n, u32 handler) {
     /**
      * Set the Address for the IDT Interrupt

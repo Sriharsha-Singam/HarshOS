@@ -7,8 +7,6 @@
 
 #include "../cpu/types.h"
 
-char buffer[256];
-u16 buffer_length;
 void init_kernel_shell();
 void kernel_user_input(u8 val);
 

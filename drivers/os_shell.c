@@ -6,6 +6,8 @@
 #include "../libc/string.h"
 #include "./screen_control.h"
 
+char buffer[256];
+u16 buffer_length;
 void next_kernel_shell_print();
 void end_of_user_input();
 void user_shell_enter();

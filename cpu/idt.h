@@ -37,8 +37,6 @@ typedef struct {
 } __attribute__((packed)) idt_register_t;
 
 #define NUMBER_OF_IDT_INTERRUPTS 256 // There can be 256 interrupts to the kernel
-idt_entry_t idt[NUMBER_OF_IDT_INTERRUPTS]; // Make an array for the possible 256 interrupts
-idt_register_t idt_reg; // Value for the Address location of the Interrupt Array
 
 /**
  *  Functions to SET IDT entries and set the IDT register value
