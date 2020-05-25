@@ -3,10 +3,13 @@ set -x
 
 pwd
 
-curl https://drive.google.com/file/d/1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL/view?usp=sharing -o /tmp/test.tar.gz
-sudo tar xf /tmp/test.tar.gz -C /usr/local/
+pip install gdown
 
+pushd /tmp
+gdown https://drive.google.com/uc?id=1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL
+popd
 
+sudo tar xf /tmp/i386-elf-gcc-ubuntu.tar.gz -C /usr/local/
 
 sudo apt-get install curl -y
 sudo apt-get install gcc -y
