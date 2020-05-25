@@ -26,8 +26,8 @@ make all install 2>&1 | tee make.log
 
 cd /tmp/src
 pwd
-curl -O https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.bz2
-tar xf gcc-10.1.0.tar.bz2
+curl -O https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
+tar xf gcc-10.1.0.tar.gz
 mkdir gcc-build
 cd gcc-build
 pwd
