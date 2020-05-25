@@ -2,12 +2,13 @@
 // Created by Harsh on 5/17/20.
 //
 
-
 #include "interrupt_handler.h"
 #include "idt.h"
-#include "../kernel/util.h"
+#include "../libc/string.h"
 #include "../drivers/port_access.h"
 #include "../drivers/screen_control.h"
+#include "timer.h"
+#include "../drivers/keyboard.h"
 
 #define PIC_INIT 0x11
 
@@ -67,8 +68,8 @@ void interrupt_service_request_install() {
     set_idt_interrupt_entry(30, (u32)interrupt_service_request30);
     set_idt_interrupt_entry(31, (u32)interrupt_service_request31);
 
-    u8 original_pic1_data = port_byte_read(PIC1_DATA);
-    u8 original_pic2_data = port_byte_read(PIC2_DATA);
+//    u8 original_pic1_data = port_byte_read(PIC1_DATA);
+//    u8 original_pic2_data = port_byte_read(PIC2_DATA);
 
     port_byte_write(PIC1_COMMAND, PIC_INIT);
     port_byte_write(PIC2_COMMAND, PIC_INIT);
@@ -106,6 +107,20 @@ void interrupt_service_request_install() {
     set_idt_interrupt_entry(47, (u32)interrupt_request_pic15);
 
     load_idt_register(); // Load with ASM
+}
+
+void interrupt_request_pic_install() {
+    /* Enable interruptions */
+    asm volatile("sti");
+    /* IRQ0: timer */
+    init_timer(50);
+    /* IRQ1: keyboard */
+    init_keyboard();
+}
+
+void setup_interrupts() {
+    interrupt_service_request_install();
+    interrupt_request_pic_install();
 }
 
 char *exception_messages[] = {
@@ -167,9 +182,7 @@ void interrupt_request_pic_handler(interrupt_inputs_t interruptInputs) {
      *  PIC EOI only needs to be sent to the PIC Slave when the interrupt comes from  the slave
      */
 
-
-
-    if (interruptInputs.interrupt_no >= 0 && interruptInputs.interrupt_no <= 47) {
+    if (interruptInputs.interrupt_no <= 47) {
         interrupt_handler handler = interrupt_handlers[interruptInputs.interrupt_no];
         handler(interruptInputs);
     }

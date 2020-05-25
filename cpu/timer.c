@@ -1,19 +1,19 @@
 #include "timer.h"
-#include "../kernel/util.h"
+#include "../libc/string.h"
 #include "../drivers/port_access.h"
 #include "../drivers/screen_control.h"
 #include "interrupt_handler.h"
 
 u32 tick = 0;
 
-static void timer_callback(interrupt_inputs_t regs) {
+static void timer_callback(interrupt_inputs_t interruptInputs) {
+
+    if (interruptInputs.interrupt_no != IRQ0) return;
+
     tick++;
-//    kernel_print_string("Tick: ");
-    
+
     char tick_ascii[256];
     int_to_ascii(tick, tick_ascii);
-//    kernel_print_string(tick_ascii);
-//    kernel_print_string("\n");
 }
 
 void init_timer(u32 freq) {

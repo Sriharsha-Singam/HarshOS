@@ -1,5 +1,4 @@
 #include "idt.h"
-#include "../kernel/util.h"
 
 void set_idt_interrupt_entry(int n, u32 handler) {
     /**

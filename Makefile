@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c)
 BUILD_DIR = build_os
 # Nice syntax for file extension replacement
 OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
@@ -8,8 +8,7 @@ OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
 CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 # -g: Use debugging symbols in gcc
-CFLAGS = -g
-#-m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
+CFLAGS = -g -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
 		 -Wall -Wextra -Werror
 
 # First rule is run by default
@@ -30,7 +29,7 @@ run: os.bin
 
 # Open the connection to qemu and load our kernel-object file with symbols
 debug: os.bin kernel.elf
-	qemu-system-i386 -s -S -fda ./build_os/os.bin &
+	qemu-system-i386 -s -S -fda format=raw ./build_os/os.bin &
 	${GDB} -ex "target remote localhost:1234" -ex "symbol-file ./build_os/kernel.elf"
 
 # Generic rules for wildcards
@@ -39,6 +38,9 @@ $(BUILD_DIR)/%.o: kernel/%.c
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: drivers/%.c drivers/%.h
+	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
+
+$(BUILD_DIR)/%.o: libc/%.c libc/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: on_boot/%.s

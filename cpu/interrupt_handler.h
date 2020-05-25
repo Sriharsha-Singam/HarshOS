@@ -87,7 +87,8 @@ typedef struct {
 
 typedef void (*interrupt_handler)(interrupt_inputs_t);
 
-void interrupt_service_request_install();
+void setup_interrupts();
+
 void interrupt_service_request_handler(interrupt_inputs_t interruptInputs);
 void interrupt_request_pic_handler(interrupt_inputs_t interruptInputs);
 
