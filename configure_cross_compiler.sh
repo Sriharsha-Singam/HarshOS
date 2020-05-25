@@ -7,6 +7,7 @@ sudo mkdir build_os
 pip install wheel
 pip install gdown
 
+pip show gdown
 gdown https://drive.google.com/uc?id=1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL -O /tmp/i386-elf-gcc-ubuntu.tar.gz
 
 sudo tar xf /tmp/i386-elf-gcc-ubuntu.tar.gz -C /usr/local/
