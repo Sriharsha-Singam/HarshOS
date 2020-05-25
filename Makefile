@@ -44,16 +44,16 @@ $(BUILD_DIR)/%.o: libc/%.c libc/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: on_boot/%.s
-	sudo nasm $< -f elf -o $@
+	nasm $< -f elf -o $@
 
 $(BUILD_DIR)/%.o: cpu/%.c
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: cpu/%.s
-	sudo nasm $< -f elf -o $@
+	nasm $< -f elf -o $@
 
 $(BUILD_DIR)/%.bin: on_boot/%.s
-	sudo nasm $< -f bin -o $@
+	nasm $< -f bin -o $@
 
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.bin build_os/*.elf
