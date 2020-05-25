@@ -3,6 +3,7 @@ set -x
 
 pwd
 
+sudo mkdir build_os
 curl https://drive.google.com/file/d/1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL/view?usp=sharing -o /tmp/test.tar.gz
 sudo tar xf /tmp/test.tar.gz -C /usr/local/
 
