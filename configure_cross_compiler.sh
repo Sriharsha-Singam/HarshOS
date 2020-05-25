@@ -3,7 +3,7 @@
 apt-get install curl --force-yes
 apt-get install gcc --force-yes
 apt-get install build-essential --force-yes
-apt-get install	libgmp3-dev --force-yes
+apt-get install	libgmp-dev --force-yes
 apt-get install libmpc-dev --force-yes
 apt-get install libmpfr-dev --force-yes
 
@@ -26,6 +26,9 @@ make all install 2>&1 | tee make.log
 
 cd /tmp/src
 pwd
+apt-cache policy libgmp-dev
+apt-cache policy libmpc-dev
+apt-cache policy libmpfr-dev
 curl -O https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
 tar xf gcc-10.1.0.tar.gz
 mkdir gcc-build
