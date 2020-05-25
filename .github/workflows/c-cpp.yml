@@ -19,3 +19,22 @@ jobs:
       run: make clean
     - name: make os.bin
       run: sudo make os.bin
+    - name: make kernel.elf
+      run: sudo make kernel.elf
+    - uses: actions/upload-artifact@v2
+      with:
+        name: os.bin
+        path: build_os/os.bin
+    - uses: actions/upload-artifact@v2
+      with:  
+        name: kernel.bin
+        path: build_os/kernel.bin
+    - uses: actions/upload-artifact@v2
+      with:  
+        name: kernel.elf
+        path: build_os/kernel.elf
+    - uses: actions/upload-artifact@v2
+      with:  
+        name: boot_sector_main.bin
+        path: build_os/boot_sector_main.bin
+        
