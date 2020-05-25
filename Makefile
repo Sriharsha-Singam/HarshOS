@@ -6,6 +6,7 @@ OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
 
 # Change this if your cross-compiler is somewhere else
 CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
+LD = /usr/local/i386elfgcc/bin/i386-elf-ld
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 # -g: Use debugging symbols in gcc
 CFLAGS = -g -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
@@ -18,11 +19,11 @@ os.bin: build_os/boot_sector_main.bin kernel.bin
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	i386-elf-ld -o ./build_os/kernel.bin -Ttext 0x1000 $^ --oformat binary
+	${LD} -o ./build_os/kernel.bin -Ttext 0x1000 $^ --oformat binary
 
 # Used for debugging purposes
 kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	i386-elf-ld -o ./build_os/kernel.elf -Ttext 0x1000 $^
+	${LD} -o ./build_os/kernel.elf -Ttext 0x1000 $^
 
 run: os.bin
 	qemu-system-i386 -fda build_os/os.bin
