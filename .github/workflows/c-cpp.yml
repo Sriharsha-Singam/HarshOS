@@ -18,4 +18,4 @@ jobs:
     - name: make clean
       run: make clean
     - name: make os.bin
-      run: make os.bin
+      run: sudo make os.bin
