@@ -8,7 +8,7 @@
 void start_paging() {
 
     // The size of physical memory. For the moment we assume it is 16MB big.
-    u32 final_physical_address = 0x1000000;
+//    u32 final_physical_address = 0x1000000;
 
 
 }

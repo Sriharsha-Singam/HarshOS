@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h)
 BUILD_DIR = build_os
 # Nice syntax for file extension replacement
 OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
@@ -28,9 +28,17 @@ kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
 run: os.bin
 	qemu-system-i386 -fda build_os/os.bin
 
+run-curses: os.bin
+	qemu-system-i386 -curses -fda build_os/os.bin
+
 # Open the connection to qemu and load our kernel-object file with symbols
 debug: os.bin kernel.elf
 	qemu-system-i386 -s -S -fda format=raw ./build_os/os.bin &
+	${GDB} -ex "target remote localhost:1234" -ex "symbol-file ./build_os/kernel.elf"
+
+# Open the connection to qemu and load our kernel-object file with symbols
+debug-curses: os.bin kernel.elf
+	qemu-system-i386 -curses -s -S -fda format=raw ./build_os/os.bin &
 	${GDB} -ex "target remote localhost:1234" -ex "symbol-file ./build_os/kernel.elf"
 
 # Generic rules for wildcards
@@ -41,7 +49,10 @@ $(BUILD_DIR)/%.o: kernel/%.c
 $(BUILD_DIR)/%.o: drivers/%.c drivers/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
-$(BUILD_DIR)/%.o: helper helper
+$(BUILD_DIR)/%.o: helper/%.c helper/%.h
+	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
+
+$(BUILD_DIR)/%.o: memory/%.c memory/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: on_boot/%.s
@@ -59,10 +70,3 @@ $(BUILD_DIR)/%.bin: on_boot/%.s
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.bin build_os/*.elf
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
-
-
-docker run  \
---name i386-elf-gcc-cross-compile \
--e HOST_IP=$(ifconfig en0 | awk '/ *inet /{print $2}') \
--v /Users/INT_ACC/Desktop/ubuntu-docker:/src \
--t -i ubuntu /bin/bash

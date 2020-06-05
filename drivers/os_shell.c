@@ -10,7 +10,6 @@ u8 number_of_instructions = 2;
 
 char *kernel_level_instructions[] = {
         "hello",
-
         "shutdown"
 };
 
