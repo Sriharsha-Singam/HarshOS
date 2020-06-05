@@ -1,6 +1,6 @@
 #include "cursor.h"
-#include "../libc/string.h"
-#include "../libc/mem_operations.h"
+#include "../helper/string.h"
+#include "../memory/mem_operations.h"
 #include "screen_control.h"
 
 int print_single_char(char c, int col, int row, char attr);

@@ -4,7 +4,7 @@
 
 #include "interrupt_handler.h"
 #include "idt.h"
-#include "../libc/string.h"
+#include "../helper/string.h"
 #include "../drivers/port_access.h"
 #include "../drivers/screen_control.h"
 #include "timer.h"

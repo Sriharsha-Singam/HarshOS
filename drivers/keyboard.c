@@ -1,7 +1,7 @@
 #include "port_access.h"
 #include "../cpu/interrupt_handler.h"
 #include "screen_control.h"
-#include "../libc/string.h"
+#include "../helper/string.h"
 #include "keyboard.h"
 #include "./os_shell.h"
 

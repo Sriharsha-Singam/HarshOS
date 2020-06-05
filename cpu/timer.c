@@ -1,5 +1,5 @@
 #include "timer.h"
-#include "../libc/string.h"
+#include "../helper/string.h"
 #include "../drivers/port_access.h"
 #include "../drivers/screen_control.h"
 #include "interrupt_handler.h"

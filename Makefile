@@ -41,7 +41,7 @@ $(BUILD_DIR)/%.o: kernel/%.c
 $(BUILD_DIR)/%.o: drivers/%.c drivers/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
-$(BUILD_DIR)/%.o: libc/%.c libc/%.h
+$(BUILD_DIR)/%.o: helper helper
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
 $(BUILD_DIR)/%.o: on_boot/%.s
@@ -59,3 +59,10 @@ $(BUILD_DIR)/%.bin: on_boot/%.s
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.bin build_os/*.elf
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
+
+
+docker run  \
+--name i386-elf-gcc-cross-compile \
+-e HOST_IP=$(ifconfig en0 | awk '/ *inet /{print $2}') \
+-v /Users/INT_ACC/Desktop/ubuntu-docker:/src \
+-t -i ubuntu /bin/bash
