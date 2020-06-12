@@ -3,10 +3,10 @@
 global SECOND_STAGE_BOOTLOADER_LABEL
 
 SECOND_STAGE_BOOTLOADER_LABEL:
-mov ebp, 0
-add ebp, SECOND_TEMP_STACK_SIZE
-add ebp, SECOND_TEMP_STACK
-mov esp, ebp
+;mov ebp, 0
+;add ebp, SECOND_TEMP_STACK_SIZE
+;add ebp, SECOND_TEMP_STACK
+;mov esp, ebp
 
 mov edx, VIDEO_MEMORY
 lea ebx, [SECONDARY_LOADING_KERNEL]

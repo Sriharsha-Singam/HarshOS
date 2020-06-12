@@ -33,6 +33,9 @@ init_32bit: ; we are now using 32-bit instructions
     mov es, ax
     mov fs, ax
     mov gs, ax
+    
+    mov ebp, 0x90000
+    mov esp, ebp
 
     jmp START_32_BITS
     ;ret

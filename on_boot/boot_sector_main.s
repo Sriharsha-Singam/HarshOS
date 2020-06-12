@@ -36,7 +36,7 @@ START_32_BITS:
   ;  mov ebx, BOOTING32
     ;call print
     ;jmp SECONDARY_BOOTLOADER_ADDRESS
-    ;call 0x1000
+    call 0x1000
     call 0x9000
     jmp $
 
