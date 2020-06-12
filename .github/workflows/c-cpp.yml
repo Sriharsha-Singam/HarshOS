@@ -17,14 +17,14 @@ jobs:
       run: ./configure_cross_compiler.sh
     - name: make clean
       run: make clean
-    - name: make os.bin
-      run: sudo make os.bin
+    - name: make os.iso
+      run: sudo make os.iso
     - name: make kernel.elf
       run: sudo make kernel.elf
     - uses: actions/upload-artifact@v2
       with:
-        name: os.bin
-        path: build_os/os.bin
+        name: os.iso
+        path: build_os/os.iso
     - uses: actions/upload-artifact@v2
       with:  
         name: kernel.bin
