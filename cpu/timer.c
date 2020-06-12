@@ -30,3 +30,4 @@ void init_timer(u32 freq) {
     port_byte_write(0x40, low);
     port_byte_write(0x40, high);
 }
+

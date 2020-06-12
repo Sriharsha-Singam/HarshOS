@@ -9,9 +9,13 @@
 
 void init_kernel_shell();
 void kernel_user_input(u8 val);
-void hello_instruction();
-void shutdown_instruction();
-void operation_not_found();
+void hello_instruction(char* buffer);
+void shutdown_instruction(char* buffer);
+void show_regs_instruction(char* buffer);
+void show_malloc_addr_instruction(char* buffer);
+void show_value_instruction(char* buffer);
+void start_paging_instruction(char* buffer);
+void operation_not_found(char* buffer);
 
 typedef void (*kernel_level_instructions_function)(char* arguments);
 

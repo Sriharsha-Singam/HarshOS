@@ -1,0 +1,198 @@
+[
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/idt.o"
+  ], 
+  "file": "cpu/idt.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/paging.o"
+  ], 
+  "file": "memory/paging.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/kernel_malloc.o"
+  ], 
+  "file": "memory/kernel_malloc.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make", 
+   "build_os/os_shell.o"
+  ], 
+  "file": "drivers/os_shell.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make", 
+   "build_os/screen_control.o"
+  ], 
+  "file": "drivers/screen_control.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/page_frame_handler.o"
+  ], 
+  "file": "memory/page_frame_handler.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/kernel.o"
+  ], 
+  "file": "kernel/kernel.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/keyboard.o"
+  ], 
+  "file": "drivers/keyboard.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make", 
+   "build_os/cursor.o"
+  ], 
+  "file": "drivers/cursor.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make", 
+   "build_os/port_access.o"
+  ], 
+  "file": "drivers/port_access.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/mem_operations.o"
+  ], 
+  "file": "memory/mem_operations.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/string.o"
+  ], 
+  "file": "helper/string.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/timer.o"
+  ], 
+  "file": "cpu/timer.c"
+ }, 
+ {
+  "directory": "C:\\DockerShared\\HarshOS", 
+  "arguments": [
+   "docker",
+   "exec",
+   "-t",
+   "-w",
+   "C:\\DockerShared\\HarshOS",
+   "ubuntu-cross-compiler",
+   "make",
+   "build_os/interrupt_handler.o"
+  ], 
+  "file": "cpu/interrupt_handler.c"
+ }
+]

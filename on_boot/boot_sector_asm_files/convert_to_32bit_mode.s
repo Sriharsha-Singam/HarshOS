@@ -1,13 +1,19 @@
 [bits 16]
-load_kernel:
-    mov bx, LOADING_KERNEL
-    call print16
-    call printn16
+load_bootloader_and_kernel:
 
-    mov bx, KERNEL_OFFSET ; Read from disk and store in 0x1000
-    mov dh, 31
-    mov dl, [BOOT_DRIVE]
+    ; Load Secondary Bootloader from Boot Drive
+    mov cl, 0x2
+    mov bx, SECONDARY_BOOTLOADER_ADDRESS ; Read from disk and store in 0x1000
+    mov al, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
+    ;mov dl, [BOOT_DRIVE]
     call disk_read
+
+    mov cl, 0x2
+    add cl, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
+    mov bx, KERNEL_PHYSICAL_ADDRESS ; Read from disk and store in 0x9000
+    mov al, NUMBER_OF_KERNEL_SECTORS
+    call disk_read
+
     ret
 
 [bits 16]
@@ -28,7 +34,5 @@ init_32bit: ; we are now using 32-bit instructions
     mov fs, ax
     mov gs, ax
 
-    mov ebp, 0x90000
-    mov esp, ebp
-
     jmp START_32_BITS
+    ;ret

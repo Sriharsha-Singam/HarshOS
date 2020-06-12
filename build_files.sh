@@ -3,7 +3,7 @@
 
 
 make clean
-make os.bin
+make os.iso
 
 
 #set -e

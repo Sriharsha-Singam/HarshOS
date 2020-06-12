@@ -26,6 +26,13 @@ void string_concat(char val1[], char val2[]) {
     } while (val2[i++] != '\0');
 }
 
+int string_compare_fixed_length(char val1[], char val2[], u32 length) {
+    for (u32 i = 0; i < length; i++) {
+        if (val1[i] != val2[i]) return 1;
+    }
+    return 0;
+}
+
 int string_compare(char val1[], char val2[]) {
     int i;
     for (i = 0; val1[i] == val2[i]; i++) {
@@ -83,4 +90,36 @@ void u8_to_hex_ascii(u8 val, char array[]) {
     array[i] = '\0';
 
     reverse_string(array);
+}
+
+void u32_to_hex_ascii(u32 val, char array[]) {
+    int i = 0;
+
+    do {
+        if ((val % 16) < 10) {array[i++] = (val % 16) + 0x30;}
+        else {array[i++] = ((val % 16) - 10) + 0x41;}
+    } while ((val/=16) > 0);
+
+    array[i++] = 'x';
+    array[i++] = '0';
+    array[i] = '\0';
+
+    reverse_string(array);
+}
+
+u32 hex_ascii_to_u32(char array[]) {
+
+    int i = 2;
+    u32 value = 0x0;
+    while(array[i] != '\0') {
+        value = value << 4;
+        if (array[i] < 0x3A) {
+            value = value | (array[i] - 0x30);
+        } else {
+            value = value | (array[i] - 0x37);
+        }
+        i++;
+    }
+
+    return value;
 }

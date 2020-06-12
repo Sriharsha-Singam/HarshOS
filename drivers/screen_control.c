@@ -13,19 +13,19 @@ void move_next_line() {
     col = 0;
     row++;
 
-    int new_offset = get_offset(col, row);
+//    int new_offset = get_offset(col, row);
 
-    if (new_offset >= (MAX_COLS*MAX_ROWS*2)) {
+    if (row >= MAX_ROWS) {
         for (int i = 1; i < MAX_ROWS; i++){
             memory_copy(get_vga_address(0, i), get_vga_address(0, i-1), MAX_COLS * 2);
         }
         char *last_line = get_vga_address(0, MAX_ROWS-1);
         for (int i = 0; i < MAX_COLS * 2; i++) last_line[i] = 0;
 
-        new_offset -= 2 * MAX_COLS;
+        row = MAX_ROWS-1;
     }
 
-    set_cursor_location_offset(new_offset); //setting new offset
+    set_cursor_location_offset(get_offset(col, row)); //setting new offset
 }
 
 void move_cursor_left() {

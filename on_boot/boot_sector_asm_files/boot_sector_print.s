@@ -1,8 +1,10 @@
 [bits 32] ; using 32-bit protected mode
 
 ; this is how constants are defined
-VIDEO_MEMORY equ 0xb8500
-WHITE_ON_BLACK equ 0x0f ; the color byte for each character
+;VIDEO_MEMORY equ  0xb8000
+VIDEO_MEMORY equ  0xb86e0
+WHITE_ON_BLACK equ 0x0F ; the color byte for each character
+
 
 print:
     pusha
@@ -10,10 +12,10 @@ print:
 
 print_loop:
     mov al, [ebx] ; [ebx] is the address of our character
-    mov ah, WHITE_ON_BLACK
+    mov ah, 0x0F
 
     cmp al, 0 ; check if end of string
-    je exit
+    jz exit
 
     mov [edx], ax ; store character + attribute in video memory
     add ebx, 1 ; next char

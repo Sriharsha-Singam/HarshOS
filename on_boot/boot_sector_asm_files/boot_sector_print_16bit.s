@@ -21,28 +21,28 @@ printn16:
     int 0x10
     jmp exit16
 
-;print16_hex:
-;    pusha
-;    mov cx, 0
-;    rol dx, 4
+print16_hex:
+    pusha
+    mov cx, 0
+    rol dx, 4
 
-;hex16_loop:
-;    cmp cx, 4
-;    je exit16
+hex16_loop:
+    cmp cx, 4
+    je exit16
 
-;    mov ax, dx
-;    and ax, 0x000F
-;    add al, 0x30
-;    cmp al, 0x39
-;    jle print16_hex_digits
-;    add al, 7
+    mov ax, dx
+    and ax, 0x000F
+    add al, 0x30
+    cmp al, 0x39
+    jle print16_hex_digits
+    add al, 7
 
-;print16_hex_digits:
-;    mov ah, 0x0E
-;    int 0x10
-;    rol dx, 4
-;    add cx, 1
-;    jmp hex16_loop
+print16_hex_digits:
+    mov ah, 0x0E
+    int 0x10
+    rol dx, 4
+    add cx, 1
+    jmp hex16_loop
 
 
 exit16:

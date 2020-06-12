@@ -45,7 +45,7 @@ void init_keyboard() {
 
 void print_letter(u8 scancode) {
     u8 letter = keyboard_scancode_handler(scancode);
-    if (letter!=0xA) if ((letter < 32) || letter >= 0x7F) return;
+    if (letter!=0xA && letter!=0x8) if ((letter < 32) || letter >= 0x7F) return;
 
 //    char text[2];
 //    text[0] = letter;

@@ -8,4 +8,6 @@
 void init_keyboard();
 u8 keyboard_scancode_handler(u8 scancode);
 
+#define BACKSPACE 0x8
+
 #endif //OS_32_KEYBOARD_H

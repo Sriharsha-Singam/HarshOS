@@ -1,1 +1,1 @@
-docker exec  -t -w /src/HarshOS ubuntu-cross-compiler ./build_files.sh
+docker exec -w /src/HarshOS ubuntu-cross-compiler ./build_files.sh

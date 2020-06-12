@@ -1,0 +1,227 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Intel 80386
+  Version:                           0x1
+  Entry point address:               0x1210
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          38820 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         2
+  Size of section headers:           40 (bytes)
+  Number of section headers:         14
+  Section header string table index: 13
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00001000 001000 002000 00  AX  0   0 16
+  [ 2] .data             PROGBITS        00003000 003000 001000 00  WA  0   0 32
+  [ 3] .bss              NOBITS          00004000 004000 001000 00  WA  0   0 32
+  [ 4] .debug_info       PROGBITS        00000000 004000 00180d 00      0   0  1
+  [ 5] .debug_abbrev     PROGBITS        00000000 00580d 000a15 00      0   0  1
+  [ 6] .debug_aranges    PROGBITS        00000000 006222 000180 00      0   0  1
+  [ 7] .debug_line       PROGBITS        00000000 0063a2 000d52 00      0   0  1
+  [ 8] .debug_str        PROGBITS        00000000 0070f4 000898 01  MS  0   0  1
+  [ 9] .comment          PROGBITS        00000000 00798c 000012 01  MS  0   0  1
+  [10] .debug_frame      PROGBITS        00000000 0079a0 00085c 00      0   0  4
+  [11] .symtab           SYMTAB          00000000 0081fc 000a20 10     12  31  4
+  [12] .strtab           STRTAB          00000000 008c1c 000b06 00      0   0  1
+  [13] .shstrtab         STRTAB          00000000 009722 000082 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x001000 0x00001000 0x00001000 0x02000 0x02000 R E 0x1000
+  LOAD           0x003000 0x00003000 0x00003000 0x01000 0x02000 RW  0x1000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text 
+   01     .data .bss 
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+
+The decoding of unwind sections for machine type Intel 80386 is not currently supported.
+
+Symbol table '.symtab' contains 162 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00001000     0 SECTION LOCAL  DEFAULT    1 
+     2: 00003000     0 SECTION LOCAL  DEFAULT    2 
+     3: 00004000     0 SECTION LOCAL  DEFAULT    3 
+     4: 00000000     0 SECTION LOCAL  DEFAULT    4 
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 00000000     0 SECTION LOCAL  DEFAULT    6 
+     7: 00000000     0 SECTION LOCAL  DEFAULT    7 
+     8: 00000000     0 SECTION LOCAL  DEFAULT    8 
+     9: 00000000     0 SECTION LOCAL  DEFAULT    9 
+    10: 00000000     0 SECTION LOCAL  DEFAULT   10 
+    11: 00000000     0 FILE    LOCAL  DEFAULT  ABS on_boot/start_kernel.s
+    12: 00000000     0 FILE    LOCAL  DEFAULT  ABS cpu/interrupt.s
+    13: 00001010     0 NOTYPE  LOCAL  DEFAULT    1 set_data_segments
+    14: 00001019     0 NOTYPE  LOCAL  DEFAULT    1 interrupt_service_hander_
+    15: 00001038     0 NOTYPE  LOCAL  DEFAULT    1 interrupt_request_pic_han
+    16: 00000000     0 FILE    LOCAL  DEFAULT  ABS kernel.c
+    17: 00000000     0 FILE    LOCAL  DEFAULT  ABS screen_control.c
+    18: 00000000     0 FILE    LOCAL  DEFAULT  ABS cursor.c
+    19: 00000000     0 FILE    LOCAL  DEFAULT  ABS os_shell.c
+    20: 00000000     0 FILE    LOCAL  DEFAULT  ABS port_access.c
+    21: 00000000     0 FILE    LOCAL  DEFAULT  ABS keyboard.c
+    22: 00001f83    51 FUNC    LOCAL  DEFAULT    1 keyboard_callback
+    23: 00000000     0 FILE    LOCAL  DEFAULT  ABS idt.c
+    24: 00000000     0 FILE    LOCAL  DEFAULT  ABS interrupt_handler.c
+    25: 00000000     0 FILE    LOCAL  DEFAULT  ABS timer.c
+    26: 00002723    59 FUNC    LOCAL  DEFAULT    1 timer_callback
+    27: 00000000     0 FILE    LOCAL  DEFAULT  ABS string.c
+    28: 00000000     0 FILE    LOCAL  DEFAULT  ABS mem_operations.c
+    29: 00000000     0 FILE    LOCAL  DEFAULT  ABS paging.c
+    30: 00000000     0 FILE    LOCAL  DEFAULT  ABS page_frame_handler.c
+    31: 00003010    16 OBJECT  GLOBAL DEFAULT    2 kernel_level_instructions
+    32: 000010ee     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    33: 00001f27    30 FUNC    GLOBAL DEFAULT    1 port_word_read
+    34: 0000112a     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    35: 0000287d    93 FUNC    GLOBAL DEFAULT    1 string_compare
+    36: 00002bca     6 FUNC    GLOBAL DEFAULT    1 start_paging
+    37: 0000105e     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    38: 00002697    29 FUNC    GLOBAL DEFAULT    1 set_interrupt_handler
+    39: 00001148     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    40: 000010f8     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    41: 00003004    12 OBJECT  GLOBAL DEFAULT    2 kernel_level_instructions
+    42: 00001170     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic0
+    43: 00001f64    31 FUNC    GLOBAL DEFAULT    1 port_word_write
+    44: 00001166     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    45: 000011e8     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic12
+    46: 00001134     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    47: 0000282d    80 FUNC    GLOBAL DEFAULT    1 string_concat
+    48: 000028da   122 FUNC    GLOBAL DEFAULT    1 reverse_string_at
+    49: 00001f0c    27 FUNC    GLOBAL DEFAULT    1 port_byte_read
+    50: 00001abd    54 FUNC    GLOBAL DEFAULT    1 hello_instruction
+    51: 00001347    62 FUNC    GLOBAL DEFAULT    1 move_cursor_left
+    52: 00001546   184 FUNC    GLOBAL DEFAULT    1 kernel_print_string_at
+    53: 00001088     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    54: 00002954    51 FUNC    GLOBAL DEFAULT    1 reverse_string
+    55: 00002a20   167 FUNC    GLOBAL DEFAULT    1 u8_to_hex_ascii
+    56: 0000115c     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    57: 00001057     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    58: 00001184     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic2
+    59: 00001073     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    60: 000015fe   376 FUNC    GLOBAL DEFAULT    1 print_single_char
+    61: 0000275e   109 FUNC    GLOBAL DEFAULT    1 init_timer
+    62: 00001fd1    76 FUNC    GLOBAL DEFAULT    1 print_letter
+    63: 00002149    72 FUNC    GLOBAL DEFAULT    1 set_idt_interrupt_entry
+    64: 00001f45    31 FUNC    GLOBAL DEFAULT    1 port_byte_write
+    65: 00001152     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    66: 000011d4     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic10
+    67: 000011b6     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic7
+    68: 000010a6     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    69: 0000107a     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    70: 000011fc     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic14
+    71: 000027cb    37 FUNC    GLOBAL DEFAULT    1 string_length
+    72: 00001116     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    73: 00002ac7   162 FUNC    GLOBAL DEFAULT    1 u32_to_hex_ascii
+    74: 00002624   115 FUNC    GLOBAL DEFAULT    1 interrupt_service_request
+    75: 00001094     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    76: 0000125e   233 FUNC    GLOBAL DEFAULT    1 move_next_line
+    77: 00001913    24 FUNC    GLOBAL DEFAULT    1 get_vga_address
+    78: 00004100     2 OBJECT  GLOBAL DEFAULT    3 buffer_length
+    79: 00001405    84 FUNC    GLOBAL DEFAULT    1 move_cursor_down
+    80: 000018af    27 FUNC    GLOBAL DEFAULT    1 get_offset
+    81: 00003020   128 OBJECT  GLOBAL DEFAULT    2 exception_messages
+    82: 00001120     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    83: 00001206     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic15
+    84: 0000109e     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    85: 0000118e     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic3
+    86: 00002b69    50 FUNC    GLOBAL DEFAULT    1 memory_copy
+    87: 00004102     1 OBJECT  GLOBAL DEFAULT    3 shift_down
+    88: 000032a0    58 OBJECT  GLOBAL DEFAULT    2 shift_down_ascii
+    89: 000014b7    35 FUNC    GLOBAL DEFAULT    1 tab
+    90: 00001949    66 FUNC    GLOBAL DEFAULT    1 next_kernel_shell_print
+    91: 000011de     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic11
+    92: 00005000     0 NOTYPE  GLOBAL DEFAULT    3 end
+    93: 000025f5    28 FUNC    GLOBAL DEFAULT    1 interrupt_request_pic_ins
+    94: 00001eb5    87 FUNC    GLOBAL DEFAULT    1 operation_not_found
+    95: 00002191    33 FUNC    GLOBAL DEFAULT    1 load_idt_register
+    96: 000010da     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+    97: 00001a10    19 FUNC    GLOBAL DEFAULT    1 end_of_user_input
+    98: 00004000     0 NOTYPE  GLOBAL DEFAULT    3 _bss
+    99: 00005000     0 NOTYPE  GLOBAL DEFAULT    3 __end
+   100: 00004000   256 OBJECT  GLOBAL DEFAULT    3 buffer
+   101: 000010d0     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   102: 00004000     0 NOTYPE  GLOBAL DEFAULT    3 bss
+   103: 000011ac     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic6
+   104: 0000108f     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   105: 00002987   153 FUNC    GLOBAL DEFAULT    1 int_to_ascii
+   106: 00002b9b    47 FUNC    GLOBAL DEFAULT    1 memory_set
+   107: 00004d40     4 OBJECT  GLOBAL DEFAULT    3 tick
+   108: 0000192b    30 FUNC    GLOBAL DEFAULT    1 init_kernel_shell
+   109: 00004104     1 OBJECT  GLOBAL DEFAULT    3 alt_down
+   110: 0000117a     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic1
+   111: 000010be     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   112: 000017d2   112 FUNC    GLOBAL DEFAULT    1 get_cursor_location_offse
+   113: 000011c0     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic8
+   114: 00003000     0 NOTYPE  GLOBAL DEFAULT    2 data
+   115: 00001210    78 FUNC    GLOBAL DEFAULT    1 main
+   116: 000013b1    84 FUNC    GLOBAL DEFAULT    1 move_cursor_up
+   117: 00001a23   154 FUNC    GLOBAL DEFAULT    1 user_shell_enter
+   118: 00001776    27 FUNC    GLOBAL DEFAULT    1 kernel_print_string
+   119: 00004103     1 OBJECT  GLOBAL DEFAULT    3 ctrl_down
+   120: 00003260    58 OBJECT  GLOBAL DEFAULT    2 shift_up_ascii
+   121: 00003000     0 NOTYPE  GLOBAL DEFAULT    2 __data
+   122: 000010e4     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   123: 00004120  2048 OBJECT  GLOBAL DEFAULT    3 idt
+   124: 00001065     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   125: 00004000     0 NOTYPE  GLOBAL DEFAULT    3 __bss
+   126: 000010ae     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   127: 000010c6     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   128: 00001198     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic4
+   129: 00004940  1024 OBJECT  GLOBAL DEFAULT    3 interrupt_handlers
+   130: 00001af3    26 FUNC    GLOBAL DEFAULT    1 shutdown_instruction
+   131: 00003000     0 NOTYPE  GLOBAL DEFAULT    2 _data
+   132: 000026b4   111 FUNC    GLOBAL DEFAULT    1 interrupt_request_pic_han
+   133: 000011f2     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic13
+   134: 00005000     0 NOTYPE  GLOBAL DEFAULT    3 _end
+   135: 0000201d   300 FUNC    GLOBAL DEFAULT    1 keyboard_scancode_handler
+   136: 00001000     0 NOTYPE  GLOBAL DEFAULT    1 code
+   137: 0000106c     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   138: 00001842   109 FUNC    GLOBAL DEFAULT    1 set_cursor_location_offse
+   139: 0000110c     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   140: 0000198b   133 FUNC    GLOBAL DEFAULT    1 kernel_user_input
+   141: 000018ca    27 FUNC    GLOBAL DEFAULT    1 get_offset_row
+   142: 000018e5    46 FUNC    GLOBAL DEFAULT    1 get_offset_col
+   143: 00001791    65 FUNC    GLOBAL DEFAULT    1 kernel_old_print_loader
+   144: 00001000     0 NOTYPE  GLOBAL DEFAULT    1 __code
+   145: 00001459    94 FUNC    GLOBAL DEFAULT    1 backspace
+   146: 00001000     0 NOTYPE  GLOBAL DEFAULT    1 _code
+   147: 000021b2  1091 FUNC    GLOBAL DEFAULT    1 interrupt_service_request
+   148: 000027f0    61 FUNC    GLOBAL DEFAULT    1 string_append
+   149: 000011a2     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic5
+   150: 00001385    44 FUNC    GLOBAL DEFAULT    1 move_cursor_right
+   151: 0000113e     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   152: 00004920     6 OBJECT  GLOBAL DEFAULT    3 idt_reg
+   153: 000014da   108 FUNC    GLOBAL DEFAULT    1 clear_screen
+   154: 00001b0d   936 FUNC    GLOBAL DEFAULT    1 show_regs_instruction
+   155: 00001fb6    27 FUNC    GLOBAL DEFAULT    1 init_keyboard
+   156: 00003000     1 OBJECT  GLOBAL DEFAULT    2 number_of_instructions
+   157: 00001081     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   158: 00002611    19 FUNC    GLOBAL DEFAULT    1 setup_interrupts
+   159: 000011ca     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_request_pic9
+   160: 000010b6     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+   161: 00001102     0 NOTYPE  GLOBAL DEFAULT    1 interrupt_service_request
+
+No version information found in this file.

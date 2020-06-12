@@ -35,32 +35,40 @@
 disk_read:
     pusha
     push dx
+
     mov ah, 0x02 ;read
-    mov al, dh ; no. of sectors to read
-    mov cx, 0x0002
+
+    mov ch, 0x00
+
     mov dh, 0x00
+    mov dl, [BOOT_DRIVE]
+
     int 0x13
-    jc disk_error
+
+    ;jc disk_error
     pop dx
-    cmp al, dh
-    jne sector_error
+    ;cmp al, dh
+    ;jne sector_error
     jmp disk_end
 
-disk_error:
-    mov bx, DISK_ERROR
-    call print16
-    call printn16
-    mov dh, ah ; ah = error code, dl = disk drive that dropped the error
-    call print16 ; check out the code at http://stanislavs.org/helppc/int_13-1.html
-    jmp disk_end
+;disk_error:
+;    mov bx, DISK_ERROR
+;    call print16
+;    call printn16
+;    mov bx, 0
+;    mov ah, 0x01
+;    int 0x13
+;    mov bl, al ; ah = error code, dl = disk drive that dropped the error
+;    call print16_hex ; check out the code at http://stanislavs.org/helppc/int_13-1.html
+;    jmp disk_end
 
-sector_error:
-    mov bx, SECTORS_ERROR
-    call print16
+;sector_error:
+ ;   mov bx, SECTORS_ERROR
+  ;  call print16
 
 disk_end:
     popa
     ret
 
-DISK_ERROR: db "Disk read error", 0
-SECTORS_ERROR: db "Incorrect number of sectors read", 0
+;DISK_ERROR: db "Disk read error", 0
+;SECTORS_ERROR: db "Incorrect number of sectors read", 0

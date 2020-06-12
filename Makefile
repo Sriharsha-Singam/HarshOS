@@ -9,37 +9,49 @@ CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
 LD = /usr/local/i386elfgcc/bin/i386-elf-ld
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 # -g: Use debugging symbols in gcc
-CFLAGS = -g -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
-		 -Wall -Wextra -Werror
+CFLAGS = -g -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -Wall -Wextra -Werror
+LDFLAGS=-Tlink.ld
+
+################################################################################################################################################################
+# Getting Size and Sector Values:
+KERNEL_C_BYTES_SIZE = $$(wc -c < 'build_os/kernel.bin') # Get how many bytes the kernel takes up
+NUMBER_OF_KERNEL_SECTORS = $$((($(KERNEL_C_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
+
+SECONDARY_BOOTSECTOR_SIZE = $$(wc -c < 'build_os/second_stage_bootsector.bin') # Get how many bytes the secondary bootsector takes up
+NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS = $$((($(SECONDARY_BOOTSECTOR_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the secondary bootsector takes up.
+################################################################################################################################################################
 
 # First rule is run by default
-os.bin: build_os/boot_sector_main.bin kernel.bin
-	cat build_os/boot_sector_main.bin build_os/kernel.bin > ./build_os/os.bin
+os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf
+	echo "Secondary Bootsector Size: ${SECONDARY_BOOTSECTOR_SIZE}"
+	echo "Number of Secondary Bootsector Sectors: ${NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS}"
+	echo "Kernel Size: ${KERNEL_C_BYTES_SIZE}"
+	echo "Number of Kernel Sectors: ${NUMBER_OF_KERNEL_SECTORS}"
+	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin > ./build_os/os.iso
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	${LD} -o ./build_os/kernel.bin -Ttext 0x1000 $^ --oformat binary
+	${LD} ${LDFLAGS} -o ./build_os/kernel.bin -Ttext 0x9000 $^ --oformat binary
 
 # Used for debugging purposes
 kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	${LD} -o ./build_os/kernel.elf -Ttext 0x1000 $^
+	${LD} ${LDFLAGS} -o ./build_os/kernel.elf -Ttext 0x9000 $^
 
-run: os.bin
-	qemu-system-i386 -fda build_os/os.bin
+run: os.iso
+	qemu-system-i386 -fda build_os/os.iso
 
-run-curses: os.bin
-	qemu-system-i386 -curses -fda build_os/os.bin
+run-curses: os.iso
+	qemu-system-i386 -curses -fda build_os/os.iso
 
 # Open the connection to qemu and load our kernel-object file with symbols
-debug: os.bin kernel.elf
-	qemu-system-i386 -s -S -fda format=raw ./build_os/os.bin &
+debug: os.iso kernel.elf
+	qemu-system-i386 -s -S -fda format=raw ./build_os/os.iso &
 	${GDB} -ex "target remote localhost:1234" -ex "symbol-file ./build_os/kernel.elf"
 
 # Open the connection to qemu and load our kernel-object file with symbols
-debug-curses: os.bin kernel.elf
-	qemu-system-i386 -curses -s -S -fda format=raw ./build_os/os.bin &
-	${GDB} -ex "target remote localhost:1234" -ex "symbol-file ./build_os/kernel.elf"
+debug-curses: os.iso kernel.elf
+	qemu-system-i386 -curses -s -S -fda ./build_os/os.iso &
 
 # Generic rules for wildcards
 # To make an object, always compile from its .c
@@ -64,9 +76,12 @@ $(BUILD_DIR)/%.o: cpu/%.c
 $(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
 
-$(BUILD_DIR)/%.bin: on_boot/%.s
-	nasm $< -f bin -o $@
+$(BUILD_DIR)/second_stage_bootsector.bin:
+	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
+
+$(BUILD_DIR)/boot_sector_main.bin: kernel.bin build_os/second_stage_bootsector.bin
+	nasm -f bin -dNUMBER_OF_KERNEL_SECTORS=$(NUMBER_OF_KERNEL_SECTORS) -dKERNEL_C_BYTES_SIZE=$(KERNEL_C_BYTES_SIZE) -dSECONDARY_BOOTSECTOR_SIZE=$(SECONDARY_BOOTSECTOR_SIZE) -dNUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS=$(NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS) on_boot/boot_sector_main.s -o $@
 
 clean:
-	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.bin build_os/*.elf
+	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.iso build_os/*.elf
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
