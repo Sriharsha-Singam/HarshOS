@@ -9,7 +9,7 @@
 #include "../memory/kernel_malloc.h"
 #include "../memory/paging.h"
 
-u8 number_of_instructions = 6;
+u8 number_of_instructions = 8;
 
 char *kernel_level_instructions[] = {
         "hello\0",
@@ -17,7 +17,9 @@ char *kernel_level_instructions[] = {
         "show regs\0",
         "show malloc-addr\0",
         "show value\0",
-        "start paging\0"
+        "start paging\0",
+        "help\0",
+        "div-err\0"
 };
 
 kernel_level_instructions_function kernel_level_instructions_functions[] = {
@@ -27,7 +29,9 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         show_regs_instruction,
         show_malloc_addr_instruction,
         show_value_instruction,
-        start_paging_instruction
+        start_paging_instruction,
+        help_instruction,
+        division_error_instruction
 };
 
 char buffer[256];
@@ -175,6 +179,12 @@ void show_regs_instruction(char* buffer) {
     kernel_print_string(ecxs);
     kernel_print_string("; EDX = ");
     kernel_print_string(edxs);
+    kernel_print_string("; EIP = ");
+
+    u32 latest_eip = get_latest_eip();
+    char eips[11];
+    u32_to_hex_ascii(latest_eip, eips);
+    kernel_print_string(eips);
 
     kernel_print_string(";\nESP = ");
     kernel_print_string(esps);
@@ -230,8 +240,24 @@ void show_value_instruction(char* buffer) {
 
 void start_paging_instruction(char* buffer) {
     kernel_print_string("Starting Paging Initialization. Currently creating one page directory meant for the Kernel Operations..........\n");
-    start_paging();
+    //start_paging();
     kernel_print_string("Paging Initialization has completed successfully.");
+}
+
+void help_instruction(char* buffer) {
+    for (u8 i = 0; i < number_of_instructions; i++) {
+        kernel_print_string(" -- ");
+        kernel_print_string(kernel_level_instructions[i]);
+        if (i != (number_of_instructions - 1)) {
+            kernel_print_string("\n");
+        }
+    }
+}
+
+void division_error_instruction(char* buffer) {
+    u8 err = 5;
+    u8 zero = 0;
+    err /= zero;
 }
 
 void operation_not_found(char* buffer) {

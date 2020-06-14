@@ -153,6 +153,13 @@ void kernel_print_string(char *message) {
     return;
 }
 
+void kernel_print_hex_value(u32 hex_value) {
+    char char_value[11];
+    u32_to_hex_ascii(hex_value, char_value);
+    kernel_print_string_at(char_value, -1, -1);
+    return;
+}
+
 void kernel_old_print_loader() {
     int i = 0;
     while(i < 10) {

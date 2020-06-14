@@ -1,7 +1,7 @@
 /* Screen i/o port registers */
 #define REG_VGA_ACTION 0x3D4
 #define REG_VGA_DATA 0x3D5
-#define VIDEO_ADDRESS 0xb8000
+#define VIDEO_ADDRESS 0xc00b8000
 
 /* Max rows and cols */
 #define MAX_ROWS 25

@@ -162,13 +162,18 @@ char *exception_messages[] = {
 };
 
 void interrupt_service_request_handler(interrupt_inputs_t interruptInputs) {
-    kernel_print_string("Interrupt Has Been Recieved: ");
-    char interrupt_number_string[3];
-    int_to_ascii(interruptInputs.interrupt_no, interrupt_number_string);
-    kernel_print_string(interrupt_number_string);
-    kernel_print_string("\n");
-    kernel_print_string(exception_messages[interruptInputs.interrupt_no]);
-    kernel_print_string("\n\n");
+    if (interruptInputs.interrupt_no) return;
+//    interrupt_handler handler = interrupt_handlers[interruptInputs.interrupt_no];
+//    handler(interruptInputs);
+
+
+//    kernel_print_string("Interrupt Has Been Recieved: ");
+//    char interrupt_number_string[3];
+//    int_to_ascii(interruptInputs.interrupt_no, interrupt_number_string);
+//    kernel_print_string(interrupt_number_string);
+//    kernel_print_string("\n");
+//    kernel_print_string(exception_messages[interruptInputs.interrupt_no]);
+//    kernel_print_string("\n\n");
 }
 
 void set_interrupt_handler(u8 interrupt_number, interrupt_handler handler) {
@@ -181,13 +186,11 @@ void interrupt_request_pic_handler(interrupt_inputs_t interruptInputs) {
      *  PIC EOI must ALWAYS be sent to the PIC Master
      *  PIC EOI only needs to be sent to the PIC Slave when the interrupt comes from  the slave
      */
+    if (interruptInputs.interrupt_no >= 40) port_byte_write(PIC2_COMMAND, PIC_EOI);
+    port_byte_write(PIC1_COMMAND, PIC_EOI);
 
     if (interruptInputs.interrupt_no <= 47) {
         interrupt_handler handler = interrupt_handlers[interruptInputs.interrupt_no];
         handler(interruptInputs);
     }
-
-    if (interruptInputs.interrupt_no >= 40) port_byte_write(PIC2_COMMAND, PIC_EOI);
-    port_byte_write(PIC1_COMMAND, PIC_EOI);
-
 }

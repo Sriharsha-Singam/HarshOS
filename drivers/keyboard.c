@@ -23,12 +23,19 @@ const char shift_down_ascii[] = { '?', '?', '!', '@', '#', '$', '%', '^',
                           'H', 'J', 'K', 'L', ':', '\"', '~', '?', '|', 'Z', 'X', 'C', 'V',
                           'B', 'N', 'M', '<', '>', '?', '?', '?', '?', ' '};
 
+u32 latest_eip = 0x0;
+
 static void keyboard_callback(interrupt_inputs_t input) {
     /* The PIC leaves us the scancode in port 0x60 */
 
     if (input.interrupt_no != IRQ1) return;
+    latest_eip =input.eip;
     u8 scancode1 = port_byte_read(0x60);
     print_letter(scancode1);
+}
+
+u32 get_latest_eip() {
+    return latest_eip;
 }
 
 void init_keyboard() {

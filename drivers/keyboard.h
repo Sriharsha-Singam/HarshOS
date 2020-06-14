@@ -7,6 +7,7 @@
 
 void init_keyboard();
 u8 keyboard_scancode_handler(u8 scancode);
+u32 get_latest_eip();
 
 #define BACKSPACE 0x8
 

@@ -24,12 +24,44 @@ void wait() {
     for (int j = 0; j < 100000000 ; j++) {}
 }
 
-static void page_fault_interrupt(interrupt_inputs_t input) {
+static void page_fault_interrupt_handler(interrupt_inputs_t input) {
     if (!(input.interrupt_no)) return;
 
-    kernel_print_string("PAGE FREAKING FAULT\n");
+    kernel_print_string("PAGE FREAKING FAULT :: { ");
+    u32 faulting_address;
+    asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
+
+    u8 present = !(input.error_code & 0x1); // 1 if present
+    u8 read_or_write = input.error_code & 0x2; // 1 if writeable
+    u8 user_or_kernel_mode = input.error_code & 0x4; // 1 if user mode
+    u8 reserved = input.error_code & 0x8; // Overwritten CPU-reserved bits of page entry?
+    //u8 id = input.error_code & 0x10; // Caused by an instruction fetch?
+
+    if (present) {
+        kernel_print_string("page is present; ");
+    } else {
+        kernel_print_string("page is not present; ");
+    }
+    if (read_or_write) {
+        kernel_print_string("address is writeable; ");
+    } else {
+        kernel_print_string("address is read-only; ");
+    }
+    if (user_or_kernel_mode) {
+        kernel_print_string("cpu is user mode; ");
+    } else {
+        kernel_print_string("cpu is kernel mode; ");
+    }
+    if (reserved) {kernel_print_string("reserved ");}
+    kernel_print_string("} at 0x");
+    kernel_print_hex_value(faulting_address);
+    kernel_print_string("\n");
+    //PANIC("Page fault");
 }
 
+void setup_page_fault_interrupt_handler() {
+    set_interrupt_handler(14, page_fault_interrupt_handler);
+}
 //void testing_if_paging_enabled() {
 //
 //    u32 *ptr = (u32*)0xA0000000;
@@ -66,7 +98,7 @@ void start_paging() {
     wait();
     kernel_directory = create_new_kernel_page_directory();
     kernel_print_string("Kernel Page Directory Created and Enabled in the registers\n");
-    set_interrupt_handler(14, page_fault_interrupt);
+    //set_interrupt_handler(14, page_fault_interrupt);
 //    kernel_print_string("Testing if Paging is Enabled.\n");
 //    testing_if_paging_enabled();
 }

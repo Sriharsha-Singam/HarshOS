@@ -24,5 +24,6 @@ print_loop:
     jmp print_loop
 
 exit:
+    ;mov ptr VIDEO_MEMORY, edx
     popa
     ret

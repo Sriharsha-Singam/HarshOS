@@ -16,6 +16,8 @@ void show_malloc_addr_instruction(char* buffer);
 void show_value_instruction(char* buffer);
 void start_paging_instruction(char* buffer);
 void operation_not_found(char* buffer);
+void help_instruction(char* buffer);
+void division_error_instruction(char* buffer);
 
 typedef void (*kernel_level_instructions_function)(char* arguments);
 

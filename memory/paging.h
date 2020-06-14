@@ -101,6 +101,7 @@ typedef struct {
  * This will allow the MMU to start PAGING and VIRTUALIZATION
  */
 void start_paging();
+void setup_page_fault_interrupt_handler();
 page_directory_t* create_new_kernel_page_directory();
 void set_active_page_directory(page_directory_t* page_directory);
 //static void page_fault_interrupt(interrupt_inputs_t input);

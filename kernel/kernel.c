@@ -15,6 +15,7 @@ extern u32 code;
 void main() {
     //start_paging();
     setup_interrupts();
+    setup_page_fault_interrupt_handler();
 
     clear_screen();
 //    start_paging();
