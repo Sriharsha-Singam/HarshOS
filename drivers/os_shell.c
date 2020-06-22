@@ -8,30 +8,44 @@
 #include "./keyboard.h"
 #include "../memory/kernel_malloc.h"
 #include "../memory/paging.h"
+#include "../kernel/defined_macros.h"
+#include "../memory/mem_operations.h"
 
-u8 number_of_instructions = 8;
+u8 number_of_instructions = 13;
+
+//void (*end_of_user_input_pointer)() = end_of_user_input;
 
 char *kernel_level_instructions[] = {
+        "help\0",
         "hello\0",
         "shutdown\0",
         "show regs\0",
         "show malloc-addr\0",
         "show value\0",
+        "set value\0",
         "start paging\0",
-        "help\0",
-        "div-err\0"
+        "div-err\0",
+        "show page-dir\0",
+        "user-mode on\0",
+        "user-mode off\0",
+        "parse string\0"
 };
 
 kernel_level_instructions_function kernel_level_instructions_functions[] = {
         operation_not_found,
+        help_instruction,
         hello_instruction,
         shutdown_instruction,
         show_regs_instruction,
         show_malloc_addr_instruction,
         show_value_instruction,
+        set_value_instruction,
         start_paging_instruction,
-        help_instruction,
-        division_error_instruction
+        division_error_instruction,
+        show_page_directory,
+        user_mode_on,
+        user_mode_off,
+        parse_string_instruction
 };
 
 char buffer[256];
@@ -41,6 +55,9 @@ void end_of_user_input();
 void user_shell_enter();
 
 void init_kernel_shell() {
+
+//    end_of_user_input_pointer = end_of_user_input;
+
     buffer[0] = '\0';
     buffer_length = 0;
     next_kernel_shell_print();
@@ -73,6 +90,36 @@ void kernel_user_input(u8 val) {
     text[0] = val;
     text[1] = '\0';
     kernel_print_string(text);
+}
+
+/**
+ * THIS IS BAD CODE. THIS CODE WILL LET NESTED_EXCEPTIONS STAY ACTIVE IN THE STACK. BY USING THIS FUNCTION
+ * THE STACK WILL SLOWLY GET EATEN UP.
+ *
+ * TODO: Change Method of handling Interrupts
+ * TODO:   -- Kernel Interrupts should crash the entire system after saving state for error reporting
+ * TODO:   -- User Mode Interrupts should kill process and state why process was killed.
+ */
+void clear_current_caused_kernel_interrupt() {
+    kernel_print_string("DANGEROUS: Causing Software Errors/Interrupts can cause a bad OS Start.\nThis will cause Stack Instability! Beware.");
+    end_of_user_input();
+    asm volatile("pop %eax");
+    asm volatile("popa");
+    asm volatile("add $8, %esp");
+    asm volatile("sti");
+    for(;;) {}
+}
+
+/**
+ * THIS IS BAD CODE. THIS CODE WILL LET NESTED_EXCEPTIONS STAY ACTIVE IN THE STACK. BY USING THIS FUNCTION
+ * THE STACK WILL SLOWLY GET EATEN UP.
+ *
+ * TODO: Change Method of handling Interrupts
+ * TODO:   -- Kernel Interrupts should crash the entire system after saving state for error reporting
+ * TODO:   -- User Mode Interrupts should kill process and state why process was killed.
+ */
+void* clear_current_caused_kernel_interrupt_pointer() {
+    return clear_current_caused_kernel_interrupt;
 }
 
 void end_of_user_input() {
@@ -179,12 +226,6 @@ void show_regs_instruction(char* buffer) {
     kernel_print_string(ecxs);
     kernel_print_string("; EDX = ");
     kernel_print_string(edxs);
-    kernel_print_string("; EIP = ");
-
-    u32 latest_eip = get_latest_eip();
-    char eips[11];
-    u32_to_hex_ascii(latest_eip, eips);
-    kernel_print_string(eips);
 
     kernel_print_string(";\nESP = ");
     kernel_print_string(esps);
@@ -207,6 +248,13 @@ void show_regs_instruction(char* buffer) {
     kernel_print_string(gss);
     kernel_print_string("; SS = ");
     kernel_print_string(sss);
+
+    kernel_print_string(";\nEIP = ");
+
+    u32 latest_eip = get_latest_eip();
+    char eips[11];
+    u32_to_hex_ascii(latest_eip, eips);
+    kernel_print_string(eips);
 }
 
 void show_malloc_addr_instruction(char* buffer) {
@@ -221,27 +269,37 @@ void show_value_instruction(char* buffer) {
     u32* address_to_check = (u32*)hex_ascii_to_u32(buffer);
     u32 address = (u32)address_to_check;
 
-    char value[11];
-    u32_to_hex_ascii(address, value);
-    char value1[11];
-    u32_to_hex_ascii(*address_to_check, value1);
-
     kernel_print_string("The value at the address ");
-    kernel_print_string(value);
+    kernel_print_hex_value(*address_to_check);
     kernel_print_string(" -> ");
 
     address += 3;
-    u32_to_hex_ascii(address, value);
 
-    kernel_print_string(value);
+    kernel_print_hex_value(address);
     kernel_print_string(" is : ");
-    kernel_print_string(value1);
+    kernel_print_hex_value(*address_to_check);
+}
+
+void set_value_instruction(char* buffer) {
+
+    char args[11];
+    memory_set((u32*)args, 0, 11);
+    parse_string_spaces(buffer, args, 1);
+
+    u32* address = (u32*)hex_ascii_to_u32(args);
+
+    memory_set((u32*)args, 0, 11);
+    parse_string_spaces(buffer, args, 2);
+    u32 value_to_set = hex_ascii_to_u32(args);
+
+    *address = value_to_set;
+
+    if (*address == value_to_set) kernel_print_string("The new value has successfully been set");
+    else kernel_print_string("ERROR: New value was not set properly");
 }
 
 void start_paging_instruction(char* buffer) {
-    kernel_print_string("Starting Paging Initialization. Currently creating one page directory meant for the Kernel Operations..........\n");
-    //start_paging();
-    kernel_print_string("Paging Initialization has completed successfully.");
+    kernel_print_string("Paging Initialization has already been completed successfully.");
 }
 
 void help_instruction(char* buffer) {
@@ -258,6 +316,38 @@ void division_error_instruction(char* buffer) {
     u8 err = 5;
     u8 zero = 0;
     err /= zero;
+}
+
+void show_page_directory(char* buffer) {
+    u32 current_directory = 0;
+    asm volatile("mov %%cr3, %0" : "=r"(current_directory));
+    kernel_print_string("Current Page Directory Address Stored in CR3: ");
+    kernel_print_hex_value(current_directory);
+}
+
+void user_mode_on(char* buffer) {
+    kernel_print_string("WARNING: This is turning on User-Mode features during Kernel-Mode. This may have unintended consequences.\n");
+    OS_MODE = USER_MODE_ENABLED;
+}
+
+void user_mode_off(char* buffer) {
+    kernel_print_string("WARNING: Turning Off User-Mode. Good Choice Lol.");
+    OS_MODE = KERNEL_SHELL_MODE;
+}
+
+void parse_string_instruction(char* buffer) {
+    char arg[256];
+
+    u32 number_of_spaces = number_of_a_chars(buffer, 0x20);
+
+    for (u32 i = 0; i <= number_of_spaces; i++) {
+        memory_set((u32*)arg, 0, 256);
+        if (parse_string_spaces(buffer, arg, i) == 0) {
+            kernel_print_string(arg);
+            kernel_print_string("\n");
+        }
+    }
+
 }
 
 void operation_not_found(char* buffer) {

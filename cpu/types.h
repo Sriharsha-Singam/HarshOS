@@ -7,6 +7,9 @@ typedef unsigned short u16;
 typedef          short s16;
 typedef unsigned char  u8;
 typedef          char  s8;
+typedef unsigned int  physical_addr;
+
+#define NULL 0
 
 #define low_16(address) (u16)((address) & 0xFFFF)
 #define high_16(address) (u16)(((address) >> 16) & 0xFFFF)

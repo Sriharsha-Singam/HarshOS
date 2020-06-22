@@ -5,5 +5,4 @@
 #ifndef OS_32_KERNEL_H
 #define OS_32_KERNEL_H
 
-
 #endif //OS_32_KERNEL_H

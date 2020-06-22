@@ -18,5 +18,7 @@ void u8_to_hex_ascii(u8 val, char array[]);
 int reverse_string_at(char string_val[], int from, int to);
 void u32_to_hex_ascii(u32 val, char array[]);
 u32 hex_ascii_to_u32(char array[]);
+int parse_string_spaces(char* values, char dvalue[], u32 index);
+u32 number_of_a_chars(char* values, char val);
 
 #endif //OS_32_STRING_H

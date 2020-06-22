@@ -4,6 +4,7 @@
 
 #include "string.h"
 
+#include "../drivers/screen_control.h"
 int string_length(char val[]) {
     int counter = 0;
     while (val[counter] != '\0') {
@@ -122,4 +123,52 @@ u32 hex_ascii_to_u32(char array[]) {
     }
 
     return value;
+}
+
+int parse_string_spaces(char* values, char value[], u32 index) {
+
+    int string_size = string_length(values);
+    char* location_start = values;
+    char* location_end = values;
+
+    for (u32 i = 0; i < index; i++) {
+        if (string_size < 0) return -1;
+        if (i > 0) {
+            location_start = ++values;
+            string_size--;
+        }
+
+        while ((*values != 0x0) && (*values != 0x20) && (*values != 0xA)) {
+            location_end = values++;
+            string_size--;
+            if (string_size < 0) return -1;
+        }
+    }
+
+    if (location_start >= location_end) return -1;
+
+    u32 size = (u32)(location_end - location_start) + 1;
+
+    u32 counter = 0;
+    for (counter = 0;counter < size; counter++) {
+        value[counter] = location_start[counter];
+    }
+
+    value[++counter] = '\0';
+
+    return 0;
+}
+
+u32 number_of_a_chars(char* values, char val) {
+
+    u32 string_numbers = 0;
+
+    while ((*values != 0x0) && (*values != 0xA)) {
+        if(*values == val) string_numbers++;
+        values++;
+    }
+
+    string_numbers++;
+
+    return string_numbers;
 }

@@ -1,4 +1,3 @@
-Set-PSDebug -Trace 1
 $User_Account = Read-Host -Prompt 'Input your account name: '
 Install-Module -Name dockeraccesshelper -Confirm
 Add-AccountToDockerAccess $User_Account

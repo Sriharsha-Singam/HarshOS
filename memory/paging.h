@@ -9,10 +9,16 @@
 
 
 // The size of physical memory. For the moment we assume it is 16MB big.
-#define final_physical_address 0x1000000
-#define number_of_possible_page_frames (final_physical_address / 0x1000)
-#define number_of_bytes_for_frame_state (number_of_possible_page_frames/8)
-#define number_of_indices_for_frame_state (number_of_possible_page_frames/32)
+#define TOTAL_RAM_MB_SIZE 0x1
+#define final_physical_address (TOTAL_RAM_MB_SIZE * 0x1000000)
+#define number_of_possible_page_frames (final_physical_address / 0x1000)  // Divinding Final Possible Address with the size of one page (0x1000 = 4096B)to get the number of total possible frames
+#define number_of_bytes_for_frame_free_list (number_of_possible_page_frames/8)
+#define number_of_indices_for_frame_free_list (number_of_possible_page_frames/32)
+
+#define KERNEL_VIRTUAL_ADDRESS 0xc0000000
+#define KERNEL_PAGE_NUMBER (KERNEL_VIRTUAL_ADDRESS >> 22)
+
+extern u32* frame_free_list;
 
 /**
 *   --------------------           ----------------                 --------------------
@@ -42,6 +48,7 @@ typedef struct {
     u32 reserved: 2; /** Cannot be edited. This can only be used by CPU*/
     u32 accessed: 1; /** Get's checked by CPU when accesssed */
     u32 dirty: 1; /** Set when the page is written to. This means it will eventually need to be written back to the Hard Drive */
+    u32 reserved1: 2;
     u32 UNUSED: 3; /** --- UNUSED --- */
     u32 page_frame_address: 20; /** This is the HIGH 20 bits of the physical address for the Page Frame.
                                  *  The lower 20-bits will always be 0 since the frame size used is 4kB.*/
@@ -102,7 +109,8 @@ typedef struct {
  */
 void start_paging();
 void setup_page_fault_interrupt_handler();
-page_directory_t* create_new_kernel_page_directory();
+void wait();
+page_directory_t* create_new_page_directory(u8 is_kernel_page_directory);
 void set_active_page_directory(page_directory_t* page_directory);
 //static void page_fault_interrupt(interrupt_inputs_t input);
 //void identity_page_memory_segment(page_entry_t* starting_page_table_entry, u32 starting_virtual_addresses, u32 memory_size, u8 is_kernel, u8 is_writeable);

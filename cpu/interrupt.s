@@ -19,7 +19,7 @@ interrupt_service_hander_caller:
     call set_data_segments
     popa
     add esp, 8
-    ;sti
+    ;cli
     iret
 
 interrupt_request_pic_hander_caller:

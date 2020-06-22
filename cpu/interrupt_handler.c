@@ -9,6 +9,9 @@
 #include "../drivers/screen_control.h"
 #include "timer.h"
 #include "../drivers/keyboard.h"
+#include "../drivers/os_shell.h"
+#include "../memory/paging.h"
+#include "../kernel/kernel.h"
 
 #define PIC_INIT 0x11
 
@@ -161,19 +164,45 @@ char *exception_messages[] = {
         "Reserved"
 };
 
+
+/**
+ * THIS IS BAD CODE. THIS CODE WILL LET NESTED_EXCEPTIONS STAY ACTIVE IN THE STACK. BY USING THIS FUNCTION
+ * THE STACK WILL SLOWLY GET EATEN UP.
+ *
+ * TODO: Change Method of handling Interrupts
+ * TODO:   -- Kernel Interrupts should crash the entire system after saving state for error reporting
+ * TODO:   -- User Mode Interrupts should kill process and state why process was killed.
+ */
 void interrupt_service_request_handler(interrupt_inputs_t interruptInputs) {
-    if (interruptInputs.interrupt_no) return;
-//    interrupt_handler handler = interrupt_handlers[interruptInputs.interrupt_no];
-//    handler(interruptInputs);
 
+    if (interrupt_handlers[interruptInputs.interrupt_no]) {
+        interrupt_handler handler = interrupt_handlers[interruptInputs.interrupt_no];
+        handler(interruptInputs);
+    } else {
+        kernel_print_string("Interrupt Has Been Recieved: ");
+        char interrupt_number_string[3];
+        int_to_ascii(interruptInputs.interrupt_no, interrupt_number_string);
+        kernel_print_string(interrupt_number_string);
+        kernel_print_string(" ==> ");
+        kernel_print_string(exception_messages[interruptInputs.interrupt_no]);
+        kernel_print_string("\n");
+    }
 
-//    kernel_print_string("Interrupt Has Been Recieved: ");
-//    char interrupt_number_string[3];
-//    int_to_ascii(interruptInputs.interrupt_no, interrupt_number_string);
-//    kernel_print_string(interrupt_number_string);
-//    kernel_print_string("\n");
-//    kernel_print_string(exception_messages[interruptInputs.interrupt_no]);
-//    kernel_print_string("\n\n");
+    if (OS_MODE == KERNEL_SHELL_MODE) {
+        asm volatile("cli");
+        void *function_pointer = clear_current_caused_kernel_interrupt_pointer();
+        goto *function_pointer;
+    } else if (OS_MODE == USER_MODE_ENABLED) {
+        kernel_print_string("Interrupt Has Been Recieved: ");
+        char interrupt_number_string[3];
+        int_to_ascii(interruptInputs.interrupt_no, interrupt_number_string);
+        kernel_print_string(interrupt_number_string);
+        kernel_print_string(" ==> ");
+        kernel_print_string(exception_messages[interruptInputs.interrupt_no]);
+        kernel_print_string("\n");
+        PANIC_STRING("KERNEL PANIC: FATAL EXCEPTION ==> SHUTTING DOWN CPU :(");
+    }
+
 }
 
 void set_interrupt_handler(u8 interrupt_number, interrupt_handler handler) {

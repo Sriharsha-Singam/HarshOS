@@ -6,6 +6,7 @@
 #define OS_32_INTERRUPT_HANDLER_H
 
 #include "types.h"
+#include "../kernel/defined_macros.h"
 
 /* ISRs reserved for CPU exceptions */
 extern void interrupt_service_request0();

@@ -1,6 +1,7 @@
 C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h)
 BUILD_DIR = build_os
+CURDIR := /src/HarshOS
 # Nice syntax for file extension replacement
 OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
 
@@ -32,11 +33,11 @@ os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kerne
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	${LD} ${LDFLAGS} -o ./build_os/kernel.bin -Ttext 0x9000 $^ --oformat binary
+	${LD} ${LDFLAGS} -o ./build_os/kernel.bin $^ --oformat binary
 
 # Used for debugging purposes
 kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
-	${LD} ${LDFLAGS} -o ./build_os/kernel.elf -Ttext 0x9000 $^
+	${LD} ${LDFLAGS} -o ./build_os/kernel.elf $^
 
 run: os.iso
 	qemu-system-i386 -fda build_os/os.iso

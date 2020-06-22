@@ -1,31 +1,25 @@
-//#include "../drivers/cursor.h"
-//#include "./util.h"
-//#include "../cpu/idt.h"
 #include "../drivers/screen_control.h"
 #include "../cpu/interrupt_handler.h"
-//#include "../drivers/keyboard.h"
-//#include "../cpu/timer.h"
 #include "../drivers/os_shell.h"
 #include "../memory/paging.h"
 #include "../helper/string.h"
+#include "defined_macros.h"
 
 //extern u32 start;
 extern u32 code;
 
-void main() {
-    //start_paging();
+void kernel_main() {
+
     setup_interrupts();
-    setup_page_fault_interrupt_handler();
 
     clear_screen();
-//    start_paging();
-    kernel_print_string("Currently Loading The Kernel at address: ");
 
-    char value[11];
-    u32_to_hex_ascii((u32)&code, value);
-    kernel_print_string(value);
+    LOG_DEBUG("Currently Loading The Kernel at address: ", (u32)&code);
 
-    //kernel_old_print_loader();
+    start_paging();
+
     kernel_print_string("\n\nkernel shell intialization\n");
     init_kernel_shell();
+
+//    LOG_DEBUG("\n\nKernel Main Has Ended. Waiting on Interrupts\n", NULL);
 }
