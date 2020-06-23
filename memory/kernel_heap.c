@@ -32,7 +32,7 @@ heap_entry_linked_list* HEAP_LINKED_LIST_LAST;
  * This function will insert a new Linked List Heap Entry
  *
  * @param size This will be the size of the space that needs to be
- *             heap malloced.
+ *             heap malloced. IN -- BYTES
  *
  * @return HEAP_ENTRY_LINKED_LIST POINTER
  */
@@ -77,9 +77,38 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
 
     }
 
+    new_heap_entry_linked_list->is_used = USED;
     new_heap_entry_linked_list->heap_entry_size = size;
+    new_heap_entry_linked_list->magic_number = HEAP_MAGIC_NUMBER;
 
     CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_linked_list);
 
+    //TODO: Creating new area under the linkedlist entry for the heap_data_entry itself -- the
+    //TODO: Linked List Entry will act as the Heap Data Entry header.
+    //TODO: Then will add footer at the end that points to the Linked List Header.
+//    new_heap_entry_linked_list->
+
     return new_heap_entry_linked_list;
+}
+
+void* create_heap_entry_space(u32 size, u8 is_page_aligned) {
+
+    if (!is_page_aligned) {
+
+//        void* start_address = (void*) CURRENT_HEAP_ADDRESS;
+
+//        CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_header_t) - sizeof(heap_entry_footer_t) - size;
+        CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_footer_t) - size;
+
+
+//        heap_entry_header_t* heap_entry_header = (heap_entry_header_t*) start_address;
+//        heap_entry_header->size =size;
+//        heap_entry_header->magic_number = HEAP_MAGIC_NUMBER;
+
+        heap_entry_footer_t* heap_entry_footer = (heap_entry_footer_t*) (CURRENT_HEAP_ADDRESS + sizeof(heap_entry_footer_t));
+        heap_entry_footer->magic_number = HEAP_MAGIC_NUMBER;
+//        heap_entry_footer->header_location = heap_entry_header;
+    }
+
+    return NULL; // TODO: Change this -- doing this to prevent compiler warning.
 }
