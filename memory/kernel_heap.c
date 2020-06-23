@@ -40,7 +40,7 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
 
     heap_entry_linked_list* new_heap_entry_linked_list = (heap_entry_linked_list*) CURRENT_HEAP_ADDRESS;
 
-    if (!HEAP_LINKED_LIST) {
+    if (!HEAP_LINKED_LIST_HEAD) {
         HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
         new_heap_entry_linked_list->previous = (heap_entry_linked_list*) NULL;
         new_heap_entry_linked_list->next = (heap_entry_linked_list*) NULL;
