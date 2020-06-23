@@ -24,7 +24,9 @@ u32 CURRENT_HEAP_ADDRESS = HEAP_START_POINT;
 u32 CURRENT_HEAP_ADDRESS_PAGE_ALIGNED = HEAP_START_POINT;
 
 
-heap_entry_linked_list* HEAP_LINKED_LIST;
+heap_entry_linked_list* HEAP_LINKED_LIST_HEAD;
+heap_entry_linked_list* HEAP_LINKED_LIST_LAST;
+
 
 /**
  * This function will insert a new Linked List Heap Entry
@@ -39,19 +41,40 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
     heap_entry_linked_list* new_heap_entry_linked_list = (heap_entry_linked_list*) CURRENT_HEAP_ADDRESS;
 
     if (!HEAP_LINKED_LIST) {
-        HEAP_LINKED_LIST = new_heap_entry_linked_list;
+        HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
         new_heap_entry_linked_list->previous = (heap_entry_linked_list*) NULL;
         new_heap_entry_linked_list->next = (heap_entry_linked_list*) NULL;
     } else {
 
-        heap_entry_linked_list* linked_list_copy = new_heap_entry_linked_list;
+        heap_entry_linked_list* linked_list_copy = HEAP_LINKED_LIST_HEAD;
 
-        while(linked_list_copy->next) {
+        while (linked_list_copy) {
+            if (size >= linked_list_copy->heap_entry_size) {
+                if (linked_list_copy->next && (size < linked_list_copy->next->heap_entry_size)) {
+                    new_heap_entry_linked_list->next = linked_list_copy->next;
+                    new_heap_entry_linked_list->next->previous = new_heap_entry_linked_list;
+                    new_heap_entry_linked_list->previous = linked_list_copy;
+                    linked_list_copy->next = new_heap_entry_linked_list;
+                    break;
+                } else if (!(linked_list_copy->next)) {
+                    linked_list_copy->next = new_heap_entry_linked_list;
+                    new_heap_entry_linked_list->previous = linked_list_copy;
+                    new_heap_entry_linked_list->next = NULL;
+                    break;
+                }
+            } else if ((size < linked_list_copy->heap_entry_size) && !(linked_list_copy->previous)) {
+                HEAP_LINKED_LIST_HEAD->previous = new_heap_entry_linked_list;
+                new_heap_entry_linked_list->next = HEAP_LINKED_LIST_HEAD;
+                HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
+                HEAP_LINKED_LIST_HEAD->previous = NULL;
+                break;
+            }
             linked_list_copy = linked_list_copy->next;
         }
 
-        linked_list_copy->next = new_heap_entry_linked_list;
-        new_heap_entry_linked_list->previous = linked_list_copy;
+        new_heap_entry_linked_list = NULL;
+        new_heap_entry_linked_list = linked_list_copy;
+
     }
 
     new_heap_entry_linked_list->heap_entry_size = size;
