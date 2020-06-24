@@ -3,30 +3,33 @@
 //
 
 #include "kernel_heap.h"
-#include "../memory/kernel_malloc.h"
+#include "kernel_malloc.h"
+#include "mem_operations.h"
+#include "page_frame_handler.h"
 
+///**
+// *  This address will change each time more of the heap is allocated/deallocated.
+// *  The HEAP will move backwards from address 0xC0000000 for EVERY PROCESS -- not just the kernel.
+// *  But the HEAP will be mapped to different PHYSICAL PAGES with similar/same VIRTUAL ADDRESSES
+// */
+//u32 CURRENT_HEAP_ADDRESS = mallocable_address;
 
-/**
- *  This address will change each time more of the heap is allocated/deallocated.
- *  The HEAP will move backwards from address 0xC0000000 for EVERY PROCESS -- not just the kernel.
- *  But the HEAP will be mapped to different PHYSICAL PAGES with similar/same VIRTUAL ADDRESSES
- */
-u32 CURRENT_HEAP_ADDRESS = HEAP_START_POINT;
-
-/**
- * This variable will be used to hold to location for HEAP Specified Pages.
- * These page may leave out massive chunks of memory in between. This might be
- * a good way to keep track of that.
- *
- * Another option is to potentially check the last address of the last
- * heap_entry but this might lead to some inconsistencies.
- */
-u32 CURRENT_HEAP_ADDRESS_PAGE_ALIGNED = HEAP_START_POINT;
+///**
+// * This variable will be used to hold to location for HEAP Specified Pages.
+// * These page may leave out massive chunks of memory in between. This might be
+// * a good way to keep track of that.
+// *
+// * Another option is to potentially check the last address of the last
+// * heap_entry but this might lead to some inconsistencies.
+// */
+//u32 CURRENT_HEAP_ADDRESS_PAGE_ALIGNED = HEAP_START_POINT;
 
 
 heap_entry_linked_list* HEAP_LINKED_LIST_HEAD;
 heap_entry_linked_list* HEAP_LINKED_LIST_LAST;
 
+heap_page_entry_linked_list* HEAP_PAGE_ALIGNED_LINKED_LIST_HEAD;
+heap_page_entry_linked_list* HEAP_PAGE_ALIGNED_LINKED_LIST_LAST;
 
 /**
  * This function will insert a new Linked List Heap Entry
@@ -38,7 +41,7 @@ heap_entry_linked_list* HEAP_LINKED_LIST_LAST;
  */
 heap_entry_linked_list* insert_heap_entry(u32 size) {
 
-    heap_entry_linked_list* new_heap_entry_linked_list = (heap_entry_linked_list*) CURRENT_HEAP_ADDRESS;
+    heap_entry_linked_list* new_heap_entry_linked_list = (heap_entry_linked_list*) mallocable_address;
 
     if (!HEAP_LINKED_LIST_HEAD) {
         HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
@@ -60,6 +63,7 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
                     linked_list_copy->next = new_heap_entry_linked_list;
                     new_heap_entry_linked_list->previous = linked_list_copy;
                     new_heap_entry_linked_list->next = NULL;
+                    HEAP_LINKED_LIST_LAST = new_heap_entry_linked_list;
                     break;
                 }
             } else if ((size < linked_list_copy->heap_entry_size) && !(linked_list_copy->previous)) {
@@ -72,8 +76,8 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
             linked_list_copy = linked_list_copy->next;
         }
 
-        new_heap_entry_linked_list = NULL;
-        new_heap_entry_linked_list = linked_list_copy;
+//        new_heap_entry_linked_list = NULL;
+//        new_heap_entry_linked_list = linked_list_copy;
 
     }
 
@@ -81,34 +85,189 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
     new_heap_entry_linked_list->heap_entry_size = size;
     new_heap_entry_linked_list->magic_number = HEAP_MAGIC_NUMBER;
 
-    CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_linked_list);
+    mallocable_address = mallocable_address + sizeof(heap_entry_linked_list);
 
-    //TODO: Creating new area under the linkedlist entry for the heap_data_entry itself -- the
-    //TODO: Linked List Entry will act as the Heap Data Entry header.
-    //TODO: Then will add footer at the end that points to the Linked List Header.
-//    new_heap_entry_linked_list->
+    new_heap_entry_linked_list->heap_entry_location = (void*) mallocable_address;
+
+    mallocable_address = mallocable_address + size;
+
+    heap_entry_footer_t* heap_entry_footer = (heap_entry_footer_t*) (mallocable_address);
+    heap_entry_footer->magic_number = HEAP_FOOTER_MAGIC_NUMBER;
+    heap_entry_footer->header_location = new_heap_entry_linked_list;
+
+    mallocable_address = mallocable_address + sizeof(heap_entry_footer_t);
 
     return new_heap_entry_linked_list;
 }
 
-void* create_heap_entry_space(u32 size, u8 is_page_aligned) {
 
-    if (!is_page_aligned) {
+heap_entry_linked_list* find_empty_heap_entry(u32 size) {
 
-//        void* start_address = (void*) CURRENT_HEAP_ADDRESS;
+    heap_entry_linked_list* starting_heap_entry = HEAP_LINKED_LIST_HEAD;
 
-//        CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_header_t) - sizeof(heap_entry_footer_t) - size;
-        CURRENT_HEAP_ADDRESS = CURRENT_HEAP_ADDRESS - sizeof(heap_entry_footer_t) - size;
-
-
-//        heap_entry_header_t* heap_entry_header = (heap_entry_header_t*) start_address;
-//        heap_entry_header->size =size;
-//        heap_entry_header->magic_number = HEAP_MAGIC_NUMBER;
-
-        heap_entry_footer_t* heap_entry_footer = (heap_entry_footer_t*) (CURRENT_HEAP_ADDRESS + sizeof(heap_entry_footer_t));
-        heap_entry_footer->magic_number = HEAP_MAGIC_NUMBER;
-//        heap_entry_footer->header_location = heap_entry_header;
+    while (starting_heap_entry) {
+        if (((starting_heap_entry->is_used) == FREE)
+            && (starting_heap_entry->heap_entry_size >= size)
+            && (starting_heap_entry->heap_entry_size < (size+4)))
+        {
+            return starting_heap_entry;
+        }
+        starting_heap_entry = starting_heap_entry->next;
     }
 
-    return NULL; // TODO: Change this -- doing this to prevent compiler warning.
+    return NULL;
 }
+
+void* kernel_heap_malloc(u32 size) {
+
+    heap_entry_linked_list* heap_entry = find_empty_heap_entry(size);
+
+    if (heap_entry == NULL) {
+        heap_entry = insert_heap_entry(size);
+    }
+
+    heap_entry->is_used = USED;
+    return ((void*)heap_entry->heap_entry_location);
+}
+
+void* kernel_heap_calloc(u32 size) {
+    void* heap_entry_location = kernel_heap_malloc(size);
+    memory_set(heap_entry_location, 0, size);
+    return heap_entry_location;
+}
+
+/**
+ * Merge 2 Heap Entries.
+ *
+ * @param heap_entry_list THIS PARAMETER SHOULD BE THE !!FIRST!! HEAP ENTRY OF THE 2 THAT NEED TO BE MERGED
+ */
+void merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list) {
+
+    u32 check_footer = *((heap_entry_list->next) - 8);
+    if (check_footer == HEAP_FOOTER_MAGIC_NUMBER) return;
+
+    void* heap_entry_1 = heap_entry_list->heap_entry_location;
+
+    u32 size_of_new_space = heap_entry_list->heap_entry_size + sizeof(heap_entry_footer_t) + sizeof(heap_entry_linked_list) + heap_entry_list->next->heap_entry_size;
+
+    heap_entry_list->next = heap_entry_list->next->next;
+
+    memory_set(heap_entry_1, 0, size_of_new_space);
+
+    heap_entry_list->heap_entry_size = size_of_new_space;
+
+    heap_entry_footer_t* heap_entry_2_footer = heap_entry_1 + size_of_new_space;
+
+    heap_entry_2_footer->header_location = heap_entry_list;
+}
+
+/**
+ * THIS FUNCTION GOES THROUGH ALL THE HEAP ENTRIES IN THE LINKED LIST
+ * AND CHECKS IF THE ANY CONTINUOUS HEAP ENTRIES ARE FREE AND THEN MERGES
+ * 2 HEAP ENTRIES AT A TIME.
+ */
+void merge_heap_entries_in_entire_linked_list() {
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    while (heap_entry_list->next) {
+
+        if (heap_entry_list->next) {
+
+            heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+
+            if ((heap_entry_list->is_used == FREE)
+                && (heap_entry_list->next->is_used == FREE)
+                &&
+
+                merge_two_heap_entries_linked_list(heap_entry_list);
+
+                heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+            }
+
+            if (heap_entry_list == (he)())
+        }
+
+
+        heap_entry_list = heap_entry_list->next;
+    }
+}
+
+int kernel_heap_free(void* address) {
+
+    merge_heap_entries_in_entire_linked_list();
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    while (heap_entry_list) {
+        if (heap_entry_list->heap_entry_location == (heap_entry_linked_list*)address) {
+            heap_entry_list->is_used = FREE;
+
+            if (heap_entry_list->next->is_used == FREE) {
+
+                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+
+                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
+                    merge_two_heap_entries_linked_list(heap_entry_list);
+                }
+
+            }
+
+            if (heap_entry_list->previous->is_used == FREE) {
+
+                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list - 8);
+
+                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
+                    merge_two_heap_entries_linked_list(heap_entry_list->previous);
+                }
+
+            }
+
+            return 0;
+        }
+        heap_entry_list = heap_entry_list->next;
+    }
+
+    return -1;
+}
+
+
+/**
+ * This function will create Page Aligned Heap Entries. Will implement this function
+ * upon implementing paging in User Mode. Will need to account for Pgae Directory,
+ * Page Directory Entries and Page Table Entries.
+ *
+ * @return POINTER TO THE PAGE ALIGNED HEAP ENTRY.
+ */
+//heap_page_entry_linked_list* insert_heap_page_aligned_entry() {
+//
+//    heap_page_entry_linked_list* new_heap_page_entry_linked_list = (heap_page_entry_linked_list*) mallocable_address;
+//
+//    if (!HEAP_PAGE_ALIGNED_LINKED_LIST_HEAD) {
+//        HEAP_PAGE_ALIGNED_LINKED_LIST_HEAD = new_heap_page_entry_linked_list;
+//        new_heap_page_entry_linked_list->previous = (heap_page_entry_linked_list*) NULL;
+//        new_heap_page_entry_linked_list->next = (heap_page_entry_linked_list*) NULL;
+//    } else {
+//
+//        heap_page_entry_linked_list* linked_list_copy = HEAP_PAGE_ALIGNED_LINKED_LIST_HEAD;
+//
+//        while (linked_list_copy->next) {
+//            linked_list_copy = linked_list_copy->next;
+//        }
+//
+//        new_heap_page_entry_linked_list->previous = linked_list_copy;
+//        new_heap_page_entry_linked_list->next = NULL;
+//    }
+//
+//    new_heap_page_entry_linked_list->magic_number = HEAP_PAGE_MAGIC_NUMBER;
+//
+//    u32 page_entry_index = (HEAP_START_POINT >> 22) - 50;
+//
+//    kernel_set_any_page_table_entry()
+//
+//    mallocable_address = mallocable_address - sizeof(heap_page_entry_linked_list);
+//
+//    return new_heap_page_entry_linked_list;
+//
+//}
