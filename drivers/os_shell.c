@@ -10,8 +10,9 @@
 #include "../memory/paging.h"
 #include "../kernel/defined_macros.h"
 #include "../memory/mem_operations.h"
+#include "../memory/kernel_heap.h"
 
-u8 number_of_instructions = 13;
+u8 number_of_instructions = 16;
 
 //void (*end_of_user_input_pointer)() = end_of_user_input;
 
@@ -28,7 +29,10 @@ char *kernel_level_instructions[] = {
         "show page-dir\0",
         "user-mode on\0",
         "user-mode off\0",
-        "parse string\0"
+        "parse string\0",
+        "heap entry\0",
+        "heap length\0",
+        "insert heap entry\0"
 };
 
 kernel_level_instructions_function kernel_level_instructions_functions[] = {
@@ -45,7 +49,10 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         show_page_directory,
         user_mode_on,
         user_mode_off,
-        parse_string_instruction
+        parse_string_instruction,
+        heap_entry_instruction,
+        heap_length_instruction,
+        insert_heap_entry_instruction
 };
 
 char buffer[256];
@@ -150,6 +157,7 @@ void user_shell_enter() {
  */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 /** These are the available kernel instructions implementation
  *  TODO: These can be used in the kernel state or with kernel privileges
@@ -304,10 +312,12 @@ void start_paging_instruction(char* buffer) {
 
 void help_instruction(char* buffer) {
     for (u8 i = 0; i < number_of_instructions; i++) {
-        kernel_print_string(" -- ");
+//        kernel_print_string(" -- ");
         kernel_print_string(kernel_level_instructions[i]);
+
         if (i != (number_of_instructions - 1)) {
-            kernel_print_string("\n");
+            kernel_print_string(", ");
+//            kernel_print_string("\n");
         }
     }
 }
@@ -347,6 +357,50 @@ void parse_string_instruction(char* buffer) {
             kernel_print_string("\n");
         }
     }
+}
+
+void heap_entry_instruction(char* buffer) {
+
+    u32 index = hex_ascii_to_u32(buffer);
+
+    if (index < length_of_heap_entries_list()) {
+
+        heap_entry_linked_list* heap_entry = get_heap_entry(index);
+//        kernel_print_hex_value((u32)heap_entry);
+        u32 magic = heap_entry->magic_number;
+        u8 is_used = heap_entry->is_used;
+        void* heap_location = heap_entry->heap_entry_location;
+        u32 size = heap_entry->heap_entry_size;
+
+        kernel_print_string("Magic Number: ");
+        kernel_print_hex_value(magic);
+        kernel_print_string("\nHeap Entry Location: ");
+        kernel_print_hex_value((u32)heap_location);
+        kernel_print_string("\nSize: ");
+        kernel_print_hex_value(size);
+        kernel_print_string(" ; ");
+        if (is_used) kernel_print_string("USED");
+        else kernel_print_string("FREE");
+
+    } else {
+        kernel_print_string("Heap Entry Index Does Not Exist");
+    }
+}
+
+void heap_length_instruction(char* buffer) {
+    kernel_print_string("Length Of Heap Entry Linked List: ");
+    kernel_print_hex_value(length_of_heap_entries_list());
+}
+
+void insert_heap_entry_instruction(char* buffer) {
+    u32 size = hex_ascii_to_u32(buffer);
+    void* address = kernel_heap_malloc(size);
+
+    if (does_heap_entry_exist(address)) {
+        kernel_print_string("Heap Entry Has Successfully Been Created. The Address is: ");
+        kernel_print_hex_value((u32)address);
+    }
+    else kernel_print_string("ERROR: Heap Entry Was NOT Successfully Been Created.");
 
 }
 

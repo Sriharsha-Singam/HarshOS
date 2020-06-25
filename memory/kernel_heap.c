@@ -45,6 +45,7 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
 
     if (!HEAP_LINKED_LIST_HEAD) {
         HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
+//        LOG_DEBUG("Inserting First Heap Entry: ", (u32)HEAP_LINKED_LIST_HEAD);
         new_heap_entry_linked_list->previous = (heap_entry_linked_list*) NULL;
         new_heap_entry_linked_list->next = (heap_entry_linked_list*) NULL;
     } else {
@@ -141,10 +142,11 @@ void* kernel_heap_calloc(u32 size) {
  *
  * @param heap_entry_list THIS PARAMETER SHOULD BE THE !!FIRST!! HEAP ENTRY OF THE 2 THAT NEED TO BE MERGED
  */
-void merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list) {
+int merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list) {
 
-    u32 check_footer = *((heap_entry_list->next) - 8);
-    if (check_footer == HEAP_FOOTER_MAGIC_NUMBER) return;
+    //Find the previous Heap Entry Footer -- (This is to make sure that the 2 Heap Entries to be merged are next to each other)
+    heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+    if (footer->magic_number != HEAP_FOOTER_MAGIC_NUMBER) return 1;
 
     void* heap_entry_1 = heap_entry_list->heap_entry_location;
 
@@ -159,6 +161,8 @@ void merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list)
     heap_entry_footer_t* heap_entry_2_footer = heap_entry_1 + size_of_new_space;
 
     heap_entry_2_footer->header_location = heap_entry_list;
+
+    return 0;
 }
 
 /**
@@ -178,7 +182,8 @@ void merge_heap_entries_in_entire_linked_list() {
 
             if ((heap_entry_list->is_used == FREE)
                 && (heap_entry_list->next->is_used == FREE)
-                &&
+                && (footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER)
+                && (heap_entry_list == footer->header_location)) {
 
                 merge_two_heap_entries_linked_list(heap_entry_list);
 
@@ -186,7 +191,6 @@ void merge_heap_entries_in_entire_linked_list() {
 
             }
 
-            if (heap_entry_list == (he)())
         }
 
 
@@ -232,6 +236,48 @@ int kernel_heap_free(void* address) {
     return -1;
 }
 
+
+u32 length_of_heap_entries_list() {
+
+    heap_entry_linked_list* heap_entry = HEAP_LINKED_LIST_HEAD;
+
+    u32 counter = 0;
+
+    while(heap_entry) {
+        counter++;
+        heap_entry = heap_entry->next;
+    }
+
+    return counter;
+}
+
+heap_entry_linked_list* get_heap_entry(u32 index) {
+
+    if (index >= length_of_heap_entries_list()) return NULL;
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+//    LOG_DEBUG("Looking For Heap Entry Starting From: ", (u32)heap_entry_list);
+
+    while(index) {
+        heap_entry_list = heap_entry_list->next;
+        index--;
+    }
+
+    return heap_entry_list;
+}
+
+u32 does_heap_entry_exist(void* address) {
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    while(heap_entry_list) {
+        if (heap_entry_list->heap_entry_location == address) return 1;
+        heap_entry_list = heap_entry_list->next;
+    }
+
+    return 0;
+}
 
 /**
  * This function will create Page Aligned Heap Entries. Will implement this function
