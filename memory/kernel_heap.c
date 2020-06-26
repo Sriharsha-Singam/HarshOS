@@ -203,6 +203,8 @@ void sort_heap_entry_linked_list() {
  * AND CHECKS IF THE ANY CONTINUOUS HEAP ENTRIES ARE FREE AND THEN MERGES
  * 2 HEAP ENTRIES AT A TIME.
  */
+ // TODO: USE MORE ROBUST FREEING ALGO. TESTED MORE RIGOUROSLY AND FAILS -- USE THE CURRENT TEST-HEAP-INSTRUCTION
+ // TODO: ------ TESTED EVEN WITH CONTINUOUS LINKED LIST HEAP ENTRIES -- FAILS
 void merge_heap_entries_in_entire_linked_list() {
 
     heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
@@ -231,6 +233,8 @@ void merge_heap_entries_in_entire_linked_list() {
 
     sort_heap_entry_linked_list();
 }
+
+
 
 int kernel_heap_free(void* address) {
 

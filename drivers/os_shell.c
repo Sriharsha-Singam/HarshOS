@@ -424,10 +424,10 @@ void free_heap_entry_instruction(char* buffer) {
     kernel_heap_free(address);
 
     if (does_heap_entry_exist(address)) {
-        kernel_print_string("Heap Entry Has Successfully Been Created. The Address is: ");
+        kernel_print_string("Heap Entry Has Been FREED Successfully. The Address is: ");
         kernel_print_hex_value((u32)address);
     }
-    else kernel_print_string("ERROR: Heap Entry Was NOT Successfully Been Created.");
+    else kernel_print_string("ERROR: Heap Entry Was NOT Successfully FREED.");
 
 }
 
@@ -446,17 +446,17 @@ void print_hex_test_entries(void* address, u8 next_line) {
 
 void test_heap_instruction(char* buffer) {
 
-    print_hex_test_entries(kernel_heap_malloc(0x1), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x2), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x3), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
-
-//    print_hex_test_entries(kernel_heap_malloc(0x110), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x34), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x1), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x2), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x3), 1);
 //    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
 //    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+
+    print_hex_test_entries(kernel_heap_malloc(0x110), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x34), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
 
     print_heap_entries_instruction("\0");
 }
