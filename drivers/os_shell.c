@@ -12,7 +12,7 @@
 #include "../memory/mem_operations.h"
 #include "../memory/kernel_heap.h"
 
-u8 number_of_instructions = 16;
+u8 number_of_instructions = 19;
 
 //void (*end_of_user_input_pointer)() = end_of_user_input;
 
@@ -32,8 +32,13 @@ char *kernel_level_instructions[] = {
         "parse string\0",
         "heap entry\0",
         "heap length\0",
-        "insert heap entry\0"
+        "ihe\0",
+        "free heap entry\0",
+        "print heap\0",
+        "test heap\0"
 };
+
+//"insert heap entry\0",
 
 kernel_level_instructions_function kernel_level_instructions_functions[] = {
         operation_not_found,
@@ -52,7 +57,10 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         parse_string_instruction,
         heap_entry_instruction,
         heap_length_instruction,
-        insert_heap_entry_instruction
+        insert_heap_entry_instruction,
+        free_heap_entry_instruction,
+        print_heap_entries_instruction,
+        test_heap_instruction
 };
 
 char buffer[256];
@@ -278,7 +286,7 @@ void show_value_instruction(char* buffer) {
     u32 address = (u32)address_to_check;
 
     kernel_print_string("The value at the address ");
-    kernel_print_hex_value(*address_to_check);
+    kernel_print_hex_value((u32)address_to_check);
     kernel_print_string(" -> ");
 
     address += 3;
@@ -372,15 +380,26 @@ void heap_entry_instruction(char* buffer) {
         void* heap_location = heap_entry->heap_entry_location;
         u32 size = heap_entry->heap_entry_size;
 
-        kernel_print_string("Magic Number: ");
+        kernel_print_string("Heap Entry Linked List Address: ");
+        kernel_print_hex_value((u32)heap_entry);
+        kernel_print_string("\nMagic Number: ");
         kernel_print_hex_value(magic);
         kernel_print_string("\nHeap Entry Location: ");
         kernel_print_hex_value((u32)heap_location);
         kernel_print_string("\nSize: ");
         kernel_print_hex_value(size);
         kernel_print_string(" ; ");
-        if (is_used) kernel_print_string("USED");
-        else kernel_print_string("FREE");
+        if (is_used == USED) kernel_print_string("USED\n");
+        else kernel_print_string("FREE\n");
+
+        heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry - 8);
+        kernel_print_hex_value((u32)footer);
+        kernel_print_string(" ; ");
+        kernel_print_hex_value((u32)footer->magic_number);
+        kernel_print_string(" ; ");
+        kernel_print_hex_value((u32)footer->header_location);
+        kernel_print_string(" ; ");
+
 
     } else {
         kernel_print_string("Heap Entry Index Does Not Exist");
@@ -396,12 +415,54 @@ void insert_heap_entry_instruction(char* buffer) {
     u32 size = hex_ascii_to_u32(buffer);
     void* address = kernel_heap_malloc(size);
 
+    print_hex_test_entries(address, 0);
+}
+
+void free_heap_entry_instruction(char* buffer) {
+
+    void* address = (void*) hex_ascii_to_u32(buffer);
+    kernel_heap_free(address);
+
     if (does_heap_entry_exist(address)) {
         kernel_print_string("Heap Entry Has Successfully Been Created. The Address is: ");
         kernel_print_hex_value((u32)address);
     }
     else kernel_print_string("ERROR: Heap Entry Was NOT Successfully Been Created.");
 
+}
+
+void print_hex_test_entries(void* address, u8 next_line) {
+    if (does_heap_entry_exist(address)) {
+        heap_entry_linked_list* heap_entry = get_heap_entry_address(address);
+        kernel_print_string("Heap Entry |Size(");
+        kernel_print_hex_value(heap_entry->heap_entry_size);
+        kernel_print_string(")| Has Successfully Been Created. Address: ");
+        kernel_print_hex_value((u32)address);
+    }
+    else kernel_print_string("ERROR: Heap Entry Was NOT Successfully Been Created.");
+
+    if (next_line) kernel_print_string("\n");
+}
+
+void test_heap_instruction(char* buffer) {
+
+    print_hex_test_entries(kernel_heap_malloc(0x1), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x2), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x3), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
+    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+
+//    print_hex_test_entries(kernel_heap_malloc(0x110), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x34), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
+//    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+
+    print_heap_entries_instruction("\0");
+}
+
+void print_heap_entries_instruction(char* buffer) {
+    print_all_heap_entries();
 }
 
 void operation_not_found(char* buffer) {

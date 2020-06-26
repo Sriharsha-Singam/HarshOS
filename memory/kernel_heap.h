@@ -95,7 +95,9 @@ int kernel_heap_free(void* address);
 
 u32 length_of_heap_entries_list();
 heap_entry_linked_list* get_heap_entry(u32 index);
+heap_entry_linked_list* get_heap_entry_address(void* address);
 u32 does_heap_entry_exist(void* address);
+void print_all_heap_entries();
 
 heap_entry_linked_list* insert_heap_entry(u32 size);
 int remove_heap_entry(heap_entry_linked_list* heap_entry);

@@ -6,6 +6,7 @@
 #include "kernel_malloc.h"
 #include "mem_operations.h"
 #include "page_frame_handler.h"
+#include "../drivers/screen_control.h"
 
 ///**
 // *  This address will change each time more of the heap is allocated/deallocated.
@@ -145,7 +146,7 @@ void* kernel_heap_calloc(u32 size) {
 int merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list) {
 
     //Find the previous Heap Entry Footer -- (This is to make sure that the 2 Heap Entries to be merged are next to each other)
-    heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+    heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list->next - 8);
     if (footer->magic_number != HEAP_FOOTER_MAGIC_NUMBER) return 1;
 
     void* heap_entry_1 = heap_entry_list->heap_entry_location;
@@ -165,6 +166,38 @@ int merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list) 
     return 0;
 }
 
+void sort_heap_entry_linked_list() {
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    while (heap_entry_list) {
+
+        if (heap_entry_list->next
+            && (heap_entry_list->heap_entry_size > heap_entry_list->next->heap_entry_size)) {
+
+            if (heap_entry_list->previous == NULL) {
+                HEAP_LINKED_LIST_HEAD = heap_entry_list->next;
+            }
+
+            heap_entry_linked_list* previous1 = heap_entry_list->previous;
+            heap_entry_list->previous = heap_entry_list->next;
+            heap_entry_list->next->previous = previous1;
+
+            heap_entry_linked_list* next1 = heap_entry_list->next;
+            heap_entry_linked_list* next2 = heap_entry_list->next->next;
+            heap_entry_list->next = next2;
+            next1->next = heap_entry_list;
+
+            heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+        }
+
+        heap_entry_list = heap_entry_list->next;
+    }
+
+
+}
+
 /**
  * THIS FUNCTION GOES THROUGH ALL THE HEAP ENTRIES IN THE LINKED LIST
  * AND CHECKS IF THE ANY CONTINUOUS HEAP ENTRIES ARE FREE AND THEN MERGES
@@ -178,7 +211,7 @@ void merge_heap_entries_in_entire_linked_list() {
 
         if (heap_entry_list->next) {
 
-            heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+            heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list->next - 8);
 
             if ((heap_entry_list->is_used == FREE)
                 && (heap_entry_list->next->is_used == FREE)
@@ -193,9 +226,10 @@ void merge_heap_entries_in_entire_linked_list() {
 
         }
 
-
         heap_entry_list = heap_entry_list->next;
     }
+
+    sort_heap_entry_linked_list();
 }
 
 int kernel_heap_free(void* address) {
@@ -208,32 +242,33 @@ int kernel_heap_free(void* address) {
         if (heap_entry_list->heap_entry_location == (heap_entry_linked_list*)address) {
             heap_entry_list->is_used = FREE;
 
-            if (heap_entry_list->next->is_used == FREE) {
+            merge_heap_entries_in_entire_linked_list();
+//            if (heap_entry_list->next->is_used == FREE) {
+//
+//                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
+//
+//                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
+//                    merge_two_heap_entries_linked_list(heap_entry_list);
+//                }
+//
+//            }
+//
+//            if (heap_entry_list->previous->is_used == FREE) {
+//
+//                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list - 8);
+//
+//                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
+//                    merge_two_heap_entries_linked_list(heap_entry_list->previous);
+//                }
+//
+//            }
 
-                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
-
-                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
-                    merge_two_heap_entries_linked_list(heap_entry_list);
-                }
-
-            }
-
-            if (heap_entry_list->previous->is_used == FREE) {
-
-                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list - 8);
-
-                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
-                    merge_two_heap_entries_linked_list(heap_entry_list->previous);
-                }
-
-            }
-
-            return 0;
+            return 1;
         }
         heap_entry_list = heap_entry_list->next;
     }
 
-    return -1;
+    return 0;
 }
 
 
@@ -267,16 +302,53 @@ heap_entry_linked_list* get_heap_entry(u32 index) {
     return heap_entry_list;
 }
 
+heap_entry_linked_list* get_heap_entry_address(void* address) {
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    while(heap_entry_list) {
+        if (heap_entry_list->heap_entry_location == address) return heap_entry_list;
+        heap_entry_list = heap_entry_list->next;
+    }
+
+    return NULL;
+}
+
 u32 does_heap_entry_exist(void* address) {
 
     heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
 
     while(heap_entry_list) {
-        if (heap_entry_list->heap_entry_location == address) return 1;
+        if ((heap_entry_list->heap_entry_location == address) && (heap_entry_list->is_used == USED)) return 1;
         heap_entry_list = heap_entry_list->next;
     }
 
     return 0;
+}
+
+void print_all_heap_entries() {
+
+    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
+
+    u32 counter = 0;
+
+    while(heap_entry_list) {
+        kernel_print_string("Heap Entry ");
+        kernel_print_hex_value(counter);
+        kernel_print_string(": Address: ");
+        kernel_print_hex_value((u32)heap_entry_list->heap_entry_location);
+        kernel_print_string("; Size: ");
+        kernel_print_hex_value((u32)heap_entry_list->heap_entry_size);
+        kernel_print_string("; ");
+
+        if (heap_entry_list->is_used == USED) kernel_print_string("USED\n");
+        else kernel_print_string("FREE\n");
+
+
+        heap_entry_list = heap_entry_list->next;
+        counter++;
+    }
+
 }
 
 /**

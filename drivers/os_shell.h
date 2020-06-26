@@ -36,6 +36,10 @@ void parse_string_instruction(char* buffer);
 void heap_entry_instruction(char* buffer);
 void heap_length_instruction(char* buffer);
 void insert_heap_entry_instruction(char* buffer);
+void free_heap_entry_instruction(char* buffer);
+void print_heap_entries_instruction(char* buffer);
+void print_hex_test_entries(void* address, u8 next_line);
+void test_heap_instruction(char* buffer);
 
 typedef void (*kernel_level_instructions_function)(char* arguments);
 

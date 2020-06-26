@@ -55,7 +55,7 @@ static void page_fault_interrupt_handler(interrupt_inputs_t input) {
         kernel_print_string("cpu is kernel mode; ");
     }
     if (reserved) {kernel_print_string("reserved ");}
-    kernel_print_string("} at 0x");
+    kernel_print_string("} at ");
     kernel_print_hex_value(faulting_address);
     kernel_print_string("\n");
     //PANIC("Page fault");
