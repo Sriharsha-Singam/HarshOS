@@ -20,6 +20,8 @@
 
 extern u32 CURRENT_HEAP_ADDRESS;
 
+
+
 /******************************************************************************************/
 /**
  * This is a Linked List for the normal Heap Entries
@@ -65,6 +67,9 @@ struct _heap_page_entry_linked_list {
 };
 /******************************************************************************************/
 
+//extern heap_entry_linked_list* HEAP_PAGE_ALIGNED_LINKED_LIST_HEAD;
+//extern heap_entry_linked_list* HEAP_PAGE_ALIGNED_LINKED_LIST_LAST;
+
 //typedef struct _heap_entry_header_t heap_entry_header_t;
 //
 //struct _heap_entry_header_t{
@@ -98,6 +103,8 @@ heap_entry_linked_list* get_heap_entry(u32 index);
 heap_entry_linked_list* get_heap_entry_address(void* address);
 u32 does_heap_entry_exist(void* address);
 void print_all_heap_entries();
+void print_all_full_heap_entries();
+void sort_heap_entry_linked_list();
 
 heap_entry_linked_list* insert_heap_entry(u32 size);
 int remove_heap_entry(heap_entry_linked_list* heap_entry);

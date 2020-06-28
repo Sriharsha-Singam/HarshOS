@@ -33,11 +33,12 @@ char *kernel_level_instructions[] = {
         "heap entry\0",
         "heap length\0",
         "ihe\0",
-        "free heap entry\0",
+        "free\0",
         "print heap\0",
         "test heap\0"
 };
 
+//"free heap entry\0",
 //"insert heap entry\0",
 
 kernel_level_instructions_function kernel_level_instructions_functions[] = {
@@ -421,9 +422,10 @@ void insert_heap_entry_instruction(char* buffer) {
 void free_heap_entry_instruction(char* buffer) {
 
     void* address = (void*) hex_ascii_to_u32(buffer);
+    kernel_print_hex_value((u32)address);
     kernel_heap_free(address);
 
-    if (does_heap_entry_exist(address)) {
+    if (does_heap_entry_exist(address) == FREE) {
         kernel_print_string("Heap Entry Has Been FREED Successfully. The Address is: ");
         kernel_print_hex_value((u32)address);
     }
@@ -452,6 +454,18 @@ void test_heap_instruction(char* buffer) {
 //    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
 //    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
 
+    if (!string_compare(buffer, "sort\0")) {
+        sort_heap_entry_linked_list();
+        print_all_heap_entries();
+        return;
+    }
+
+    if (!string_compare(buffer, "merge\0")) {
+        length_of_heap_entries_list();
+        print_all_heap_entries();
+        return;
+    }
+
     print_hex_test_entries(kernel_heap_malloc(0x110), 1);
     print_hex_test_entries(kernel_heap_malloc(0x34), 1);
     print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
@@ -459,9 +473,26 @@ void test_heap_instruction(char* buffer) {
     print_hex_test_entries(kernel_heap_malloc(0x100), 1);
 
     print_heap_entries_instruction("\0");
+
+    kernel_print_string("free 0xC0017018\n");
+    free_heap_entry_instruction("0xC0017018\0");
+    kernel_print_string("free 0xC0017148\n");
+    free_heap_entry_instruction("0xC0017148\0");
+
+    kernel_print_string("test heap merge\n");
+    test_heap_instruction("merge\0");
+    kernel_print_string("test heap sort\n");
+    test_heap_instruction("sort\0");
+
 }
 
 void print_heap_entries_instruction(char* buffer) {
+
+    if (!string_compare(buffer, "full\0")) {
+        print_all_full_heap_entries();
+        return;
+    }
+
     print_all_heap_entries();
 }
 

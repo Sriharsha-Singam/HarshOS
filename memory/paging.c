@@ -57,6 +57,8 @@ static void page_fault_interrupt_handler(interrupt_inputs_t input) {
     if (reserved) {kernel_print_string("reserved ");}
     kernel_print_string("} at ");
     kernel_print_hex_value(faulting_address);
+    kernel_print_string("; EIP:");
+    kernel_print_hex_value(input.eip);
     kernel_print_string("\n");
     //PANIC("Page fault");
 }
