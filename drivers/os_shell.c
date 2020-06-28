@@ -498,7 +498,7 @@ void test_heap_instruction(char* buffer) {
 
     u32 number_of_spaces = number_of_a_chars(buffer, 0x20);
 
-    memory_set((u32*)arg, 0, 256);
+    memory_set((u32*)arg_buffer, 0, 256);
     if (parse_string_spaces(buffer, arg_buffer, 0) == 0) {
 
         /**
