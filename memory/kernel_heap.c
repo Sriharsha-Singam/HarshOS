@@ -56,44 +56,10 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
 
         heap_entry_linked_list* linked_list_copy = HEAP_LINKED_LIST_LAST;
 
-//        while (linked_list_copy) {
-//            if (size >= linked_list_copy->heap_entry_size) {
-//                if (linked_list_copy->next && (size < linked_list_copy->next->heap_entry_size)) {
-//                    new_heap_entry_linked_list->next = linked_list_copy->next;
-//                    new_heap_entry_linked_list->next->previous = new_heap_entry_linked_list;
-//                    new_heap_entry_linked_list->previous = linked_list_copy;
-//                    linked_list_copy->next = new_heap_entry_linked_list;
-//                    break;
-//                } else if (!(linked_list_copy->next)) {
-//                    linked_list_copy->next = new_heap_entry_linked_list;
-//                    new_heap_entry_linked_list->previous = linked_list_copy;
-//                    new_heap_entry_linked_list->next = NULL;
-//                    HEAP_LINKED_LIST_LAST = new_heap_entry_linked_list;
-//                    break;
-//                }
-//            } else if ((size < linked_list_copy->heap_entry_size) && !(linked_list_copy->previous)) {
-//                HEAP_LINKED_LIST_HEAD->previous = new_heap_entry_linked_list;
-//                new_heap_entry_linked_list->next = HEAP_LINKED_LIST_HEAD;
-//                HEAP_LINKED_LIST_HEAD = new_heap_entry_linked_list;
-//                HEAP_LINKED_LIST_HEAD->previous = NULL;
-//                break;
-//            }
-//            linked_list_copy = linked_list_copy->next;
-//        }
-
-//        while (linked_list_copy->next) {
-//
-//            linked_list_copy = linked_list_copy->next;
-//        }
-
         linked_list_copy->next = new_heap_entry_linked_list;
         new_heap_entry_linked_list->next = (heap_entry_linked_list*) NULL;
         new_heap_entry_linked_list->previous = linked_list_copy;
         HEAP_LINKED_LIST_LAST = new_heap_entry_linked_list;
-
-
-//        new_heap_entry_linked_list = NULL;
-//        new_heap_entry_linked_list = linked_list_copy;
 
     }
 
@@ -154,6 +120,18 @@ void* kernel_heap_calloc(u32 size) {
     return heap_entry_location;
 }
 
+void remove_heap_entry(heap_entry_linked_list* remove) {
+
+    heap_entry_linked_list* prev = remove->previous;
+    heap_entry_linked_list* next = remove->next;
+
+    if (prev != NULL) prev->next = next;
+    else HEAP_LINKED_LIST_HEAD = next;
+
+    if (next != NULL) next->previous = prev;
+    else HEAP_LINKED_LIST_LAST = prev;
+}
+
 /**
  * Merge 2 Heap Entries.
  *
@@ -165,27 +143,10 @@ int merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list, 
     heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list1 - 8);
     if (footer->magic_number != HEAP_FOOTER_MAGIC_NUMBER) return 1;
 
-//    heap_entry_list->next = heap_entry_list1->
-    if (heap_entry_list->next) heap_entry_list->next->previous = heap_entry_list->previous;
-    if (heap_entry_list->previous) heap_entry_list->previous->next = heap_entry_list->next;
+    remove_heap_entry(heap_entry_list1);
 
-    if (heap_entry_list1->next) heap_entry_list1->next->previous = heap_entry_list1->previous;
-    if (heap_entry_list1->previous) heap_entry_list1->previous->next = heap_entry_list1->next;
-
-    if (heap_entry_list == HEAP_LINKED_LIST_HEAD) {
-        if (heap_entry_list->next == HEAP_LINKED_LIST_LAST) {
-            HEAP_LINKED_LIST_HEAD = heap_entry_list;
-        } else {
-            HEAP_LINKED_LIST_HEAD = heap_entry_list->next;
-        }
-    }
-    if (heap_entry_list1 == HEAP_LINKED_LIST_LAST) HEAP_LINKED_LIST_LAST = heap_entry_list->previous;
-    else if (heap_entry_list == HEAP_LINKED_LIST_LAST) HEAP_LINKED_LIST_LAST = heap_entry_list->previous;
     void* heap_entry_1 = heap_entry_list->heap_entry_location;
-
     u32 size_of_new_space = heap_entry_list->heap_entry_size + sizeof(heap_entry_footer_t) + sizeof(heap_entry_linked_list) + heap_entry_list1->heap_entry_size;
-
-//    heap_entry_list->next = heap_entry_list->next->next;
 
     memory_set(heap_entry_1, 0, size_of_new_space);
 
@@ -195,30 +156,23 @@ int merge_two_heap_entries_linked_list(heap_entry_linked_list* heap_entry_list, 
 
     heap_entry_2_footer->header_location = heap_entry_list;
 
+    remove_heap_entry(heap_entry_list);
+
     heap_entry_linked_list* list = HEAP_LINKED_LIST_LAST;
-//
-//    while (list->next) list = list->next;
-//
-    list->next = heap_entry_list;
-    heap_entry_list->previous = list;
-    heap_entry_list->next = NULL;
+
+    if (list) {
+        list->next = heap_entry_list;
+        heap_entry_list->previous = list;
+        heap_entry_list->next = NULL;
+    } else {
+        heap_entry_list->previous = NULL;
+        heap_entry_list->next = NULL;
+        if (!HEAP_LINKED_LIST_HEAD) HEAP_LINKED_LIST_HEAD = heap_entry_list;
+    }
 
     HEAP_LINKED_LIST_LAST = heap_entry_list;
-//    sort_heap_entry_linked_list();
 
-//    void* heap_entry_1 = heap_entry_list->heap_entry_location;
-//
-//    u32 size_of_new_space = heap_entry_list->heap_entry_size + sizeof(heap_entry_footer_t) + sizeof(heap_entry_linked_list) + heap_entry_list->next->heap_entry_size;
-//
-//    heap_entry_list->next = heap_entry_list->next->next;
-//
-//    memory_set(heap_entry_1, 0, size_of_new_space);
-//
-//    heap_entry_list->heap_entry_size = size_of_new_space;
-//
-//    heap_entry_footer_t* heap_entry_2_footer = heap_entry_1 + size_of_new_space;
-//
-//    heap_entry_2_footer->header_location = heap_entry_list;
+    sort_heap_entry_linked_list();
 
     return 0;
 }
@@ -245,58 +199,6 @@ void swap_heap_entry_linked_list(heap_entry_linked_list* prev, heap_entry_linked
 
     next->next = prev;
     next->previous = prev_prev;
-
-
-////    u32 one_entry_next = (u32) heap_entry_list_1_to_2->next;
-////    u32 two_entry_next = (u32) heap_entry_list_2_to_1->next;
-////    u32 one_entry_prev = (u32) heap_entry_list_1_to_2->previous;
-//
-//    heap_entry_linked_list* prev = heap_entry_list_1_to_2->previous;
-//    heap_entry_linked_list* next_next = heap_entry_list_1_to_2->next->next;
-//    heap_entry_linked_list* next = heap_entry_list_1_to_2->next;
-//
-//
-//    if (heap_entry_list_1_to_2->previous != NULL && heap_entry_list_1_to_2->next != NULL) {
-//        prev->next = next;
-//        next->previous = prev;
-//
-//        next->next = heap_entry_list_1_to_2;
-//        heap_entry_list_1_to_2->previous = next;
-//
-//        heap_entry_list_1_to_2->next = next_next;
-////        heap_entry_list_1_to_2->next->previous = heap_entry_list_1_to_2;
-//    } else if (heap_entry_list_1_to_2->previous == NULL && heap_entry_list_1_to_2->next != NULL) {
-//
-//        next->previous = NULL;
-//        next->next = heap_entry_list_1_to_2;
-//        heap_entry_list_1_to_2->next = next_next;
-//        heap_entry_list_1_to_2->previous = next;
-//
-//    } else if (heap_entry_list_1_to_2->previous != NULL && heap_entry_list_1_to_2->next == NULL) {
-//
-//        heap_entry_linked_list* prev_prev = heap_entry_list_1_to_2->previous->previous;
-//
-//        prev->next = NULL;
-//        prev->previous = heap_entry_list_1_to_2;
-//        heap_entry_list_1_to_2->next = prev;
-//        heap_entry_list_1_to_2->previous = prev_prev;
-//    }
-//
-//
-////    u32 two_entry_prev = (u32) heap_entry_list_2_to_1->previous;
-//
-////    if (heap_entry_list_1_to_2->previous) {
-////        heap_entry_list_1_to_2->previous->next = (heap_entry_linked_list*) one_entry_next;
-////        heap_entry_list_1_to_2->previous = heap_entry_list_2_to_1;
-////    }
-////
-////    heap_entry_list_1_to_2->next->previous = (heap_entry_linked_list*) one_entry_prev;
-////
-////    heap_entry_list_1_to_2->next->next->previous = heap_entry_list_1_to_2;
-////
-////    heap_entry_list_1_to_2->next->next = heap_entry_list_1_to_2;
-////
-////    heap_entry_list_1_to_2->next = (heap_entry_linked_list*) two_entry_next;
 }
 
 void sort_heap_entry_linked_list() {
@@ -308,42 +210,7 @@ void sort_heap_entry_linked_list() {
         if ((heap_entry_list->next != NULL)
             && (heap_entry_list->heap_entry_size > heap_entry_list->next->heap_entry_size)) {
 
-//            if (heap_entry_list->previous == NULL) {
-//                HEAP_LINKED_LIST_HEAD = heap_entry_list->next;
-//            }
-//////            else {
-//////                heap_entry_list->previous->next = heap_entry_list->next;
-//////            }
-////
-////            heap_entry_linked_list* previous1 = heap_entry_list->previous;
-////
-////            heap_entry_list->previous = heap_entry_list->next;
-////            heap_entry_list->next->previous = previous1;
-////
-////
-////
-//////            heap_entry_linked_list* next1 = heap_entry_list->next;
-////            u32 next2 = (u32) heap_entry_list->next->next;
-////
-////            heap_entry_list->next->next = heap_entry_list;
-////            heap_entry_list->next = (heap_entry_linked_list*) next2;
-////
-//////            heap_entry_list->next = next2;
-//////            next1->next = heap_entry_list;
-
             swap_heap_entry_linked_list(heap_entry_list, heap_entry_list->next);
-
-            heap_entry_list = HEAP_LINKED_LIST_HEAD;
-
-//            if (DEBUG_MODE == ON) {
-//                while (heap_entry_list) {
-//                    kernel_print_hex_value(heap_entry_list->heap_entry_size);
-//                    kernel_print_string(", ");
-//                    heap_entry_list = heap_entry_list->next;
-//                }
-//                kernel_print_string("\n");
-//            }
-
 
             heap_entry_list = HEAP_LINKED_LIST_HEAD;
 
@@ -361,68 +228,34 @@ void sort_heap_entry_linked_list() {
  * 2 HEAP ENTRIES AT A TIME.
  */
  // TODO: USE MORE ROBUST FREEING ALGO. TESTED MORE RIGOUROSLY AND FAILS -- USE THE CURRENT TEST-HEAP-INSTRUCTION
- // TODO: ------ TESTED EVEN WITH CONTINUOUS LINKED LIST HEAP ENTRIES -- FAILS
 void merge_heap_entries_in_entire_linked_list() {
 
      heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
 
      while (heap_entry_list->next) {
 
-//         kernel_print_string(heap_entry_list->heap_entry_size);
-//         kernel_print_string(", ");
+         heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list - 8);
 
-         if (heap_entry_list->previous) {
+         if ((heap_entry_list->is_used == FREE)
+            && (footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER)
+            && (footer->header_location->is_used == FREE)) {
 
-             heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list->next - 8);
+             merge_two_heap_entries_linked_list(footer->header_location, heap_entry_list);
+             sort_heap_entry_linked_list();
 
-             if ((heap_entry_list->is_used == FREE)
-                && (footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER)
-                && (footer->header_location->is_used == FREE)) {
-
-//                 sort_heap_entry_linked_list();
-                 merge_two_heap_entries_linked_list(footer->header_location, heap_entry_list);
-
-                 heap_entry_list = HEAP_LINKED_LIST_HEAD;
-             }
+             heap_entry_list = HEAP_LINKED_LIST_HEAD;
+         } else {
+             heap_entry_list = heap_entry_list->next;
          }
-
-         heap_entry_list = heap_entry_list->next;
      }
-
-//     sort_heap_entry_linked_list();
-
-//    heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
-//
-//    while (heap_entry_list->next) {
-//
-//        if (heap_entry_list->next) {
-//
-//            heap_entry_footer_t* footer = (heap_entry_footer_t*) ((u32)heap_entry_list->next - 8);
-//
-//            if ((heap_entry_list->is_used == FREE)
-//                && (heap_entry_list->next->is_used == FREE)
-//                && (footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER)
-//                && (heap_entry_list == footer->header_location)) {
-//
-//                merge_two_heap_entries_linked_list(heap_entry_list);
-//
-//                heap_entry_list = HEAP_LINKED_LIST_HEAD;
-//
-//            }
-//
-//        }
-//
-//        heap_entry_list = heap_entry_list->next;
-//    }
-//
-//    sort_heap_entry_linked_list();
+     sort_heap_entry_linked_list();
 }
 
 
 
 int kernel_heap_free(void* address) {
 
-//    merge_heap_entries_in_entire_linked_list();
+    merge_heap_entries_in_entire_linked_list();
 
     heap_entry_linked_list* heap_entry_list = HEAP_LINKED_LIST_HEAD;
 
@@ -430,40 +263,7 @@ int kernel_heap_free(void* address) {
         if (heap_entry_list->heap_entry_location == (heap_entry_linked_list*)address) {
             heap_entry_list->is_used = FREE;
 
-//            merge_heap_entries_in_entire_linked_list();
-
-//            if (heap_entry_list != HEAP_LINKED_LIST_HEAD) {
-//                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
-//
-//                if (footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER && footer->header_location->is_used == FREE) merge_two_heap_entries_linked_list(footer->header_location, heap_entry_list);
-//            }
-
-
-
-
-
-
-
-
-//            if (heap_entry_list->next->is_used == FREE) {
-//
-//                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list->next - 8);
-//
-//                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
-//                    merge_two_heap_entries_linked_list(heap_entry_list);
-//                }
-//
-//            }
-//
-//            if (heap_entry_list->previous->is_used == FREE) {
-//
-//                heap_entry_footer_t* footer = (heap_entry_footer_t*) (heap_entry_list - 8);
-//
-//                if ((footer->magic_number == HEAP_FOOTER_MAGIC_NUMBER) && (footer->header_location == heap_entry_list)) {
-//                    merge_two_heap_entries_linked_list(heap_entry_list->previous);
-//                }
-//
-//            }
+            merge_heap_entries_in_entire_linked_list();
 
             return 1;
         }
@@ -476,17 +276,19 @@ int kernel_heap_free(void* address) {
 
 u32 length_of_heap_entries_list() {
 
-//    heap_entry_linked_list* heap_entry = HEAP_LINKED_LIST_HEAD;
-//
-//    u32 counter = 0;
-//
-//    while(heap_entry) {
-//        counter++;
-//        heap_entry = heap_entry->next;
-//    }
-//
-//    return counter;
+    heap_entry_linked_list* heap_entry = HEAP_LINKED_LIST_HEAD;
 
+    u32 counter = 0;
+
+    while(heap_entry) {
+        counter++;
+        heap_entry = heap_entry->next;
+    }
+
+    return counter;
+}
+
+void merge_incomplete() {
     heap_entry_linked_list* list = HEAP_LINKED_LIST_HEAD;
 
     while (list) {
@@ -501,8 +303,6 @@ u32 length_of_heap_entries_list() {
 
         list = list->next;
     }
-
-    return 0;
 }
 
 heap_entry_linked_list* get_heap_entry(u32 index) {

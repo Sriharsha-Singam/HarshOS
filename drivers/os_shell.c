@@ -32,8 +32,8 @@ char *kernel_level_instructions[] = {
         "parse string\0",
         "heap entry\0",
         "heap length\0",
-        "ihe\0",
-        "free\0",
+        "insert heap\0",
+        "free heap\0",
         "print heap\0",
         "test heap\0"
 };
@@ -448,11 +448,37 @@ void print_hex_test_entries(void* address, u8 next_line) {
 
 void test_heap_instruction(char* buffer) {
 
-//    print_hex_test_entries(kernel_heap_malloc(0x1), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x2), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x3), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
-//    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+    if (!string_compare(buffer, "test1\0")) {
+        print_hex_test_entries(kernel_heap_malloc(0x1), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x2), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x3), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x5), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+
+        print_heap_entries_instruction("\0");
+        return;
+    }
+
+    if (!string_compare(buffer, "test2\0")) {
+        print_hex_test_entries(kernel_heap_malloc(0x110), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x34), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x5), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+
+        print_heap_entries_instruction("\0");
+
+        kernel_print_string("free 0xC0017018\n");
+        free_heap_entry_instruction("0xC0017018\0");
+        kernel_print_string("free 0xC0017148\n");
+        free_heap_entry_instruction("0xC0017148\0");
+
+        kernel_print_string("test heap merge\n");
+        test_heap_instruction("merge\0");
+        kernel_print_string("test heap sort\n");
+        test_heap_instruction("sort\0");
+        return;
+    }
 
     if (!string_compare(buffer, "sort\0")) {
         sort_heap_entry_linked_list();
@@ -461,29 +487,37 @@ void test_heap_instruction(char* buffer) {
     }
 
     if (!string_compare(buffer, "merge\0")) {
-        length_of_heap_entries_list();
+        merge_heap_entries_in_entire_linked_list();
         print_all_heap_entries();
         return;
     }
 
-    print_hex_test_entries(kernel_heap_malloc(0x110), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x34), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x5), 1);
-    print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+    // PARSE STRINGS FOR REST OF TEST OPTIONS
 
-    print_heap_entries_instruction("\0");
+    char arg_buffer[256];
 
-    kernel_print_string("free 0xC0017018\n");
-    free_heap_entry_instruction("0xC0017018\0");
-    kernel_print_string("free 0xC0017148\n");
-    free_heap_entry_instruction("0xC0017148\0");
+    u32 number_of_spaces = number_of_a_chars(buffer, 0x20);
 
-    kernel_print_string("test heap merge\n");
-    test_heap_instruction("merge\0");
-    kernel_print_string("test heap sort\n");
-    test_heap_instruction("sort\0");
+    memory_set((u32*)arg, 0, 256);
+    if (parse_string_spaces(buffer, arg_buffer, 0) == 0) {
 
+        /**
+         * SWAP ENTRIES CAN ONLY BE DONE FOR 2 SIDE-BY-SIDE ENTRIES
+         */
+//        if (!string_compare(arg_buffer, "swap\0")) {
+//            char arg1[11], arg2[11];
+//
+//            parse_string_spaces(buffer, arg1, 1);
+//            parse_string_spaces(buffer, arg2, 2)
+//
+//            swap_heap_entry_linked_list(get_heap_entry_address((void*) hex_ascii_to_u32(arg1)), get_heap_entry_address((void*) hex_ascii_to_u32(arg2)));
+//            print_all_heap_entries();
+//            return;
+//        }
+
+    }
+
+    kernel_print_string("No Available Test Option has been entered.");
 }
 
 void print_heap_entries_instruction(char* buffer) {

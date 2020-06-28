@@ -105,8 +105,11 @@ u32 does_heap_entry_exist(void* address);
 void print_all_heap_entries();
 void print_all_full_heap_entries();
 void sort_heap_entry_linked_list();
+void swap_heap_entry_linked_list(heap_entry_linked_list* prev, heap_entry_linked_list* next);
+void merge_incomplete();
+void merge_heap_entries_in_entire_linked_list();
 
 heap_entry_linked_list* insert_heap_entry(u32 size);
-int remove_heap_entry(heap_entry_linked_list* heap_entry);
+void remove_heap_entry(heap_entry_linked_list* heap_entry);
 
 #endif //HARSHOS_KERNEL_HEAP_H
