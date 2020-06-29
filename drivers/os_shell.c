@@ -32,8 +32,8 @@ char *kernel_level_instructions[] = {
         "parse string\0",
         "heap entry\0",
         "heap length\0",
-        "insert heap\0",
-        "free heap\0",
+        "i\0",
+        "f\0",
         "print heap\0",
         "test heap\0"
 };
@@ -517,7 +517,7 @@ void test_heap_instruction(char* buffer) {
 
     }
 
-    kernel_print_string("No Available Test Option has been entered.");
+    kernel_print_string("No Available Test Option has been entered. Options Include:\n - test1\n - test2\n - sort\n - merge\n - swap");
 }
 
 void print_heap_entries_instruction(char* buffer) {
