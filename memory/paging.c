@@ -109,8 +109,6 @@ page_directory_t* create_new_page_directory(u8 is_kernel_page_directory) {
         new_page_table = (page_table_t*)kernel_set_page_directory_entry(new_page_directory, KERNEL_PAGE_NUMBER, USER_MODE, READ_ONLY);
     }
 
-
-
     u32 physical_address = 0x0;
     u32 page_table_entry_counter = 0;
     while (physical_address != 0x400000) {

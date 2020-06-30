@@ -6,11 +6,14 @@
 
 u32 tick = 0;
 
+u32 number_of_timer_cycles = 0;
+
 static void timer_callback(interrupt_inputs_t interruptInputs) {
 
     if (interruptInputs.interrupt_no != IRQ0) return;
 
     tick++;
+    number_of_timer_cycles++;
 
     char tick_ascii[256];
     int_to_ascii(tick, tick_ascii);
@@ -31,3 +34,11 @@ void init_timer(u32 freq) {
     port_byte_write(0x40, high);
 }
 
+void wait_ms(u32 number_of_milli_seconds) {
+    number_of_timer_cycles = 0;
+    u32 number_of_nano_seconds = number_of_milli_seconds*1000000;
+
+    while (number_of_timer_cycles <= number_of_nano_seconds) {}
+
+    return;
+}

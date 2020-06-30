@@ -3,6 +3,7 @@
 //
 
 #include "os_shell.h"
+#include "../cpu/timer.h"
 #include "../helper/string.h"
 #include "./screen_control.h"
 #include "./keyboard.h"
@@ -12,7 +13,7 @@
 #include "../memory/mem_operations.h"
 #include "../memory/kernel_heap.h"
 
-u8 number_of_instructions = 19;
+u8 number_of_instructions = 20;
 
 //void (*end_of_user_input_pointer)() = end_of_user_input;
 
@@ -35,7 +36,8 @@ char *kernel_level_instructions[] = {
         "i\0",
         "f\0",
         "print heap\0",
-        "test heap\0"
+        "test heap\0",
+        "wait_ms\0"
 };
 
 //"free heap entry\0",
@@ -61,7 +63,8 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         insert_heap_entry_instruction,
         free_heap_entry_instruction,
         print_heap_entries_instruction,
-        test_heap_instruction
+        test_heap_instruction,
+        wait_ms_instruction
 };
 
 char buffer[256];
@@ -550,6 +553,11 @@ void print_heap_entries_instruction(char* buffer) {
     }
 
     print_all_heap_entries();
+}
+
+void wait_ms_instruction(char* buffer) {
+    u32 ms = hex_ascii_to_u32(buffer);
+    wait_ms(ms);
 }
 
 void operation_not_found(char* buffer) {

@@ -116,7 +116,7 @@ void interrupt_request_pic_install() {
     /* Enable interruptions */
     asm volatile("sti");
     /* IRQ0: timer */
-    init_timer(50);
+    init_timer( 1000000000);
     /* IRQ1: keyboard */
     init_keyboard();
 }

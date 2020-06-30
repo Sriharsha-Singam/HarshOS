@@ -8,5 +8,6 @@
 #include "types.h"
 
 void init_timer(u32 freq);
+void wait_ms(u32 number_of_milli_seconds);
 
 #endif //HARSHOS_TIMER_H
