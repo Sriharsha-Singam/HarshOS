@@ -1,9 +1,9 @@
 //
-// Created by Harsh on 5/24/20.
+// Created by Sriharsha Singam on 5/24/20.
 //
 
-#ifndef OS_32_OS_SHELL_H
-#define OS_32_OS_SHELL_H
+#ifndef HARSHOS_OS_SHELL_H
+#define HARSHOS_OS_SHELL_H
 
 #include "../cpu/types.h"
 
@@ -43,4 +43,4 @@ void test_heap_instruction(char* buffer);
 
 typedef void (*kernel_level_instructions_function)(char* arguments);
 
-#endif //OS_32_OS_SHELL_H
+#endif //HARSHOS_OS_SHELL_H

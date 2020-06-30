@@ -1,11 +1,11 @@
 //
-// Created by Harsh on 6/3/20.
+// Created by Sriharsha Singam on 6/3/20.
 //
 
 #include "page_frame_handler.h"
 #include "../drivers/screen_control.h"
 #include "kernel_malloc.h"
-
+#include "kernel_heap.h"
 
 u32 get_frame_state_index_phys_addr(u32 physical_address) {
     u32 frame_number = physical_address >> 12;
@@ -70,11 +70,12 @@ u32 kernel_set_page_directory_entry(page_directory_t* page_directory, u32 page_d
         return 0;
     } else {
         u32 new_page_table_physical = 0;
-        page_table_t *new_page_table = (page_table_t *) kernel_calloc_page_aligned(sizeof(page_table_t), 0, &new_page_table_physical);
-
-        new_page_table_physical = new_page_table_physical >> 12;
+        page_table_t *new_page_table = (page_table_t *) kernel_heap_calloc_page_aligned(sizeof(page_table_t), 0, &new_page_table_physical);
 
         LOG_DEBUG("New Kernel Page Table: ", (u32)new_page_table);
+//        LOG_DEBUG("New Kernel Page Table -- Physical: ", (u32)new_page_table_physical);
+
+        new_page_table_physical = new_page_table_physical >> 12;
 
         page_directory->page_directory_entries[page_dir_index].user_or_kernel_mode = is_writeable;
         page_directory->page_directory_entries[page_dir_index].read_or_write = is_user_mode;
@@ -110,7 +111,7 @@ u32 kernel_set_page_table(page_directory_t* page_directory, u32 physical_address
     if (!(page_directory->page_directory_entries[page_frame_number].present)) {
 
 //        page_table_t *new_page_table = (page_table_t *)
-        kernel_calloc_page_aligned(sizeof(page_table_t), 0, &page_table_physical);
+        kernel_heap_calloc_page_aligned(sizeof(page_table_t), 0, &page_table_physical);
         page_table_physical = page_table_physical >> 12;
 
         page_directory->page_directory_entries[page_frame_number].page_table_address = page_table_physical;

@@ -1,5 +1,5 @@
 //
-// Created by INT_ACC on 6/15/2020.
+// Created by Sriharsha Singam on 6/15/2020.
 //
 
 #include "defined_macros.h"

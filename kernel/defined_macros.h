@@ -1,5 +1,5 @@
 //
-// Created by INT_ACC on 6/14/2020.
+// Created by Sriharsha Singam on 6/14/2020.
 //
 
 #ifndef HARSHOS_DEFINED_MACROS_H

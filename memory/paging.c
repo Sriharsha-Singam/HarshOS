@@ -1,5 +1,5 @@
 //
-// Created by Harsh on 6/3/20.
+// Created by Sriharsha Singam on 6/3/20.
 //
 
 #include "page_frame_handler.h"
@@ -9,6 +9,7 @@
 #include "mem_operations.h"
 #include "../drivers/screen_control.h"
 #include "../helper/string.h"
+#include "kernel_heap.h"
 
 /**
  * Setup variables for Page Directories.
@@ -83,7 +84,7 @@ void start_paging() {
 //    kernel_print_string("\n");
 
 //    wait();
-    frame_free_list = (u32*)kernel_calloc(number_of_bytes_for_frame_free_list, 0, NULL);
+    frame_free_list = (u32*)kernel_heap_calloc(number_of_bytes_for_frame_free_list, 0, NULL);
     kernel_directory = create_new_page_directory(1);
 //    wait();
 //    kernel_print_string("Kernel Page Directory Created and Enabled in the registers\n");
@@ -94,9 +95,10 @@ page_directory_t* create_new_page_directory(u8 is_kernel_page_directory) {
     if (kernel_directory) is_kernel_page_directory = 0; // Prevent Bad use of this crucial Access Control Paging Function
 
     u32 new_page_directory_physical = 0;
-    page_directory_t* new_page_directory = (page_directory_t*)kernel_calloc_page_aligned(sizeof(page_directory_t), 0, &new_page_directory_physical);
+    page_directory_t* new_page_directory = (page_directory_t*)kernel_heap_calloc_page_aligned(sizeof(page_directory_t), 0, &new_page_directory_physical);
 
     LOG_DEBUG("New Kernel Page Directory: ", (u32)new_page_directory);
+//    LOG_DEBUG("New Kernel Page Directory -- Physical: ", (u32)new_page_directory_physical);
 //    LOG_DEBUG("Page Directory Kernel Address: ", (u32)&(new_page_directory->page_directory_entries[KERNEL_PAGE_NUMBER]));
 
     page_table_t* new_page_table = 0;

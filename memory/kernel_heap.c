@@ -1,5 +1,5 @@
 //
-// Created by INT_ACC on 6/17/2020.
+// Created by Sriharsha Singam on 6/17/2020.
 //
 
 #include "kernel_heap.h"
@@ -25,6 +25,8 @@
 // */
 //u32 CURRENT_HEAP_ADDRESS_PAGE_ALIGNED = HEAP_START_POINT;
 
+extern u32 KERNEL_VIRTUAL_MAPPED_BASE;
+u32 kernel_virtual_base_address = (u32)&KERNEL_VIRTUAL_MAPPED_BASE;
 
 heap_entry_linked_list* HEAP_LINKED_LIST_HEAD;
 heap_entry_linked_list* HEAP_LINKED_LIST_LAST;
@@ -102,6 +104,49 @@ heap_entry_linked_list* insert_heap_entry(u32 size) {
     sort_heap_entry_linked_list();
 
     return new_heap_entry_linked_list;
+}
+
+heap_entry_linked_list* insert_heap_entry_page_aligned(u32 size) {
+
+    u32 next_page = (mallocable_address & 0xFFFFF000) + 0x1000;
+
+    u32 available_size = next_page - mallocable_address;
+
+    u32 necessary_size_for_extra_heap_entry = 0x1 + (2 * sizeof(heap_entry_linked_list)) + sizeof(heap_entry_footer_t);
+
+    if((mallocable_address & 0xFFF)) {
+
+        if (available_size >= necessary_size_for_extra_heap_entry) {
+
+            u32 size_of_remaining_space = available_size - (2 * sizeof(heap_entry_linked_list)) - sizeof(heap_entry_footer_t);
+
+//            LOG_DEBUG("Creating Extra Space #1 ", available_size);
+//            LOG_DEBUG("Creating Extra Space #1 ", size_of_remaining_space);
+//            LOG_DEBUG("Creating Extra Space #1 ", necessary_size_for_extra_heap_entry);
+
+            heap_entry_linked_list* needs_to_be_free = insert_heap_entry(size_of_remaining_space);
+            heap_entry_linked_list* new_page_aligned_entry = insert_heap_entry(size);
+            needs_to_be_free->is_used = FREE;
+            return new_page_aligned_entry;
+
+        } else {
+
+//            LOG_DEBUG("Creating Only Page Aligned ", NULL);
+
+            mallocable_address = next_page - sizeof(heap_entry_linked_list);
+            return insert_heap_entry(size);
+        }
+    } else {
+
+        u32 size_to_malloc = (next_page - mallocable_address)  - (2 * sizeof(heap_entry_linked_list)) - sizeof(heap_entry_footer_t);
+
+        LOG_DEBUG("Creating Extra Space #2 ", size_to_malloc);
+
+        heap_entry_linked_list* needs_to_be_free = insert_heap_entry(size_to_malloc);
+        heap_entry_linked_list* new_page_aligned_entry = insert_heap_entry(size);
+        needs_to_be_free->is_used = FREE;
+        return new_page_aligned_entry;
+    }
 }
 
 /**
@@ -187,7 +232,7 @@ heap_entry_linked_list* find_empty_heap_entry(u32 size) {
  *
  * @return Returning the address for the Heap Malloced Space that can be used by the Kernel/User
  */
-void* kernel_heap_malloc(u32 size) {
+void* kernel_heap_malloc(u32 size, u32* physical_address) {
 
     // Find any existing Empty Heap Entries to use. Also split up any existing "very" large FREE Heap Entries.
     heap_entry_linked_list* heap_entry = find_empty_heap_entry(size);
@@ -204,6 +249,33 @@ void* kernel_heap_malloc(u32 size) {
     // Making sure the Heap Entry being Malloced is set to USED -- preventing stupid errors for previous functions
     heap_entry->is_used = USED;
 
+    if (physical_address) {
+        *physical_address = ((u32)(heap_entry->heap_entry_location) - kernel_virtual_base_address);
+    }
+
+    // Returning the address for the Heap Malloced Space that can be used by the Kernel/User
+    return ((void*)heap_entry->heap_entry_location);
+}
+
+/**
+ * Malloc a new Page Aligned Heap Entry Space
+ *
+ * @param size Size That is Being Requested -- BYTES
+ *
+ * @return Returning the address for the Page Aligned Heap Malloced Space that can be used by the Kernel/User
+ */
+void* kernel_heap_malloc_page_aligned(u32 size, u32* physical_address) {
+
+    // Insert Heap Entry
+    heap_entry_linked_list* heap_entry = insert_heap_entry_page_aligned(size);
+
+    // Making sure the Heap Entry being Malloced is set to USED -- preventing stupid errors for previous functions
+    heap_entry->is_used = USED;
+
+    if (physical_address) {
+        *physical_address = ((u32)(heap_entry->heap_entry_location) - kernel_virtual_base_address);
+    }
+
     // Returning the address for the Heap Malloced Space that can be used by the Kernel/User
     return ((void*)heap_entry->heap_entry_location);
 }
@@ -216,15 +288,35 @@ void* kernel_heap_malloc(u32 size) {
  *
  * @return Returning the address for the Heap Calloced Space that can be used by the Kernel/User
  */
-void* kernel_heap_calloc(u32 size, u8 value) {
+void* kernel_heap_calloc(u32 size, u8 value, u32* physical_address) {
 
     // Using Malloc to allocate the Heap Entry
-    void* heap_entry_location = kernel_heap_malloc(size);
+    void* heap_entry_location = kernel_heap_malloc(size, physical_address);
 
     // Set the value for the space that was newly allocated
     memory_set(heap_entry_location, value, size);
 
     // Returning the address for the Heap Calloced Space that can be used by the Kernel/User
+    return heap_entry_location;
+}
+
+
+/**
+ * Calloc a new Page Aligned Heap Entry Space
+ *
+ * @param size Size That is Being Requested -- BYTES
+ *
+ * @return Returning the address for the Page Aligned Heap Malloced Space that can be used by the Kernel/User
+ */
+void* kernel_heap_calloc_page_aligned(u32 size, u8 value, u32* physical_address) {
+
+    // Using Malloc to allocate the Page Aligned Heap Entry
+    void* heap_entry_location = kernel_heap_malloc_page_aligned(size, physical_address);
+
+    // Set the value for the space that was newly allocated
+    memory_set(heap_entry_location, value, size);
+
+    // Returning the address for the Page Aligned Heap Calloced Space that can be used by the Kernel/User
     return heap_entry_location;
 }
 

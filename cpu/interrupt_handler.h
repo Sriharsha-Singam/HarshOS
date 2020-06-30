@@ -1,9 +1,9 @@
 //
-// Created by Harsh on 5/17/20.
+// Created by Sriharsha Singam on 5/17/20.
 //
 
-#ifndef OS_32_INTERRUPT_HANDLER_H
-#define OS_32_INTERRUPT_HANDLER_H
+#ifndef HARSHOS_INTERRUPT_HANDLER_H
+#define HARSHOS_INTERRUPT_HANDLER_H
 
 #include "types.h"
 #include "../kernel/defined_macros.h"
@@ -95,4 +95,4 @@ void interrupt_request_pic_handler(interrupt_inputs_t interruptInputs);
 
 void set_interrupt_handler(u8 interrupt_number, interrupt_handler handler);
 
-#endif //OS_32_INTERRUPT_HANDLER_H
+#endif //HARSHOS_INTERRUPT_HANDLER_H

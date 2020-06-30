@@ -1,9 +1,9 @@
 //
-// Created by Harsh on 5/24/20.
+// Created by Sriharsha Singam on 5/24/20.
 //
 
-#ifndef OS_32_STRING_H
-#define OS_32_STRING_H
+#ifndef HARSHOS_STRING_H
+#define HARSHOS_STRING_H
 
 #include "../cpu/types.h"
 
@@ -21,4 +21,4 @@ u32 hex_ascii_to_u32(char array[]);
 int parse_string_spaces(char* values, char dvalue[], u32 index);
 u32 number_of_a_chars(char* values, char val);
 
-#endif //OS_32_STRING_H
+#endif //HARSHOS_STRING_H

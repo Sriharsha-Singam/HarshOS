@@ -1,9 +1,9 @@
 //
-// Created by Harsh on 5/26/20.
+// Created by Sriharsha Singam on 5/26/20.
 //
 
-#ifndef OS_32_PAGING_H
-#define OS_32_PAGING_H
+#ifndef HARSHOS_PAGING_H
+#define HARSHOS_PAGING_H
 
 #include "../cpu/types.h"
 
@@ -119,4 +119,4 @@ void set_active_page_directory(page_directory_t* page_directory);
 //void change_active_page_directory(page_directory_t *dir);
 //page_entry_t *get_page(u32 frame_address, u32 make, page_directory_t *page_directory);
 
-#endif //OS_32_PAGING_H
+#endif //HARSHOS_PAGING_H

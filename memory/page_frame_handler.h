@@ -1,9 +1,9 @@
 //
-// Created by Harsh on 6/3/20.
+// Created by Sriharsha Singam on 6/3/20.
 //
 
-#ifndef OS_32_PAGE_FRAMES_H
-#define OS_32_PAGE_FRAMES_H
+#ifndef HARSHOS_PAGE_FRAMES_H
+#define HARSHOS_PAGE_FRAMES_H
 
 //#include "../cpu/types.h"
 #include "paging.h"
@@ -34,4 +34,4 @@ u32 kernel_set_page_table(page_directory_t* page_directory, u32 physical_address
 void kernel_set_page_table_entry(page_table_t* page_table, u32 physical_address, u32 page_table_entry_counter, u8 is_user_mode, u8 is_writeable);
 void kernel_set_any_page_table_entry(page_table_t* page_table, u32 page_table_index, u8 is_user_mode, u8 is_writeable);
 
-#endif //OS_32_PAGE_FRAMES_H
+#endif //HARSHOS_PAGE_FRAMES_H

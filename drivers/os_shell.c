@@ -1,5 +1,5 @@
 //
-// Created by Harsh on 5/24/20.
+// Created by Sriharsha Singam on 5/24/20.
 //
 
 #include "os_shell.h"
@@ -413,8 +413,17 @@ void heap_length_instruction(char* buffer) {
 }
 
 void insert_heap_entry_instruction(char* buffer) {
+
+    if (buffer[0] == 'p') {
+        char* val = buffer + 2;
+        u32 size = hex_ascii_to_u32(val);
+        void* address = kernel_heap_malloc_page_aligned(size, NULL);
+        print_hex_test_entries(address, 0);
+        return;
+    }
+
     u32 size = hex_ascii_to_u32(buffer);
-    void* address = kernel_heap_malloc(size);
+    void* address = kernel_heap_malloc(size, NULL);
 
     print_hex_test_entries(address, 0);
 }
@@ -449,22 +458,22 @@ void print_hex_test_entries(void* address, u8 next_line) {
 void test_heap_instruction(char* buffer) {
 
     if (!string_compare(buffer, "test1\0")) {
-        print_hex_test_entries(kernel_heap_malloc(0x1), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x2), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x3), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x5), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x1, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x2, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x3, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x5, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x100, NULL), 1);
 
         print_heap_entries_instruction("\0");
         return;
     }
 
     if (!string_compare(buffer, "test2\0")) {
-        print_hex_test_entries(kernel_heap_malloc(0x110), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x34), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x1140), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x5), 1);
-        print_hex_test_entries(kernel_heap_malloc(0x100), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x110, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x34, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x1140, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x5, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc(0x100, NULL), 1);
 
         print_heap_entries_instruction("\0");
 
@@ -477,6 +486,19 @@ void test_heap_instruction(char* buffer) {
         test_heap_instruction("merge\0");
         kernel_print_string("test heap sort\n");
         test_heap_instruction("sort\0");
+        return;
+    }
+
+    if (!string_compare(buffer, "page1\0")) {
+        print_hex_test_entries(kernel_heap_malloc(0x1, NULL), 1);
+        print_hex_test_entries(kernel_heap_malloc_page_aligned(0x1000, NULL), 1);
+        print_heap_entries_instruction("\0");
+        print_hex_test_entries(kernel_heap_malloc_page_aligned(0x132, NULL), 1);
+        print_heap_entries_instruction("\0");
+        print_hex_test_entries(kernel_heap_malloc(0x194, NULL), 1);
+        print_heap_entries_instruction("\0");
+        print_hex_test_entries(kernel_heap_malloc_page_aligned(0x1, NULL), 1);
+        print_heap_entries_instruction("\0");
         return;
     }
 
@@ -493,17 +515,17 @@ void test_heap_instruction(char* buffer) {
     }
 
     // PARSE STRINGS FOR REST OF TEST OPTIONS
-
-    char arg_buffer[256];
-
-    u32 number_of_spaces = number_of_a_chars(buffer, 0x20);
-
-    memory_set((u32*)arg_buffer, 0, 256);
-    if (parse_string_spaces(buffer, arg_buffer, 0) == 0) {
-
-        /**
-         * SWAP ENTRIES CAN ONLY BE DONE FOR 2 SIDE-BY-SIDE ENTRIES
-         */
+//
+//    char arg_buffer[256];
+//
+//    u32 number_of_spaces = number_of_a_chars(buffer, 0x20);
+//
+//    memory_set((u32*)arg_buffer, 0, 256);
+//    if (parse_string_spaces(buffer, arg_buffer, 0) == 0) {
+//
+//        /**
+//         * SWAP ENTRIES CAN ONLY BE DONE FOR 2 SIDE-BY-SIDE ENTRIES
+//         */
 //        if (!string_compare(arg_buffer, "swap\0")) {
 //            char arg1[11], arg2[11];
 //
@@ -514,8 +536,8 @@ void test_heap_instruction(char* buffer) {
 //            print_all_heap_entries();
 //            return;
 //        }
-
-    }
+//
+//    }
 
     kernel_print_string("No Available Test Option has been entered. Options Include:\n - test1\n - test2\n - sort\n - merge\n - swap");
 }

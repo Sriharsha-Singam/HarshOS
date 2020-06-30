@@ -1,8 +1,8 @@
 //
-// Created by Harsh on 5/24/20.
+// Created by Sriharsha Singam on 5/24/20.
 //
 
-#ifndef OS_32_KERNEL_H
-#define OS_32_KERNEL_H
+#ifndef HARSHOS_KERNEL_H
+#define HARSHOS_KERNEL_H
 
-#endif //OS_32_KERNEL_H
+#endif //HARSHOS_KERNEL_H

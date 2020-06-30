@@ -1,5 +1,5 @@
 //
-// Created by INT_ACC on 6/17/2020.
+// Created by Sriharsha Singam on 6/17/2020.
 //
 
 #ifndef HARSHOS_KERNEL_HEAP_H
@@ -98,8 +98,16 @@ struct _heap_entry_footer_t {
  *
  * @return Returning the address for the Heap Malloced Space that can be used by the Kernel/User
  */
-void* kernel_heap_malloc(u32 size);
-void* kernel_heap_malloc_page_aligned(u32 size); /**TODO: NOT IMPLEMENTED YET*/
+void* kernel_heap_malloc(u32 size, u32* physical_address);
+
+/**
+ * Malloc a new Page Aligned Heap Entry Space
+ *
+ * @param size Size That is Being Requested -- BYTES
+ *
+ * @return Returning the address for the Page Aligned Heap Malloced Space that can be used by the Kernel/User
+ */
+void* kernel_heap_malloc_page_aligned(u32 size, u32* physical_address);
 
 /**
  * Calloc a new Heap Entry Space
@@ -109,8 +117,16 @@ void* kernel_heap_malloc_page_aligned(u32 size); /**TODO: NOT IMPLEMENTED YET*/
  *
  * @return Returning the address for the Heap Calloced Space that can be used by the Kernel/User
  */
-void* kernel_heap_calloc(u32 size, u8 value);
-void* kernel_heap_calloc_page_aligned(u32 size); /**TODO: NOT IMPLEMENTED YET*/
+void* kernel_heap_calloc(u32 size, u8 value, u32* physical_address);
+
+/**
+ * Calloc a new Page Aligned Heap Entry Space
+ *
+ * @param size Size That is Being Requested -- BYTES
+ *
+ * @return Returning the address for the Page Aligned Heap Malloced Space that can be used by the Kernel/User
+ */
+void* kernel_heap_calloc_page_aligned(u32 size, u8 value, u32* physical_address);
 
 /**
  * Free a Heap Linked List Entry. This sets the IS_USED FLAG to FREE -- For future allocation
