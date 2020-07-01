@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c initrd/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h initrd/*.h)
 BUILD_DIR = build_os
 CURDIR := /src/HarshOS
 # Nice syntax for file extension replacement
@@ -59,6 +59,9 @@ debug-curses: os.iso kernel.elf
 $(BUILD_DIR)/%.o: kernel/%.c
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
+$(BUILD_DIR)/%.o: initrd/%.c
+	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
+
 $(BUILD_DIR)/%.o: drivers/%.c drivers/%.h
 	${CC} ${CFLAGS} -ffreestanding -c $< -o $@
 
@@ -76,6 +79,11 @@ $(BUILD_DIR)/%.o: cpu/%.c
 
 $(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
+
+initrd/create_kernel_initrd: initrd/create_kernel_initrd.c
+	gcc initrd/create_kernel_initrd.c -o initrd/create_kernel_initrd
+	/initrd/create_kernel_initrd
+	mv /initrd/kernel_harshfs_initrd.bin /build_os/kernel_harshfs_initrd.bin
 
 $(BUILD_DIR)/second_stage_bootsector.bin:
 	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
