@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c initrd/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h initrd/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c initrd/harshfs.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h initrd/harshfs.h)
 BUILD_DIR = build_os
 CURDIR := /src/HarshOS
 # Nice syntax for file extension replacement
@@ -23,7 +23,7 @@ NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS = $$((($(SECONDARY_BOOTSECTOR_SIZE)+0x1FF
 ################################################################################################################################################################
 
 # First rule is run by default
-os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf
+os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf kernel_initrd
 	echo "Secondary Bootsector Size: ${SECONDARY_BOOTSECTOR_SIZE}"
 	echo "Number of Secondary Bootsector Sectors: ${NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS}"
 	echo "Kernel Size: ${KERNEL_C_BYTES_SIZE}"
@@ -80,10 +80,10 @@ $(BUILD_DIR)/%.o: cpu/%.c
 $(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
 
-initrd/create_kernel_initrd: initrd/create_kernel_initrd.c
-	gcc initrd/create_kernel_initrd.c -o initrd/create_kernel_initrd
-	/initrd/create_kernel_initrd
-	mv /initrd/kernel_harshfs_initrd.bin /build_os/kernel_harshfs_initrd.bin
+kernel_initrd:
+	/usr/bin/gcc initrd/create_kernel_initrd.c -o build_os/create_kernel_initrd
+	chmod +x build_os/create_kernel_initrd
+	./build_os/create_kernel_initrd
 
 $(BUILD_DIR)/second_stage_bootsector.bin:
 	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
