@@ -1,0 +1,1 @@
+docker exec ubuntu-cross-compiler gdbserver :1234 /src/HarshOS/build_os/create_kernel_initrd

@@ -1,4 +1,4 @@
-docker run -ti -v C:\DockerShared:/src -p 8145:22 --cap-add sys_ptrace --name ubuntu-cross-compiler sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest /bin/bash
+docker run -ti -v C:\DockerShared:/src -p 8145:22 -p 8146:1234 --cap-add sys_ptrace --name ubuntu-cross-compiler sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest /bin/bash
 
 ssh -p 8145 user@localhost
 

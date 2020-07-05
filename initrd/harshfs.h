@@ -7,11 +7,28 @@
 
 #include "../cpu/types.h"
 
+extern u32 filesystem_address;
+
 #define FILE 0x0
 #define DIRECTORY 0X1
 
 #define FILE_NAME_EXISTS 0x1
+#define FILE_PARENT_DIR_NOT_FOUND 0x2
+#define UNKNOWN_FILE_TYPE 0x3
+#define DATA_INPUT_IS_INVALID 0x4
 
+#define ALL_FILES_HEADER_MAGIC_NUMBER 0x8D32CA15
+#define ALL_FILES_FOOTER_MAGIC_NUMBER 0xD918CA12
+
+#define FILESYSTEM_HEADER_MAGIC_NUMBER 0xC9B3FCCB
+#define FILESYSTEM_FOOTER_MAGIC_NUMBER 0x5D20603B
+
+char *errors[] = {
+        "FILE_NAME_EXISTS",
+        "FILE_PARENT_DIR_NOT_FOUND",
+        "UNKNOWN_FILE_TYPE",
+        "DATA_INPUT_IS_INVALID"
+};
 //typedef struct _harshfs_node_basic harshfs_node_basic;
 //
 //struct _harshfs_node_basic {
@@ -37,7 +54,7 @@ struct _harshfs_node {
     harshfs_node* previous_in_current_dir;  // Previous file/dir in the Current Directory
     harshfs_node* next_dir;       // Next Directory inside the Current Directory
     harshfs_node* previous_dir;   // Previous Directory inside the Current Directory
-    void* data;
+    u8* data;
 };
 
 typedef struct _harshfs_directory_data harshfs_directory_data;
@@ -65,5 +82,8 @@ struct _harshfs_directory_data {
 //    void* data;
 //};
 
+//void add_file(harshfs_node* parent_directory, char name[], u8* error_code, void* data);
+//
+//void add_directory(harshfs_node* parent_directory, char name[], u8* error_code);
 
 #endif //HARSHOS_HARSHFS_H

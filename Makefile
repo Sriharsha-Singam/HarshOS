@@ -30,6 +30,7 @@ os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kerne
 	echo "Number of Kernel Sectors: ${NUMBER_OF_KERNEL_SECTORS}"
 	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin > ./build_os/os.iso
 
+
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
 # to 'strip' them manually on this case
 kernel.bin: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
@@ -81,9 +82,14 @@ $(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
 
 kernel_initrd:
-	/usr/bin/gcc initrd/create_kernel_initrd.c -o build_os/create_kernel_initrd
+	/usr/bin/gcc -g initrd/create_kernel_initrd.c -o build_os/create_kernel_initrd
 	chmod +x build_os/create_kernel_initrd
+
+kernel_initrd_run: kernel_initrd
 	./build_os/create_kernel_initrd
+
+kernel_initrd_debug: kernel_initrd
+	gdbserver :1234 /src/HarshOS/build_os/create_kernel_initrd
 
 $(BUILD_DIR)/second_stage_bootsector.bin:
 	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
@@ -94,3 +100,4 @@ $(BUILD_DIR)/boot_sector_main.bin: kernel.bin build_os/second_stage_bootsector.b
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.iso build_os/*.elf
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
+	rm -rf build_os/*.*
