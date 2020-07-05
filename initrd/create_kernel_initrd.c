@@ -18,8 +18,11 @@ u32 filesystem_address = 0xF0000000;
 harshfs_node* ROOT_NODE = NULL;
 harshfs_node_address* ROOT_NODE_ADDRESS = NULL;
 
+u32 overall_fs_size = 0;
+
 void add_node_address(harshfs_node* node) {
-    harshfs_node_address* new_node_address = (harshfs_node_address*) calloc(sizeof(harshfs_node_address), 0);
+    harshfs_node_address* new_node_address = (harshfs_node_address*) malloc(sizeof(harshfs_node_address));
+    memset(new_node_address, 0, sizeof(harshfs_node_address));
     new_node_address->node = node;
     new_node_address->address = filesystem_address;
     new_node_address->next = NULL;
@@ -35,7 +38,7 @@ void add_node_address(harshfs_node* node) {
 
 u32 get_node_address(harshfs_node* node) {
 
-    if (ROOT_NODE_ADDRESS == NULL) return 0;
+    if (ROOT_NODE_ADDRESS == NULL || node == NULL) return NULL;
 
     harshfs_node_address* nodes = ROOT_NODE_ADDRESS;
     while (nodes) {
@@ -44,6 +47,19 @@ u32 get_node_address(harshfs_node* node) {
     }
 
     return 0;
+}
+
+harshfs_node* get_real_node_address_index(u32 index) {
+
+    if (ROOT_NODE_ADDRESS == NULL) return NULL;
+
+    harshfs_node_address* nodes = ROOT_NODE_ADDRESS;
+    while (nodes->next && index) {
+        nodes = nodes->next;
+        index--;
+    }
+
+    return nodes->node;
 }
 
 u32 get_header_or_footer(u8* data) {
@@ -90,7 +106,8 @@ u32 get_data_size(u8* data) {
 
 u8* create_data(u8* data, u32 size) {
 
-    u8* correct_data = (u8*)calloc((size+8), 0);
+    u8* correct_data = (u8*)malloc((size+8));
+    memset(correct_data, 0, size+8);
     u8* initial_pointer = correct_data;
 
     u32 header = ALL_FILES_HEADER_MAGIC_NUMBER;
@@ -161,6 +178,8 @@ int set_node(harshfs_node* node, char name[], u8 harshfs_node_type, harshfs_node
         node->size = 0;
     }
 
+    overall_fs_size += node->size;
+
     return 0;
 }
 
@@ -168,7 +187,8 @@ harshfs_node* insert_harshfs_node(harshfs_node* parent_directory, u8 file_type, 
 
     if (parent_directory == NULL) {
         if (ROOT_NODE == NULL) {
-            ROOT_NODE = calloc(sizeof(harshfs_node), 0);
+            ROOT_NODE = malloc(sizeof(harshfs_node));
+            memset(ROOT_NODE, 0, sizeof(harshfs_node));
             if (set_node(ROOT_NODE, name, DIRECTORY, NULL, NULL, NULL, NULL, NULL) == -1) {
                 *error_code = DATA_INPUT_IS_INVALID;
                 return NULL;
@@ -181,7 +201,8 @@ harshfs_node* insert_harshfs_node(harshfs_node* parent_directory, u8 file_type, 
     }
 
     if (file_type == DIRECTORY || file_type == FILE) {
-        harshfs_node* new_directory = calloc(sizeof(harshfs_node), 0);
+        harshfs_node* new_directory = malloc(sizeof(harshfs_node));
+        memset(new_directory, 0, sizeof(harshfs_node));
         harshfs_node* previous_in_current_dir = NULL;
 
         if (parent_directory->next_dir == NULL) {
@@ -208,6 +229,7 @@ harshfs_node* insert_harshfs_node(harshfs_node* parent_directory, u8 file_type, 
         }
 
         if(set_node(new_directory, name, file_type, NULL, previous_in_current_dir, NULL, parent_directory, data) == -1) {
+            free(new_directory);
             *error_code = DATA_INPUT_IS_INVALID;
             return NULL;
         }
@@ -221,12 +243,20 @@ harshfs_node* insert_harshfs_node(harshfs_node* parent_directory, u8 file_type, 
 
 harshfs_node* add_file(harshfs_node* parent_directory, char name[], u8* error_code, u8* data) {
     filesystem_address += sizeof(harshfs_node);
-    return insert_harshfs_node(parent_directory, FILE, name, data, error_code);
+    overall_fs_size += sizeof(harshfs_node);
+    harshfs_node* new_node = insert_harshfs_node(parent_directory, FILE, name, data, error_code);
+    if (*error_code) return NULL;
+    add_node_address(new_node);
+    return new_node;
 }
 
 harshfs_node* add_directory(harshfs_node* parent_directory, char name[], u8* error_code) {
     filesystem_address += sizeof(harshfs_node);
-    return insert_harshfs_node(parent_directory, DIRECTORY, name, NULL, error_code);
+    overall_fs_size += sizeof(harshfs_node);
+    harshfs_node* new_node = insert_harshfs_node(parent_directory, DIRECTORY, name, NULL, error_code);
+    if (*error_code) return NULL;
+    add_node_address(new_node);
+    return new_node;
 }
 
 u8 is_error(u8 error_code) {
@@ -259,15 +289,15 @@ void print_node(harshfs_node* node, u8 error_code) {
            node->name,
            node->size,
            ((node->harshfs_node_type == FILE) ? file : directory),
-           node->next_in_current_dir->name,
-           node->previous_in_current_dir->name,
-           node->next_dir->name,
-           node->previous_dir->name);
+           (node->next_in_current_dir != NULL) ? node->next_in_current_dir->name : NULL,
+           (node->previous_in_current_dir != NULL) ? node->previous_in_current_dir->name : NULL,
+           (node->next_dir != NULL) ? node->next_dir->name : NULL,
+           (node->previous_dir != NULL) ? node->previous_dir->name : NULL);
 
     if (node->harshfs_node_type == FILE) {
         u32* data_copy = (u32*) node->data;
         if (data_copy != NULL) {
-            print_data(data_copy, (node->size));
+            print_data((u8*)data_copy, (node->size));
         } else {
             printf("NULL\n");
         }
@@ -278,7 +308,7 @@ void print_node(harshfs_node* node, u8 error_code) {
 }
 
 void add_4bytes_to_char_pointer(u8* addr, u32 value) {
-    u8* values = &value;
+    u8* values = (u8*) &value;
     values += 3;
     for (u32 i = 0; i < 4; i++) {
         *addr = *values;
@@ -288,12 +318,90 @@ void add_4bytes_to_char_pointer(u8* addr, u32 value) {
 }
 
 void creating_image() {
-    char* image = (char*) calloc((filesystem_address-0xF0000000), 0);
+    u8* image = (u8*) malloc((overall_fs_size));
+    u8* image_copy = image;
+    memset(image, 0, (overall_fs_size));
+
+    add_4bytes_to_char_pointer(image, FILESYSTEM_HEADER_MAGIC_NUMBER);
+    printf("%4x\n\n", FILESYSTEM_HEADER_MAGIC_NUMBER);
+    image += 4;
+
+    harshfs_node_address* node_address = ROOT_NODE_ADDRESS;
+    while (node_address) {
+        harshfs_node* node = node_address->node;
+        u32 node_addr = get_node_address(node);
+
+        u32 next_in_current_dir = get_node_address(node->next_in_current_dir);
+        u32 previous_in_current_dir = get_node_address(node->previous_in_current_dir);
+        u32 next_dir = get_node_address(node->next_dir);
+        u32 previous_dir = get_node_address(node->previous_dir);
+
+        harshfs_node* real_node = (harshfs_node*) malloc(sizeof(harshfs_node));
+        memset(real_node, 0, sizeof(harshfs_node));
+
+//        real_node->name = node->name;
+        memcpy(real_node->name, node->name, 256);
+        real_node->harshfs_node_type = node->harshfs_node_type;
+        real_node->size = node->size;
+        real_node->next_in_current_dir = (harshfs_node*)next_in_current_dir;
+        real_node->previous_in_current_dir = (harshfs_node*)previous_in_current_dir;
+        real_node->next_dir = (harshfs_node*)next_dir;
+        real_node->previous_dir = (harshfs_node*)previous_dir;
+
+        if (node->data && node->size) {
+            real_node->data = (u8*)filesystem_address;
+//            for (u32 i = 0; i < (node->size+8); i++) {
+//                *(image + i + (filesystem_address - 0xF0000000)) = *(node->data + i);
+//            }
+            memcpy((image+(filesystem_address - 0xF0000000)), node->data, (node->size+8));
+            filesystem_address += node->size+8;
+        } else {
+            real_node->data = NULL;
+        }
+
+        memcpy(image, real_node, sizeof(harshfs_node));
+        harshfs_node* image_copy_struct = image;
+        printf("%s\n", image_copy_struct->size);
+//        print_node(image_copy_struct, NULL);
+        image += sizeof(harshfs_node);
+//        for (u32 i = 0; i < sizeof(harshfs_node); i++) {
+//            *image = (u8)*real_node;
+//            real_node++;
+//            image++;
+//        }
+
+//        u8* extra = (u8*) malloc(sizeof(harshfs_node));
+//        memcpy(extra, real_node, sizeof(harshfs_node));
+//
+//        for (u32 i = 0; i < sizeof(harshfs_node); i++) {
+//            printf("%1x", *(extra + i));
+//        }
+//        printf("\n\n");
+
+        free(real_node);
+
+        node_address = node_address->next;
+    }
+
+    add_4bytes_to_char_pointer(image, FILESYSTEM_FOOTER_MAGIC_NUMBER);
+    printf("%4x", FILESYSTEM_FOOTER_MAGIC_NUMBER);
+    image += 4;
+
+    printf("\n\n");
+
+    for (u32 i = 0; i < overall_fs_size; i++) {
+        printf("%1x", (*(image_copy + i)));
+    }
+    printf("\n\n");
+    for (u32 i = 0; i < overall_fs_size; i++) {
+        printf("%c", (*(image_copy + i)));
+    }
 }
 
 int main() {
 
-//    u8* get = (char*) calloc(4, 0);
+//    u8* get = (char*) malloc(4, 0);
+//    u8* get = (char*) malloc(4, 0);
 //    u32 get1 = 0xDC523775;
 //    printf("Using this value: %4x\n", get1);
 //    add_4bytes_to_char_pointer(get, get1);
@@ -310,9 +418,10 @@ int main() {
 //    if (get1 == get_header_or_footer(get)) printf("EQUAL\n");
 
     printf("\n\n|------------------------------------------------------------------------------|\n");
-    printf("*********************Creating Kernel HarshFS Initial Filesystem*********************\n");
+    printf("*******************Creating Kernel HarshFS Initial Filesystem*******************\n");
 
     filesystem_address += 4;
+    overall_fs_size += 4;
 
     u8 error_code = 0;
 
@@ -324,19 +433,29 @@ int main() {
     node = add_file(ROOT_NODE, "test.txt", &error_code, NULL);
     print_node(node, error_code);
 
-    node = add_directory(ROOT_NODE, "dir1", &error_code);
+    node = add_directory
+            (ROOT_NODE, "dir1", &error_code);
     print_node(node, error_code);
 
-    node = add_file(node, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
+    harshfs_node* node_copy = node;
+    node = add_file(node_copy, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
     print_node(node, error_code);
 
     node = add_file(node, "test_dir1.txt\0", &error_code, NULL);
     print_node(node, error_code);
 
     filesystem_address += 4;
+    overall_fs_size += 4;
 
     printf("*************FINISHED - Creating Kernel HarshFS Initial Filesystem**************\n");
     printf("|------------------------------------------------------------------------------|\n");
+
+    creating_image();
+//    harshfs_node* node_get = get_real_node_address_index(0);
+//    print_node(node_get, NULL);
+//
+//    node_get = get_real_node_address_index(1);
+//    print_node(node_get, NULL);
 
     return 0;
 }
