@@ -101,3 +101,4 @@ clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.iso build_os/*.elf
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
 	rm -rf build_os/*.*
+	rm -f build_os/create_kernel_initrd

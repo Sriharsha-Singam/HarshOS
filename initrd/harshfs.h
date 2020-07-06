@@ -9,7 +9,7 @@
 
 extern u32 filesystem_address;
 
-#define FILE 0x0
+#define FILE_CODE 0x0
 #define DIRECTORY 0X1
 
 #define FILE_NAME_EXISTS 0x1
