@@ -248,6 +248,7 @@ harshfs_node* insert_harshfs_node(harshfs_node* parent_directory, u8 file_type, 
 }
 
 harshfs_node* add_file(harshfs_node* parent_directory, char name[], u8* error_code, u8* data) {
+    *error_code = NULL;
     harshfs_node* new_node = insert_harshfs_node(parent_directory, FILE_CODE, name, data, error_code);
     if (*error_code) return NULL;
     filesystem_address += sizeof(harshfs_node);
@@ -257,6 +258,7 @@ harshfs_node* add_file(harshfs_node* parent_directory, char name[], u8* error_co
 }
 
 harshfs_node* add_directory(harshfs_node* parent_directory, char name[], u8* error_code) {
+    *error_code = NULL;
     harshfs_node* new_node = insert_harshfs_node(parent_directory, DIRECTORY, name, NULL, error_code);
     if (*error_code) return NULL;
     filesystem_address += sizeof(harshfs_node);
@@ -473,6 +475,9 @@ void read_harshfs_image(char* filename) {
     memset(get_file, 0, sz);
 
     fread(get_file, 1, sz, fptr);
+
+    fclose(fptr);
+
     for (u32 i = 0; i < overall_fs_size; i++) {
         printf("%1x", (*(get_file + i)));
     }
@@ -488,19 +493,47 @@ void read_harshfs_image(char* filename) {
     while (get_header_or_footer(get_file) != FILESYSTEM_FOOTER_MAGIC_NUMBER && (get_file - get_file_copy) <= overall_fs_size) {
 
         if (get_header_or_footer(get_file) == ALL_FILES_HEADER_MAGIC_NUMBER) {
-            printf("------------------------------------------------------------------------------\n"
-                           "******************************** DATA_REGION: ********************************\n");
-            printf("header: %4x\nlatest_size: %u\n",get_header_or_footer(get_file),latest_size);
-            print_data(get_file, latest_size);
-            printf("------------------------------------------------------------------------------\n");
-            get_file += (latest_size+8);
+            get_file += latest_size;
+//            printf("------------------------------------------------------------------------------\n"
+//                           "******************************** DATA_REGION: ********************************\n");
+//            printf("header: %4x\nlatest_size: %u\n",get_header_or_footer(get_file),latest_size);
+//            print_data(get_file, latest_size);
+//            printf("------------------------------------------------------------------------------\n");
+//            get_file += (latest_size+8);
         } else {
             harshfs_node* node = (harshfs_node*) get_file;
-            latest_size = node->size;
+            latest_size += node->size+8;
             print_node_binary(node, ((get_file - get_file_copy) + 0xF0000000), (u8*)((((u32)node->data) - 0xF0000000)+get_file_copy));
             get_file += sizeof(harshfs_node);
         }
     }
+}
+
+// Use empty char buffer
+u32 get_file_binary(char* filename, u8** buffer) {
+
+    printf("\n\nREADING EXISTING FILE: %s\n\n", filename);
+
+    FILE *fptr;
+    fptr = fopen(filename,"rb");
+
+
+    fseek(fptr, 0L, SEEK_END);
+    u32 size = ftell(fptr);
+
+    fclose(fptr);
+
+    fptr = NULL;
+    fptr = fopen(filename,"rb");
+
+    *buffer = (u8*) malloc(size);
+    memset(*buffer, 0, size);
+
+    fread(*buffer, 1, size, fptr);
+
+    fclose(fptr);
+
+    return size;
 }
 
 int main() {
@@ -521,15 +554,27 @@ int main() {
     node = add_file(ROOT_NODE, "test.txt", &error_code, NULL);
     print_node(node, error_code);
 
-    node = add_directory
-            (ROOT_NODE, "dir1", &error_code);
+    harshfs_node* inner_directory = add_directory(ROOT_NODE, "dir1", &error_code);
     print_node(node, error_code);
 
-    harshfs_node* node_copy = node;
-    node = add_file(node_copy, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
+//    harshfs_node* node_copy = node;
+    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
     print_node(node, error_code);
 
-    node = add_file(node, "test_dir1.txt\0", &error_code, NULL);
+    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, NULL);
+    print_node(node, error_code);
+
+    node = add_file(inner_directory, "test_dir2.txt\0", &error_code, create_data((u8*)"My name is sriharsha singam", 27));
+    print_node(node, error_code);
+
+    u8* buffer = NULL;
+    u32 size_of_file = get_file_binary("/src/HarshOS/build_os/boot_sector_main.bin", &buffer);
+
+//    for (u32 i = 0; i < size_of_file; i++) {
+//        printf("%1x", (*(buffer+i)));
+//    }
+//    printf("\n");
+    node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
     print_node(node, error_code);
 
     filesystem_address += 4;
