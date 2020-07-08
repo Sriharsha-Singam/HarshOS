@@ -18,17 +18,23 @@ LDFLAGS=-Tlink.ld
 KERNEL_C_BYTES_SIZE = $$(wc -c < 'build_os/kernel.bin') # Get how many bytes the kernel takes up
 NUMBER_OF_KERNEL_SECTORS = $$((($(KERNEL_C_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
 
+HARSHFS_BYTES_SIZE = $$(wc -c < 'build_os/harshfs_kernel_initial_image.bin') # Get how many bytes the kernel takes up
+NUMBER_OF_HARSHFS_SECTORS = $$((($(HARSHFS_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
+
+OVERALL_BYTES_SIZE = $$($(KERNEL_C_BYTES_SIZE) + $(HARSHFS_BYTES_SIZE))
+OVERALL_NUMBER_OF_SECTORS = $$($(NUMBER_OF_KERNEL_SECTORS) + $(NUMBER_OF_HARSHFS_SECTORS))
+
 SECONDARY_BOOTSECTOR_SIZE = $$(wc -c < 'build_os/second_stage_bootsector.bin') # Get how many bytes the secondary bootsector takes up
 NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS = $$((($(SECONDARY_BOOTSECTOR_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the secondary bootsector takes up.
 ################################################################################################################################################################
 
 # First rule is run by default
-os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf kernel_initrd
+os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf kernel_initrd_run
 	echo "Secondary Bootsector Size: ${SECONDARY_BOOTSECTOR_SIZE}"
 	echo "Number of Secondary Bootsector Sectors: ${NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS}"
 	echo "Kernel Size: ${KERNEL_C_BYTES_SIZE}"
 	echo "Number of Kernel Sectors: ${NUMBER_OF_KERNEL_SECTORS}"
-	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin > ./build_os/os.iso
+	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin build_os/harshfs_kernel_initial_image.bin > ./build_os/os.iso
 
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
@@ -95,7 +101,7 @@ $(BUILD_DIR)/second_stage_bootsector.bin:
 	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
 
 $(BUILD_DIR)/boot_sector_main.bin: kernel.bin build_os/second_stage_bootsector.bin
-	nasm -f bin -dNUMBER_OF_KERNEL_SECTORS=$(NUMBER_OF_KERNEL_SECTORS) -dKERNEL_C_BYTES_SIZE=$(KERNEL_C_BYTES_SIZE) -dSECONDARY_BOOTSECTOR_SIZE=$(SECONDARY_BOOTSECTOR_SIZE) -dNUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS=$(NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS) on_boot/boot_sector_main.s -o $@
+	nasm -f bin -dNUMBER_OF_KERNEL_SECTORS=$(OVERALL_NUMBER_OF_SECTORS) -dKERNEL_C_BYTES_SIZE=$(OVERALL_BYTES_SIZE) -dSECONDARY_BOOTSECTOR_SIZE=$(SECONDARY_BOOTSECTOR_SIZE) -dNUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS=$(NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS) on_boot/boot_sector_main.s -o $@
 
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.iso build_os/*.elf

@@ -16,6 +16,12 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
 
+char *errors[] = {
+        "FILE_NAME_EXISTS",
+        "FILE_PARENT_DIR_NOT_FOUND",
+        "UNKNOWN_FILE_TYPE",
+        "DATA_INPUT_IS_INVALID"
+};
 
 u32 filesystem_address = 0xF0000000;
 u32 final_file_address = 0x0;
@@ -364,7 +370,7 @@ void add_4bytes_to_char_pointer(u8* addr, u32 value) {
 void creating_image() {
 
     u8* image = (u8*) malloc((overall_fs_size));
-    printf("Size: %u = %#4x\nImage Location Start: %p\nFS Address: %#4x\nFinal File Address: %#4x\nNode Size: %#4x\n", overall_fs_size, overall_fs_size, image, filesystem_address, final_file_address, sizeof(harshfs_node));
+//    printf("Size: %u = %#4x\nImage Location Start: %p\nFS Address: %#4x\nFinal File Address: %#4x\nNode Size: %#4x\n", overall_fs_size, overall_fs_size, image, filesystem_address, final_file_address, sizeof(harshfs_node));
 
     u8* image_copy = image;
     memset(image, 0, (overall_fs_size));
@@ -414,12 +420,12 @@ void creating_image() {
         node_address = node_address->next;
     }
 
-    printf("Size: %u = %#4x\nImage Location Start: %p\nFS Address: %#4x\nFinal File Address: %#4x\nNode Size: %#4x\n", overall_fs_size, overall_fs_size, image, filesystem_address, final_file_address, sizeof(harshfs_node));
+//    printf("Size: %u = %#4x\nImage Location Start: %p\nFS Address: %#4x\nFinal File Address: %#4x\nNode Size: %#4x\n", overall_fs_size, overall_fs_size, image, filesystem_address, final_file_address, sizeof(harshfs_node));
 
 
     image = image_copy+(final_file_address - 0xF0000000);
 
-    printf("Place Footer Address: %p\n", image);
+//    printf("Place Footer Address: %p\n", image);
 
     add_4bytes_to_char_pointer(image, FILESYSTEM_FOOTER_MAGIC_NUMBER);
     printf("%4x", FILESYSTEM_FOOTER_MAGIC_NUMBER);

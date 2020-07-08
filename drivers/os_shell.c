@@ -12,8 +12,9 @@
 #include "../kernel/defined_macros.h"
 #include "../memory/mem_operations.h"
 #include "../memory/kernel_heap.h"
+#include "../initrd/harshfs.h"
 
-u8 number_of_instructions = 20;
+u8 number_of_instructions = 21;
 
 //void (*end_of_user_input_pointer)() = end_of_user_input;
 
@@ -37,7 +38,8 @@ char *kernel_level_instructions[] = {
         "f\0",
         "print heap\0",
         "test heap\0",
-        "wait_ms\0"
+        "wait_ms\0",
+        "harshfs\0"
 };
 
 //"free heap entry\0",
@@ -64,7 +66,8 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         free_heap_entry_instruction,
         print_heap_entries_instruction,
         test_heap_instruction,
-        wait_ms_instruction
+        wait_ms_instruction,
+        harshfs_instruction
 };
 
 char buffer[256];
@@ -558,6 +561,19 @@ void print_heap_entries_instruction(char* buffer) {
 void wait_ms_instruction(char* buffer) {
     u32 ms = hex_ascii_to_u32(buffer);
     wait_ms(ms);
+}
+
+void harshfs_instruction(char* buffer) {
+
+    if (!string_compare(buffer, "init\0")) {
+        load_harshfs_kernel_image();
+        harshfs_node* root_node =  read_harshfs_kernel_image();
+        kernel_print_string("Root Node: ");
+        kernel_print_string(root_node->name);
+        kernel_print_string("\n");
+        return;
+    }
+
 }
 
 void operation_not_found(char* buffer) {

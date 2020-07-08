@@ -64,6 +64,10 @@ static void page_fault_interrupt_handler(interrupt_inputs_t input) {
     //PANIC("Page fault");
 }
 
+page_directory_t* get_current_page_directory() {
+    return currently_used_directory;
+}
+
 void start_paging() {
 //    kernel_print_string("Starting Paging\n");
 

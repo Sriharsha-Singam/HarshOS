@@ -11,11 +11,14 @@ extern u32 filesystem_address;
 
 #define FILE_CODE 0x0
 #define DIRECTORY 0X1
+#define NOT_USED 0x2
 
 #define FILE_NAME_EXISTS 0x1
 #define FILE_PARENT_DIR_NOT_FOUND 0x2
 #define UNKNOWN_FILE_TYPE 0x3
 #define DATA_INPUT_IS_INVALID 0x4
+
+extern char* errors[];
 
 #define ALL_FILES_HEADER_MAGIC_NUMBER 0x8D32CA15
 #define ALL_FILES_FOOTER_MAGIC_NUMBER 0xD918CA12
@@ -23,12 +26,9 @@ extern u32 filesystem_address;
 #define FILESYSTEM_HEADER_MAGIC_NUMBER 0xC9B3FCCB
 #define FILESYSTEM_FOOTER_MAGIC_NUMBER 0x5D20603B
 
-char *errors[] = {
-        "FILE_NAME_EXISTS",
-        "FILE_PARENT_DIR_NOT_FOUND",
-        "UNKNOWN_FILE_TYPE",
-        "DATA_INPUT_IS_INVALID"
-};
+#define KERNEL_VIRTUAL_HARSHFS_ADDRESS 0xF0000000
+#define KERNEL_PAGE_HARSHFS_NUMBER (KERNEL_VIRTUAL_HARSHFS_ADDRESS >> 22)
+
 //typedef struct _harshfs_node_basic harshfs_node_basic;
 //
 //struct _harshfs_node_basic {
@@ -82,8 +82,15 @@ struct _harshfs_directory_data {
 //    void* data;
 //};
 
-//void add_file(harshfs_node* parent_directory, char name[], u8* error_code, void* data);
-//
-//void add_directory(harshfs_node* parent_directory, char name[], u8* error_code);
+#ifndef CREATE_KERNEL_INITRD
+    void add_file(harshfs_node* parent_directory, char name[], u8* error_code, void* data);
+    void add_directory(harshfs_node* parent_directory, char name[], u8* error_code);
+    u32 get_header_or_footer(u8* data);
+    int check_validity(u8* data);
+    u32 get_data_size(u8* data);
+    harshfs_node* read_harshfs_kernel_image();
+    void load_harshfs_kernel_image();
+#endif
+
 
 #endif //HARSHOS_HARSHFS_H

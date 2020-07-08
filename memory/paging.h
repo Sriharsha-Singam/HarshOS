@@ -112,6 +112,7 @@ void setup_page_fault_interrupt_handler();
 void wait();
 page_directory_t* create_new_page_directory(u8 is_kernel_page_directory);
 void set_active_page_directory(page_directory_t* page_directory);
+page_directory_t* get_current_page_directory();
 //static void page_fault_interrupt(interrupt_inputs_t input);
 //void identity_page_memory_segment(page_entry_t* starting_page_table_entry, u32 starting_virtual_addresses, u32 memory_size, u8 is_kernel, u8 is_writeable);
 //void initialize_new_page_directory();
