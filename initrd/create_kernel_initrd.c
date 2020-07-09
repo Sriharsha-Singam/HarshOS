@@ -574,7 +574,7 @@ int main() {
     print_node(node, error_code);
 
     u8* buffer = NULL;
-    u32 size_of_file = get_file_binary("/src/HarshOS/build_os/boot_sector_main.bin", &buffer);
+    u32 size_of_file = get_file_binary("/src/HarshOS/initrd/hello_world", &buffer);
 
 //    for (u32 i = 0; i < size_of_file; i++) {
 //        printf("%1x", (*(buffer+i)));

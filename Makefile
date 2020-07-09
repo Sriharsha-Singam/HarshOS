@@ -21,19 +21,21 @@ NUMBER_OF_KERNEL_SECTORS = $$((($(KERNEL_C_BYTES_SIZE)+0x1FF)/0x200)) # Get the 
 HARSHFS_BYTES_SIZE = $$(wc -c < 'build_os/harshfs_kernel_initial_image.bin') # Get how many bytes the kernel takes up
 NUMBER_OF_HARSHFS_SECTORS = $$((($(HARSHFS_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
 
-OVERALL_BYTES_SIZE = $$($(KERNEL_C_BYTES_SIZE) + $(HARSHFS_BYTES_SIZE))
-OVERALL_NUMBER_OF_SECTORS = $$($(NUMBER_OF_KERNEL_SECTORS) + $(NUMBER_OF_HARSHFS_SECTORS))
+OVERALL_BYTES_SIZE = $$(( $(KERNEL_C_BYTES_SIZE) + $(HARSHFS_BYTES_SIZE) ))
+OVERALL_NUMBER_OF_SECTORS = $$(( $(NUMBER_OF_KERNEL_SECTORS) + $(NUMBER_OF_HARSHFS_SECTORS) ))
 
 SECONDARY_BOOTSECTOR_SIZE = $$(wc -c < 'build_os/second_stage_bootsector.bin') # Get how many bytes the secondary bootsector takes up
 NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS = $$((($(SECONDARY_BOOTSECTOR_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the secondary bootsector takes up.
 ################################################################################################################################################################
 
 # First rule is run by default
-os.iso: build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf kernel_initrd_run
+os.iso: kernel_initrd_run build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf
 	echo "Secondary Bootsector Size: ${SECONDARY_BOOTSECTOR_SIZE}"
 	echo "Number of Secondary Bootsector Sectors: ${NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS}"
 	echo "Kernel Size: ${KERNEL_C_BYTES_SIZE}"
 	echo "Number of Kernel Sectors: ${NUMBER_OF_KERNEL_SECTORS}"
+	echo "Kernel + Initrd Size: ${OVERALL_BYTES_SIZE}"
+	echo "Number of Kernel + Initrd  Sectors: ${OVERALL_NUMBER_OF_SECTORS}"
 	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin build_os/harshfs_kernel_initial_image.bin > ./build_os/os.iso
 
 
