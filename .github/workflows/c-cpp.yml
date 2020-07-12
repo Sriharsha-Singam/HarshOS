@@ -15,8 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: make github-actions-init
-      run: sudo make github-actions-init
+    - name: configure_env
+      run: ./configure_cross_compiler.sh
     - name: make github-actions-os-iso
       run: sudo make github-actions-os-iso
     - name: make github-actions-kernel-elf
