@@ -26,6 +26,7 @@ sudo apt-get install texinfo -y
 sudo apt-get install automake -y
 sudo apt-get install autotools-dev -y
 sudo apt-get install nasm -y
+sudo apt-get install valgrind -y
 
 #export CC=gcc
 #export LD=ld
