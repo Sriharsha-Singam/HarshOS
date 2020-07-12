@@ -115,7 +115,7 @@ github-actions-init:
 	sudo apt-get update -y
 	sudo apt-get remove docker* containerd*
 	sudo apt-get install containerd.io -y
-	sudo apt install docker.io -y
+	sudo apt-get install docker.io -y
 	sudo systemctl start docker
 	sudo systemctl enable docker
 	docker --version
