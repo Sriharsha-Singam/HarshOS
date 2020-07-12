@@ -112,9 +112,9 @@ clean:
 	rm -f build_os/create_kernel_initrd
 
 github-actions-init:
-	sudo apt-get update
+	sudo apt-get update -y
 	sudo apt-get remove docker docker-engine docker.io
-	sudo apt install docker.io
+	sudo apt install docker.io -y
 	sudo systemctl start docker
 	sudo systemctl enable docker
 	docker --version
