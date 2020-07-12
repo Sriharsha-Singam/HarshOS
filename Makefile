@@ -1,6 +1,7 @@
 C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c helper/*.c memory/*.c initrd/harshfs.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.c helper/*.h memory/*.h initrd/harshfs.h)
 BUILD_DIR = build_os
+current_dir = $(shell pwd)
 CURDIR := /src/HarshOS
 # Nice syntax for file extension replacement
 OBJ = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(C_SOURCES)))
@@ -117,7 +118,7 @@ github-actions-init:
 	#docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 
 github-actions-os-iso: github-actions-init
-	docker run --rm --name harshos-github-actions -v "$(pwd):/src" -w /src sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
+	docker run --rm --name harshos-github-actions -v "$(current_dir):/src" -w /src sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
 
 github-actions-kernel-elf: github-actions-init
-	docker run --rm --name harshos-github-actions -v "$(pwd):/src" -w /src  sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
+	docker run --rm --name harshos-github-actions -v "$(current_dir):/src" -w /src  sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
