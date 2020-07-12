@@ -110,3 +110,18 @@ clean:
 	rm -rf build_os/*.o build_os/*.bin build_os/*.o
 	rm -rf build_os/*.*
 	rm -f build_os/create_kernel_initrd
+
+github-actions-init:
+	sudo apt-get update
+	sudo apt-get remove docker docker-engine docker.io
+	sudo apt install docker.io
+	sudo systemctl start docker
+	sudo systemctl enable docker
+	docker --version
+	docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+
+github-actions-os-iso:
+	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
+
+github-actions-kernel-elf:
+	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf

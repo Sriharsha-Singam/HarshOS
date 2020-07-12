@@ -36,11 +36,11 @@ sudo systemctl enable docker
 docker --version
 
 docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-docker start ubuntu-cross-compiler-git-action
-docker exec --workdir /src ubuntu-cross-compiler-git-action make os.iso
-docker exec --workdir /src ubuntu-cross-compiler-git-action make kernel.elf
-docker rm ubuntu-cross-compiler-git-action
+#docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+#docker start ubuntu-cross-compiler-git-action
+#docker exec --workdir /src ubuntu-cross-compiler-git-action make os.iso
+#docker exec --workdir /src ubuntu-cross-compiler-git-action make kernel.elf
+#docker rm ubuntu-cross-compiler-git-action
 
 #cd HarshOS
 #docker build .
