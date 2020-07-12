@@ -5,7 +5,8 @@ apt-get install -y docker
 if [ ! -d "build_os" ]; then
   mkdir build_os
 fi
-
+docker --version
+docker images
 docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 docker run -- rm -ti -v $PWD:/src -p 8144:22 -p 8147:1234 --cap-add sys_ptrace --name ubuntu-cross-compiler-git-test sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest /bin/bash
 

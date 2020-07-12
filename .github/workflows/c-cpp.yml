@@ -30,21 +30,27 @@ jobs:
       run: ./configure_cross_compiler.sh
     - name: make github-actions-os-iso
       run: sudo make github-actions-os-iso
-    - name: make github-actions-kernel-elf
-      run: sudo make github-actions-kernel-elf
     - uses: actions/upload-artifact@v2
       with:
-        name: os.iso
+        name: OS Boot ISO Image
         path: build_os/os.iso
     - uses: actions/upload-artifact@v2
       with:  
-        name: kernel.bin
+        name: Kernel Binary
         path: build_os/kernel.bin
     - uses: actions/upload-artifact@v2
       with:  
-        name: kernel.elf
+        name: Kernel ELF Executable with Debug Symbols
         path: build_os/kernel.elf
     - uses: actions/upload-artifact@v2
       with:  
-        name: boot_sector_main.bin
+        name: Main Bootloader Image
         path: build_os/boot_sector_main.bin
+    - uses: actions/upload-artifact@v2
+        with:
+          name: Second Bootloader Image
+          path: build_os/second_stage_bootsector.bin
+    - uses: actions/upload-artifact@v2
+        with:
+          name: Initial Kernel Filesystem Image
+          path: build_os/harshfs_kernel_initial_image.bin

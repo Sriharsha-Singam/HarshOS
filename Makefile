@@ -112,13 +112,5 @@ clean:
 	rm -rf build_os/*.*
 	rm -f build_os/create_kernel_initrd
 
-github-actions-init:
-	docker --version
-	docker images
-	#docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-
-github-actions-os-iso: github-actions-init
+github-actions-os-iso:
 	sudo docker run --rm --privileged --name harshos-github-actions -v "$(current_dir):/src" -w /src sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
-
-github-actions-kernel-elf: github-actions-init
-	sudo docker run --rm --privileged --name harshos-github-actions -v "$(current_dir):/src" -w /src  sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
