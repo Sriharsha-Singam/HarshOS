@@ -47,10 +47,10 @@ jobs:
         name: Main Bootloader Image
         path: build_os/boot_sector_main.bin
     - uses: actions/upload-artifact@v2
-        with:
-          name: Second Bootloader Image
-          path: build_os/second_stage_bootsector.bin
+      with:
+        name: Second Bootloader Image
+        path: build_os/second_stage_bootsector.bin
     - uses: actions/upload-artifact@v2
-        with:
-          name: Initial Kernel Filesystem Image
-          path: build_os/harshfs_kernel_initial_image.bin
+      with:
+        name: Initial Kernel Filesystem Image
+        path: build_os/harshfs_kernel_initial_image.bin
