@@ -3,6 +3,9 @@ set -x
 
 pwd
 
+#docker run --rm --name harshos-github-actions -v "C:\DockerShared:/src" -w /src/HarshOS sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+#make os.iso
+
 #sudo mkdir build_os
 #pip install wheel
 #pip install gdown

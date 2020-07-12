@@ -91,6 +91,7 @@ $(BUILD_DIR)/%.o: cpu/%.s
 	nasm $< -f elf -o $@
 
 kernel_initrd:
+	mkdir build_os
 	/usr/bin/gcc -g initrd/create_kernel_initrd.c -o build_os/create_kernel_initrd
 	chmod +x build_os/create_kernel_initrd
 
