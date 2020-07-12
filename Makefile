@@ -114,10 +114,10 @@ clean:
 github-actions-init:
 	docker --version
 	docker images
-	docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+	#docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 
 github-actions-os-iso: github-actions-init
-	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
+	docker run --rm --name harshos-github-actions sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
 
 github-actions-kernel-elf: github-actions-init
-	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
+	docker run --rm --name harshos-github-actions sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
