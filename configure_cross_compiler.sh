@@ -14,6 +14,7 @@ pwd
 #
 #sudo tar xf /tmp/i386-elf-gcc-ubuntu.tar.gz -C /usr/local/
 
+#sudo apt-get update
 #sudo apt-get install curl -y
 #sudo apt-get install gcc -y
 #sudo apt-get install build-essential -y
@@ -34,10 +35,14 @@ sudo systemctl start docker
 sudo systemctl enable docker
 docker --version
 
-#docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-#docker run -- rm -ti -v $PWD:/src -p 8144:22 -p 8147:1234 --cap-add sys_ptrace --name ubuntu-cross-compiler-git-test sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest /bin/bash
+docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+docker exec --workdir /src ubuntu-cross-compiler-git-action make os.iso
+docker exec --workdir /src ubuntu-cross-compiler-git-action make kernel.elf
+docker rm ubuntu-cross-compiler-git-action
+
 #cd HarshOS
-docker build .
+#docker build .
 #set -x
 #
 #pwd
