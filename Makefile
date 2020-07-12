@@ -112,17 +112,12 @@ clean:
 	rm -f build_os/create_kernel_initrd
 
 github-actions-init:
-	sudo apt-get update -y
-	sudo apt-get remove docker* containerd*
-	sudo apt-get install containerd* -y
-	sudo apt-get install docker* -y
-	sudo systemctl start docker
-	sudo systemctl enable docker
 	docker --version
+	docker images
 	docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 
-github-actions-os-iso:
+github-actions-os-iso: github-actions-init
 	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make os.iso
 
-github-actions-kernel-elf:
+github-actions-kernel-elf: github-actions-init
 	docker run --rm --name harshos-github-actions docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest make kernel.elf
