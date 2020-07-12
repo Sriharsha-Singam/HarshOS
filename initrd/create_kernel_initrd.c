@@ -525,6 +525,7 @@ u32 get_file_binary(char* filename, u8** buffer) {
     FILE *fptr;
     fptr = fopen(filename,"rb");
 
+    if (fptr == NULL) return NULL;
 
     fseek(fptr, 0L, SEEK_END);
     u32 size = ftell(fptr);
@@ -596,9 +597,16 @@ int main() {
 //        printf("%1x", (*(buffer+i)));
 //    }
 //    printf("\n");
-    node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
-    free(buffer);
-    print_node(node, error_code);
+    if (size_of_file > 0) {
+        node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
+        free(buffer);
+        print_node(node, error_code);
+    } else {
+        printf("------------------------------------------------------------------------------\n");
+        printf("ERROR: INITRD IMAGE FILE NOT FOUND\n");
+        printf("------------------------------------------------------------------------------\n");
+    }
+
 
     filesystem_address += 4;
     overall_fs_size += 4;
