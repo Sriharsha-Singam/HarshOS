@@ -42,7 +42,8 @@ pwd
 if [ ! -d "build_os" ]; then
   mkdir build_os
 fi
-
+docker --version
+docker images
 docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 #docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 #docker start ubuntu-cross-compiler-git-action
