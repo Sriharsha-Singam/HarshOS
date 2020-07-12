@@ -443,21 +443,20 @@ void creating_image() {
     printf("\n\n");
 
     FILE *fptr;
-    fptr = fopen("/src/HarshOS/build_os/harshfs_kernel_initial_image.bin","wb");
+    fptr = fopen("harshfs_kernel_initial_image.bin","wb");
 
     if (!fptr) {
         printf("ERROR -- CANNOT WRITE HARSHFS IMAGE!");
         return;
     }
 
+    image = image_copy;
 
-
-    fwrite(image_copy, 1, overall_fs_size, fptr);
-
-    free(image_copy);
-
+    fwrite(image, 1, overall_fs_size, fptr);
 
     fclose(fptr);
+
+    free(image);
 }
 
 void read_harshfs_image(char* filename) {
@@ -595,7 +594,7 @@ int main() {
     print_node(node, error_code);
 
     u8* buffer = NULL;
-    u32 size_of_file = get_file_binary("/src/HarshOS/initrd/hello_world", &buffer);
+    u32 size_of_file = get_file_binary("../hello_world", &buffer);
 
 //    for (u32 i = 0; i < size_of_file; i++) {
 //        printf("%1x", (*(buffer+i)));
@@ -619,7 +618,7 @@ int main() {
     printf("|------------------------------------------------------------------------------|\n");
 
     creating_image();
-    read_harshfs_image("/src/HarshOS/build_os/harshfs_kernel_initial_image.bin");
+    read_harshfs_image("harshfs_kernel_initial_image.bin");
 
     free_all_memory();
 
