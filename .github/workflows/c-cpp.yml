@@ -2,7 +2,9 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+    - master
+    - github-actions-changes
   pull_request:
     branches: [ master ]
 
@@ -26,12 +28,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: configure-cross-compiler
       run: ./configure_cross_compiler.sh
-    - name: make clean
-      run: make clean
-    - name: make os.iso
-      run: sudo make os.iso
-    - name: make kernel.elf
-      run: sudo make kernel.elf
     - uses: actions/upload-artifact@v2
       with:
         name: os.iso
@@ -48,4 +44,3 @@ jobs:
       with:  
         name: boot_sector_main.bin
         path: build_os/boot_sector_main.bin
-        
