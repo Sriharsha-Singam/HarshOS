@@ -467,6 +467,10 @@ void read_harshfs_image(char* filename) {
     FILE *fptr;
     fptr = fopen(filename,"rb");
 
+    if (!fptr) {
+        printf("ERROR -- CANNOT READ HARSHFS IMAGE!");
+        return;
+    }
 
     fseek(fptr, 0L, SEEK_END);
     u32 sz = ftell(fptr);
@@ -603,7 +607,7 @@ int main() {
         print_node(node, error_code);
     } else {
         printf("------------------------------------------------------------------------------\n");
-        printf("ERROR: INITRD IMAGE FILE NOT FOUND\n");
+        printf("ERROR: TEST BINARY FILE NOT FOUND\n");
         printf("------------------------------------------------------------------------------\n");
     }
 
