@@ -28,12 +28,13 @@ pwd
 #sudo apt-get install autotools-dev -y
 #sudo apt-get install nasm -y
 #sudo apt-get install valgrind -y
-sudo apt-get update
-sudo apt-get remove docker docker-engine docker.io
-sudo apt install docker.io
-sudo systemctl start docker
-sudo systemctl enable docker
-docker --version
+
+#sudo apt-get update
+#sudo apt-get remove docker docker-engine docker.io
+#sudo apt install docker.io
+#sudo systemctl start docker
+#sudo systemctl enable docker
+#docker --version
 
 docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
 #docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
