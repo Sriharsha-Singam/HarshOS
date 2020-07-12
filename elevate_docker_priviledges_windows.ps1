@@ -1,3 +1,4 @@
+Start-Process -FilePath "C:\Program Files\Docker\Docker\Docker Desktop.exe" -Wait -Verb RunAs
 $User_Account = Read-Host -Prompt 'Input your account name: '
 Install-Module -Name dockeraccesshelper -Confirm
 Add-AccountToDockerAccess $User_Account

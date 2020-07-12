@@ -16,6 +16,7 @@ add bp, TEMP_STACK
 mov sp, bp
 
 call load_bootloader_and_kernel
+;jmp $
 call switch_to_32bit
 
 ;%include "./on_boot/boot_sector_asm_files/boot_sector_print_16bit.s"

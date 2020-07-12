@@ -60,15 +60,18 @@ disk_read:
 ;    int 0x13
 ;    mov bl, al ; ah = error code, dl = disk drive that dropped the error
 ;    call print16_hex ; check out the code at http://stanislavs.org/helppc/int_13-1.html
-;    jmp disk_end
+;    mov bx, DISK
+;    call printn16
+ ;   jmp disk_end
 
 ;sector_error:
- ;   mov bx, SECTORS_ERROR
-  ;  call print16
+;    mov bx, SECTORS_ERROR
+;    call print16
 
 disk_end:
     popa
     ret
 
+;DISK: db "Finished Loading From Disk", 0
 ;DISK_ERROR: db "Disk read error", 0
 ;SECTORS_ERROR: db "Incorrect number of sectors read", 0

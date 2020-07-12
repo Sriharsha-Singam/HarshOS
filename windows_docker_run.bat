@@ -1,4 +1,4 @@
-docker exec -w /src/HarshOS ubuntu-cross-compiler make clean
+@rem docker exec -w /src/HarshOS ubuntu-cross-compiler make clean
 docker exec -w /src/HarshOS ubuntu-cross-compiler make os.iso
 "C:\Program Files (x86)\qemu\qemu-system-i386.exe" -fda C:\DockerShared\HarshOS\build_os\os.iso
 @rem start cmd.exe /c "docker exec  -it -w /src/HarshOS ubuntu-cross-compiler make run-curses"

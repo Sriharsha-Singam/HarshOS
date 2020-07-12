@@ -94,7 +94,7 @@ kernel_initrd:
 	chmod +x build_os/create_kernel_initrd
 
 kernel_initrd_run: kernel_initrd
-	./build_os/create_kernel_initrd
+	valgrind --leak-check=full --show-leak-kinds=all build_os/create_kernel_initrd
 
 kernel_initrd_debug: kernel_initrd
 	gdbserver :1234 /src/HarshOS/build_os/create_kernel_initrd

@@ -15,14 +15,14 @@ load_bootloader_and_kernel:
     mov al, 56
     call disk_read
 
-    mov cl, 0x2
-    add cl, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
-    add cl, 56
-    mov bx, 0x9999 ; Read from disk and store in 0x9000
-    ;mov al, NUMBER_OF_KERNEL_SECTORS
-    mov al, 12
-    call disk_read
-    ret
+    ;mov cl, 0x2
+    ;add cl, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
+    ;add cl, 56
+    ;mov bx, 0x9999 ; Read from disk and store in 0x9000
+    ;;mov al, NUMBER_OF_KERNEL_SECTORS
+    ;mov al, 12
+    ;call disk_read
+    ;ret
 
 [bits 16]
 switch_to_32bit:
@@ -41,7 +41,7 @@ init_32bit: ; we are now using 32-bit instructions
     mov es, ax
     mov fs, ax
     mov gs, ax
-    
+
     mov ebp, 0x90000
     mov esp, ebp
 

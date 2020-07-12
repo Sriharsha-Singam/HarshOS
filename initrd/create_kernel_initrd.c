@@ -496,7 +496,7 @@ void read_harshfs_image(char* filename) {
     get_file += 4;
 
     u32 latest_size = 0;
-    while (get_header_or_footer(get_file) != FILESYSTEM_FOOTER_MAGIC_NUMBER && (get_file - get_file_copy) <= overall_fs_size) {
+    while ((get_file - get_file_copy) <= (overall_fs_size - 4) && get_header_or_footer(get_file) != FILESYSTEM_FOOTER_MAGIC_NUMBER) {
 
         if (get_header_or_footer(get_file) == ALL_FILES_HEADER_MAGIC_NUMBER) {
             get_file += latest_size;
@@ -513,6 +513,8 @@ void read_harshfs_image(char* filename) {
             get_file += sizeof(harshfs_node);
         }
     }
+
+    free(get_file_copy);
 }
 
 // Use empty char buffer
@@ -540,6 +542,20 @@ u32 get_file_binary(char* filename, u8** buffer) {
     fclose(fptr);
 
     return size;
+}
+
+void free_all_memory() {
+
+    harshfs_node_address* node = ROOT_NODE_ADDRESS;
+
+    while (node) {
+        harshfs_node_address* next = node->next;
+        free(node->node->data);
+        free(node->node);
+        free(node);
+        node = next;
+    }
+
 }
 
 int main() {
@@ -581,6 +597,7 @@ int main() {
 //    }
 //    printf("\n");
     node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
+    free(buffer);
     print_node(node, error_code);
 
     filesystem_address += 4;
@@ -591,6 +608,8 @@ int main() {
 
     creating_image();
     read_harshfs_image("/src/HarshOS/build_os/harshfs_kernel_initial_image.bin");
+
+    free_all_memory();
 
     return 0;
 }
