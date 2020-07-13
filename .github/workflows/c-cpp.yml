@@ -14,17 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Docker Run Action
-      uses: addnab/docker-run-action@v1
-      with:
-        # Image
-        image:  sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-        # Options
-        options: -ti -v $PWD:/src --name ubuntu-cross-compiler 
-        # Run command in container
-        run: cd HarshOS && make os.iso && make kernel.elf
-        # Use a specific shell
-        shell: bash
     - uses: actions/checkout@v2
     - name: configure_env
       run: ./configure_cross_compiler.sh
