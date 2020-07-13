@@ -1,15 +1,55 @@
 #!/usr/bin/env bash
 
-apt-get install -y docker
-
 if [ ! -d "build_os" ]; then
   mkdir build_os
 fi
 docker --version
 docker images
 docker pull sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
-docker run -- rm -ti -v $PWD:/src -p 8144:22 -p 8147:1234 --cap-add sys_ptrace --name ubuntu-cross-compiler-git-test sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest /bin/bash
 
+#docker run --rm --name harshos-github-actions -v "C:\DockerShared:/src" -w /src/HarshOS sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+#make os.iso
+
+#sudo mkdir build_os
+#pip install wheel
+#pip install gdown
+#
+#export PATH=$PATH:/home/runner/.local/lib/python2.7/site-packages
+#export PATH=$PATH:/home/runner/.local/bin
+#pip show gdown
+#gdown https://drive.google.com/uc?id=1oiMvSt-Y3L08lT29yT16EHU_EgEQchBL -O /tmp/i386-elf-gcc-ubuntu.tar.gz
+#
+#sudo tar xf /tmp/i386-elf-gcc-ubuntu.tar.gz -C /usr/local/
+
+#sudo apt-get update
+#sudo apt-get install curl -y
+#sudo apt-get install gcc -y
+#sudo apt-get install build-essential -y
+#sudo apt-get install libgmp-dev -y
+#sudo apt-get install libmpc-dev -y
+#sudo apt-get install libmpfr-dev -y
+#sudo apt-get install bison -y
+#sudo apt-get install flex -y
+#sudo apt-get install texinfo -y
+#sudo apt-get install automake -y
+#sudo apt-get install autotools-dev -y
+#sudo apt-get install nasm -y
+#sudo apt-get install valgrind -y
+
+#sudo apt-get update
+#sudo apt-get remove docker docker-engine docker.io
+#sudo apt install docker.io
+#sudo systemctl start docker
+#sudo systemctl enable docker
+#docker --version
+#docker create -v $PWD:/src --name ubuntu-cross-compiler-git-action sriharshasingam/ubuntu-i386-elf-gcc-cross-compiler:latest
+#docker start ubuntu-cross-compiler-git-action
+#docker exec --workdir /src ubuntu-cross-compiler-git-action make os.iso
+#docker exec --workdir /src ubuntu-cross-compiler-git-action make kernel.elf
+#docker rm ubuntu-cross-compiler-git-action
+
+#cd HarshOS
+#docker build .
 #set -x
 #
 #pwd
@@ -46,6 +86,9 @@ docker run -- rm -ti -v $PWD:/src -p 8144:22 -p 8147:1234 --cap-add sys_ptrace -
 ####export PREFIX="/usr/local/i386elfgcc"
 ####export TARGET=i386-elf
 ####export PATH="$PREFIX/bin:$PATH"
+#export PREFIX="/usr/local/i386elfgcc"
+#export TARGET=i386-elf
+#export PATH="$PREFIX/bin:$PATH"
 
 #mkdir /tmp/src
 #cd /tmp/src
