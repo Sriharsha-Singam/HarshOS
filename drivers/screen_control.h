@@ -16,3 +16,4 @@ void move_cursor_down();
 void kernel_old_print_loader();
 void move_next_line();
 void kernel_print_hex_value(u32 hex_value);
+void shell_erase_line();

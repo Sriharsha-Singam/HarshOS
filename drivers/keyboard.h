@@ -10,5 +10,7 @@ u8 keyboard_scancode_handler(u8 scancode);
 u32 get_latest_eip();
 
 #define BACKSPACE 0x8
+#define UP 0x48
+#define DOWN 0x50
 
 #endif //HARSHOS_KEYBOARD_H

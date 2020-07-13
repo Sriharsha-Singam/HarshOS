@@ -71,6 +71,12 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
 };
 
 char buffer[256];
+
+u32 index_for_instruction_history_buffer = 0;
+u32 current_index_for_instruction_history_buffer = 0;
+u32 max_instruction_history = 10;
+char *instruction_history_buffer[10];
+
 u16 buffer_length;
 void next_kernel_shell_print();
 void end_of_user_input();
@@ -91,9 +97,44 @@ void next_kernel_shell_print() {
     kernel_print_string("sriharsha_os:shell kernel# ");
 }
 
+void user_shell_up_or_down(u8 up_or_down) {
+
+    shell_erase_line();
+
+    if (up_or_down == UP && index_for_instruction_history_buffer >= current_index_for_instruction_history_buffer) {
+        if (current_index_for_instruction_history_buffer != 0) current_index_for_instruction_history_buffer--;
+        char* instruction_show = instruction_history_buffer[current_index_for_instruction_history_buffer];
+        u32 length = string_length(instruction_show);
+        memory_copy(instruction_show, &buffer[0], length+1);
+        buffer_length = length;
+        kernel_print_string(buffer);
+    } else if (up_or_down == DOWN && index_for_instruction_history_buffer >= current_index_for_instruction_history_buffer+1 && current_index_for_instruction_history_buffer <= max_instruction_history-1) {
+        if (index_for_instruction_history_buffer != current_index_for_instruction_history_buffer) {
+            current_index_for_instruction_history_buffer++;
+        }
+        if (index_for_instruction_history_buffer == current_index_for_instruction_history_buffer) {
+            buffer[0] = '\0';
+            buffer_length = 0;
+            kernel_print_string(buffer);
+        } else {
+            char* instruction_show = instruction_history_buffer[current_index_for_instruction_history_buffer];
+            u32 length = string_length(instruction_show);
+            memory_copy(instruction_show, &buffer[0], length+1);
+            buffer_length = length;
+            kernel_print_string(buffer);
+        }
+    }
+
+}
+
 void kernel_user_input(u8 val) {
     if (val == 0xA) {
         user_shell_enter();
+        return;
+    }
+
+    if (val == UP || val == DOWN) {
+        user_shell_up_or_down(val);
         return;
     }
 
@@ -148,11 +189,40 @@ void end_of_user_input() {
     move_next_line();
     next_kernel_shell_print();
 }
+
+void pop_instruction_history() {
+    instruction_history_buffer[0] = NULL;
+    for (u32 i = 1; i < max_instruction_history; i++) {
+        instruction_history_buffer[i-1] = instruction_history_buffer[i];
+        instruction_history_buffer[i] = NULL;
+        instruction_history_buffer[i] = instruction_history_buffer[i+1];
+    }
+}
+
+void push_instruction_history() {
+    u32 length = string_length(buffer);
+    length++;
+    char* instruction_pointer = (char*)kernel_heap_calloc(length, 0, NULL);
+    for (u32 i = 0; i < length; i++) {
+        *(instruction_pointer + i) = *(buffer + i);
+    }
+
+    if (index_for_instruction_history_buffer >= max_instruction_history) {
+        pop_instruction_history();
+        instruction_history_buffer[max_instruction_history-1] = instruction_pointer;
+        current_index_for_instruction_history_buffer = 10;
+    } else {
+        instruction_history_buffer[index_for_instruction_history_buffer] = instruction_pointer;
+        index_for_instruction_history_buffer++;
+        current_index_for_instruction_history_buffer = index_for_instruction_history_buffer;
+    }
+}
+
 void user_shell_enter() {
     if (string_compare("", buffer)) {
+        push_instruction_history();
         move_next_line();
-        u8 i = 0;
-        for (i = 0; i < number_of_instructions; i++) {
+        for (u32 i = 0; i < number_of_instructions; i++) {
             if (!string_compare_fixed_length(kernel_level_instructions[i], buffer, string_length(kernel_level_instructions[i]))) {
                 u32 length = string_length(kernel_level_instructions[i]);
                 char* args = buffer + length + 1;

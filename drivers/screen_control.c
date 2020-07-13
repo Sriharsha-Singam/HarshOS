@@ -57,6 +57,21 @@ void move_cursor_down() {
     if (row < (MAX_ROWS-1)) row++;
     set_cursor_location_offset(get_offset(get_offset_col(offset), row));
 }
+void shell_erase_line() {
+    u32 offset = get_cursor_location_offset();
+
+    // only for shell
+    if (get_offset_col(offset) <= 26) return;
+
+    u32 erase_block_number = (u32)(get_offset_col(offset) - 27);
+    for (u32 i = 0; i < erase_block_number; i++) {
+        char *vga = (char *) VIDEO_ADDRESS;
+        vga[--offset] = WHITE_ON_BLACK;
+        vga[--offset] = ' ';
+    }
+    set_cursor_location_offset(offset);
+
+}
 
 void backspace() {
     int offset = get_cursor_location_offset();

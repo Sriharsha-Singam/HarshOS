@@ -54,6 +54,10 @@ void print_letter(u8 scancode) {
     u8 letter = keyboard_scancode_handler(scancode);
     if (letter!=0xA && letter!=0x8) if ((letter < 32) || letter >= 0x7F) return;
 
+    if (scancode == UP || scancode == DOWN) {
+        kernel_user_input(scancode);
+        return;
+    }
 //    char text[2];
 //    text[0] = letter;
 //    text[1] = '\0';
@@ -100,12 +104,12 @@ u8 keyboard_scancode_handler(u8 scancode) {
         case 0x4D:
             move_cursor_right();
             return 0xFF;
-        case 0x48:
-            move_cursor_up();
-            return 0xFF;
-        case 0x50:
-            move_cursor_down();
-            return 0xFF;
+        case UP:
+//            move_cursor_up();
+            return UP;
+        case DOWN:
+//            move_cursor_down();
+            return DOWN;
     }
 
     if (scancode <= (sizeof(shift_down_ascii) / sizeof(shift_down_ascii[0]))) {
