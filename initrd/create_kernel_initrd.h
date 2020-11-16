@@ -1,5 +1,5 @@
 //
-// Created by INT_ACC on 7/5/2020.
+// Created by Sriharsha Singam on 7/5/2020.
 //
 
 #ifndef HARSHOS_CREATE_KERNEL_INITRD_H

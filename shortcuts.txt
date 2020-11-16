@@ -3,3 +3,5 @@ docker run -ti -v C:\DockerShared:/src -p 8145:22 -p 8146:1234 --cap-add sys_ptr
 ssh -p 8145 user@localhost
 
 "cmd.exe" /k "docker exec  -it -w /src/HarshOS ubuntu-cross-compiler bash"
+
+-DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/bin/make -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G "CodeBlocks - Unix Makefiles" /src/DataStructureLabs
