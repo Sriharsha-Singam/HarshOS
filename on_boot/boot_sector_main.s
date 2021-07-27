@@ -27,6 +27,7 @@ call switch_to_32bit
 [bits 32]
 START_32_BITS:
     call SECONDARY_BOOTLOADER_ADDRESS
+    ;jmp $
     ;call KERNEL_PHYSICAL_ADDRESS
 
     mov eax, gdt_descriptor ; Push gdt descriptor virtual address
@@ -38,7 +39,10 @@ START_32_BITS:
     ;invlpg [0]
 
     mov ecx, 0xc0009000
-    jmp ecx
+    ;jmp 1b
+    ;cli
+    ;hlt
+    ;jmp ecx
     jmp $
 
 ; data

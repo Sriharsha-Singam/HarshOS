@@ -82,24 +82,27 @@ harshfs_node* read_harshfs_kernel_image() {
     kernel_print_string("READING HARSHFS KERNEL IMAGE\n");
     kernel_print_string("Here are the files\n");
 
-    u8* get_file = (u8*)filesystem_address;
+//    u8* get_file = (u8*)filesystem_address;
 
-    get_file += 4;
+//    get_file += 4;
 
-    u32 latest_size = 0;
-    while (get_header_or_footer(get_file) != FILESYSTEM_FOOTER_MAGIC_NUMBER) {
+    u32* o = (u32*) 0xF0000000; //0xc0004000; //filesystem_address;
+    LOG_DEBUG("Here: ", *o);
 
-        if (get_header_or_footer(get_file) == ALL_FILES_HEADER_MAGIC_NUMBER) {
-            return ROOT_NODE;
-        } else {
-            harshfs_node* node = (harshfs_node*) get_file;
-            if (latest_size == 0) ROOT_NODE = node;
-            latest_size += node->size+8;
-            kernel_print_string(node->name);
-            kernel_print_string("\n");
-            get_file += sizeof(harshfs_node);
-        }
-    }
+//    u32 latest_size = 0;
+//    while (get_header_or_footer(get_file) != FILESYSTEM_FOOTER_MAGIC_NUMBER) {
+//
+//        if (get_header_or_footer(get_file) == ALL_FILES_HEADER_MAGIC_NUMBER) {
+//            return ROOT_NODE;
+//        } else {
+//            harshfs_node* node = (harshfs_node*) get_file;
+//            if (latest_size == 0) ROOT_NODE = node;
+//            latest_size += node->size+8;
+//            kernel_print_string(node->name);
+//            kernel_print_string("\n");
+//            get_file += sizeof(harshfs_node);
+//        }
+//    }
 
     return ROOT_NODE;
 }
@@ -120,15 +123,25 @@ void load_harshfs_kernel_image() {
         physical_address += 0x1000;
     }
 
+    kernel_code_final_address = 0xc0004000;
     kernel_print_hex_value(kernel_code_final_address);
 
     kernel_print_string("Starting to Copy the Initial Kernel Image to this Address: 0xF0000000\n");
 
     u8* kernel_final_address = (u8*)kernel_code_final_address;
 
+//    kernel_print_string("Attempting to pull FS from: ");
+//    kernel_print_hex_value((u32)*kernel_code_final_address);
+//    kernel_print_string("\n");
+
     while (get_header_or_footer(kernel_final_address) != FILESYSTEM_HEADER_MAGIC_NUMBER) {
         kernel_final_address++;
     }
+
+    kernel_print_string("Final addr: ");
+    u32 addr_test = (u32)((u32*)kernel_final_address);
+    kernel_print_hex_value(addr_test);
+    kernel_print_string("\n");
 
     if (get_header_or_footer(kernel_final_address) == FILESYSTEM_HEADER_MAGIC_NUMBER) {
 
@@ -137,7 +150,9 @@ void load_harshfs_kernel_image() {
         kernel_print_string("\n");
 
         u32 kernel_filesystem_size = 0;
-        u32 address_of_filesystem_start = (u32)kernel_final_address;
+//        u32 address_of_filesystem_start = (u32)kernel_final_address;
+
+
 //        u32 physical_address = kernel_final_address - starting_virtual_address;
 //        physical_address = physical_address & 0xFFFFF000;
 //        u32 initial_physical_address = physical_address;
@@ -155,11 +170,18 @@ void load_harshfs_kernel_image() {
 
 //        memory_copy((char*)address_of_filesystem_start, (char*)filesystem_address, kernel_filesystem_size);
 
-
-
-
-
-        memory_copy((char*)address_of_filesystem_start, (char*)filesystem_address, kernel_filesystem_size);
+//        memory_copy((char*)kernel_code_final_address, (char*)filesystem_address, kernel_filesystem_size);
+        memory_copy((char*)0xc0004000, (char*)0xF0000000, kernel_filesystem_size);
+        *((u32*)0xc0000000) = *((u32*)0xc0004000);
+//        kernel_print_string("FUCK!!!!!!!!!!\n");
+//        kernel_print_hex_value((*((u32*)0xc0000000)));
+        if ((*((u32*)0xF0000004)) != *((u32*)0xc0004004)) {
+            kernel_print_string("FUCK!!!!!!!!!!\n");
+            kernel_print_hex_value((*((u32*)0xF0000000)));
+            kernel_print_string("FUCK!!!!!!!!!!\n");
+            kernel_print_hex_value((*((u32*)0xc0004000)));
+            kernel_print_string("FUCK!!!!!!!!!!\n");
+        }
     }
 
 }

@@ -12,10 +12,24 @@ pusha
 mov edx, VIDEO_MEMORY
 lea ebx, [SECONDARY_LOADING_KERNEL]
 add ebx, 0x1000
-
 call print
+
+;mov ebx, 0x9000
+;add ebx, 0x1000
+;call print
+;jmp $
+;call print
 call SETUP_BOOT_KERNEL_PAGE_TABLE
+
+;lea ebx, [START_PAGING_TABLE]
+;add ebx, 0x1000
+;call print
+
 call SETUP_BOOT_KERNEL_PAGE_DIRECTORY
+
+;lea ebx, [END_PAGING_TABLE]
+;add ebx, 0x1000
+;call print
 
 mov eax, BOOT_PAGE_DIRECTORY_ABSOLUTE_ADDRESS
 

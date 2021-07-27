@@ -14,12 +14,15 @@ GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 CFLAGS = -g -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -Wall -Wextra -Werror
 LDFLAGS=-Tlink.ld
 
+# objdump -D -Mintel,i8086 -b binary -m i8086 ./build_os/os.iso
+
 ################################################################################################################################################################
 # Getting Size and Sector Values:
 KERNEL_C_BYTES_SIZE = $$(wc -c < 'build_os/kernel.bin') # Get how many bytes the kernel takes up
 NUMBER_OF_KERNEL_SECTORS = $$((($(KERNEL_C_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
 
 HARSHFS_BYTES_SIZE = $$(wc -c < 'build_os/harshfs_kernel_initial_image.bin') # Get how many bytes the kernel takes up
+HARSHFS_PAD = $((((($HARSHFS_BYTES_SIZE/512) + 1)*512)-($HARSHFS_BYTES_SIZE)))
 NUMBER_OF_HARSHFS_SECTORS = $$((($(HARSHFS_BYTES_SIZE)+0x1FF)/0x200)) # Get the number of sectors that the kernel takes up.
 
 OVERALL_BYTES_SIZE = $$(( $(KERNEL_C_BYTES_SIZE) + $(HARSHFS_BYTES_SIZE) ))
@@ -30,14 +33,16 @@ NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS = $$((($(SECONDARY_BOOTSECTOR_SIZE)+0x1FF
 ################################################################################################################################################################
 
 # First rule is run by default
-os.iso: kernel_initrd_run build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf
+os.iso: clean kernel_initrd_run build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin kernel.bin kernel.elf
 	echo "Secondary Bootsector Size: ${SECONDARY_BOOTSECTOR_SIZE}"
 	echo "Number of Secondary Bootsector Sectors: ${NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS}"
 	echo "Kernel Size: ${KERNEL_C_BYTES_SIZE}"
 	echo "Number of Kernel Sectors: ${NUMBER_OF_KERNEL_SECTORS}"
 	echo "Kernel + Initrd Size: ${OVERALL_BYTES_SIZE}"
 	echo "Number of Kernel + Initrd  Sectors: ${OVERALL_NUMBER_OF_SECTORS}"
+	echo "Initrd Number of Sectors: ${NUMBER_OF_HARSHFS_SECTORS}"
 	cat build_os/boot_sector_main.bin build_os/second_stage_bootsector.bin build_os/kernel.bin build_os/harshfs_kernel_initial_image.bin > ./build_os/os.iso
+	cp ./build_os/os.iso ./final.img
 
 
 # '--oformat binary' deletes all symbols as a collateral, so we don't need
@@ -50,7 +55,7 @@ kernel.elf: build_os/start_kernel.o build_os/interrupt.o ${OBJ}
 	${LD} ${LDFLAGS} -o ./build_os/kernel.elf $^
 
 run: os.iso
-	qemu-system-i386 -fda build_os/os.iso
+	qemu-system-i386 -m 8G -fda build_os/os.iso
 
 run-curses: os.iso
 	qemu-system-i386 -curses -fda build_os/os.iso
@@ -96,6 +101,9 @@ kernel_initrd:
 
 kernel_initrd_run: kernel_initrd
 	valgrind --leak-check=full --show-leak-kinds=all build_os/create_kernel_initrd
+	TEST=$$(((((($$(wc -c < build_os/harshfs_kernel_initial_image.bin))/512) + 1)*512)-($$(wc -c < build_os/harshfs_kernel_initial_image.bin))))
+	echo "HEHEHEHE: ${TEST}"
+	dd if=/dev/zero bs=1 count=$$(((((($$(wc -c < build_os/harshfs_kernel_initial_image.bin))/512) + 1)*512)-($$(wc -c < build_os/harshfs_kernel_initial_image.bin))))>> build_os/harshfs_kernel_initial_image.bin
 
 kernel_initrd_debug: kernel_initrd
 	gdbserver :1234 /src/HarshOS/build_os/create_kernel_initrd
@@ -104,7 +112,7 @@ $(BUILD_DIR)/second_stage_bootsector.bin:
 	nasm -f bin on_boot/second_stage_bootsector.s -o build_os/second_stage_bootsector.bin
 
 $(BUILD_DIR)/boot_sector_main.bin: kernel.bin build_os/second_stage_bootsector.bin
-	nasm -f bin -dNUMBER_OF_KERNEL_SECTORS=$(OVERALL_NUMBER_OF_SECTORS) -dKERNEL_C_BYTES_SIZE=$(OVERALL_BYTES_SIZE) -dSECONDARY_BOOTSECTOR_SIZE=$(SECONDARY_BOOTSECTOR_SIZE) -dNUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS=$(NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS) on_boot/boot_sector_main.s -o $@
+	nasm -f bin -dNUMBER_OF_KERNEL_SECTORS=$(OVERALL_NUMBER_OF_SECTORS) -dKERNEL_C_BYTES_SIZE=$(OVERALL_BYTES_SIZE) -dSECONDARY_BOOTSECTOR_SIZE=$(SECONDARY_BOOTSECTOR_SIZE) -dNUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS=$(NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS) -dNUMBER_OF_HARSHFS_SECTORS=$(NUMBER_OF_HARSHFS_SECTORS) -dHARSHFS_BYTES_SIZE=$(HARSHFS_BYTES_SIZE) -dNUMBER_OF_KERNEL_SECTORS=$(NUMBER_OF_KERNEL_SECTORS) on_boot/boot_sector_main.s -o $@
 
 clean:
 	rm -rf build_os/*.bin build_os/*.dis build_os/*.o build_os/os.iso build_os/*.elf

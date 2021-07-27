@@ -579,36 +579,36 @@ int main() {
 
     node = add_file(ROOT_NODE, "test.txt", &error_code, NULL);
     print_node(node, error_code);
-
-    harshfs_node* inner_directory = add_directory(ROOT_NODE, "dir1", &error_code);
-    print_node(node, error_code);
-
-//    harshfs_node* node_copy = node;
-    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
-    print_node(node, error_code);
-
-    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, NULL);
-    print_node(node, error_code);
-
-    node = add_file(inner_directory, "test_dir2.txt\0", &error_code, create_data((u8*)"My name is sriharsha singam", 27));
-    print_node(node, error_code);
-
-    u8* buffer = NULL;
-    u32 size_of_file = get_file_binary("initrd/hello_world", &buffer);
-
-//    for (u32 i = 0; i < size_of_file; i++) {
-//        printf("%1x", (*(buffer+i)));
+//
+//    harshfs_node* inner_directory = add_directory(ROOT_NODE, "dir1", &error_code);
+//    print_node(node, error_code);
+//
+////    harshfs_node* node_copy = node;
+//    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, create_data((u8*)"Hello World", 11));
+//    print_node(node, error_code);
+//
+//    node = add_file(inner_directory, "test_dir1.txt\0", &error_code, NULL);
+//    print_node(node, error_code);
+//
+//    node = add_file(inner_directory, "test_dir2.txt\0", &error_code, create_data((u8*)"My name is sriharsha singam", 27));
+//    print_node(node, error_code);
+//
+//    u8* buffer = NULL;
+//    u32 size_of_file = get_file_binary("initrd/hello_world", &buffer);
+//
+////    for (u32 i = 0; i < size_of_file; i++) {
+////        printf("%1x", (*(buffer+i)));
+////    }
+////    printf("\n");
+//    if (size_of_file > 0) {
+//        node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
+//        free(buffer);
+//        print_node(node, error_code);
+//    } else {
+//        printf("------------------------------------------------------------------------------\n");
+//        printf("ERROR: TEST BINARY FILE NOT FOUND\n");
+//        printf("------------------------------------------------------------------------------\n");
 //    }
-//    printf("\n");
-    if (size_of_file > 0) {
-        node = add_file(inner_directory, "test_binary.bin\0", &error_code, create_data(buffer, size_of_file));
-        free(buffer);
-        print_node(node, error_code);
-    } else {
-        printf("------------------------------------------------------------------------------\n");
-        printf("ERROR: TEST BINARY FILE NOT FOUND\n");
-        printf("------------------------------------------------------------------------------\n");
-    }
 
 
     filesystem_address += 4;

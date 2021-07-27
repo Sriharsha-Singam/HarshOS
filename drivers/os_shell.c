@@ -638,9 +638,9 @@ void harshfs_instruction(char* buffer) {
     if (!string_compare(buffer, "init\0")) {
         load_harshfs_kernel_image();
         harshfs_node* root_node =  read_harshfs_kernel_image();
-        kernel_print_string("Root Node: ");
-        kernel_print_string(root_node->name);
-        kernel_print_string("\n");
+//        kernel_print_string("Root Node: ");
+//        kernel_print_string(root_node->name);
+//        kernel_print_string("\n");
         return;
     }
 

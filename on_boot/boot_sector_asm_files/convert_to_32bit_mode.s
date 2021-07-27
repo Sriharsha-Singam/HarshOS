@@ -10,19 +10,26 @@ load_bootloader_and_kernel:
 
     mov cl, 0x2
     add cl, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
-    mov bx, KERNEL_PHYSICAL_ADDRESS ; Read from disk and store in 0x9000
-    ;mov al, NUMBER_OF_KERNEL_SECTORS
+    mov bx, 0x9000 ; KERNEL_PHYSICAL_ADDRESS ; Read from disk and store in 0x9000
+    mov al, NUMBER_OF_KERNEL_SECTORS
+    add al, NUMBER_OF_HARSHFS_SECTORS
     mov al, 56
     call disk_read
 
     ;mov cl, 0x2
     ;add cl, NUMBER_OF_SECONDARY_BOOTSECTOR_SECTORS
-    ;add cl, 56
-    ;mov bx, 0x9999 ; Read from disk and store in 0x9000
+    ;add cl, 56 ; NUMBER_OF_KERNEL_SECTORS ; 56
+    mov ch, 0x01
+    mov cl, 0xb
+    mov bx, 0x4000 ; Read from disk and store in 0x9000
     ;;mov al, NUMBER_OF_KERNEL_SECTORS
-    ;mov al, 12
-    ;call disk_read
-    ;ret
+    mov al, 2  ;NUMBER_OF_HARSHFS_SECTORS
+    call disk_read
+    ;mov dx, 0
+    ;mov dl, cl ; word [0x4200]
+    ;mov byte [0x4000], 0x43
+    ;call print16_hex
+    ret
 
 [bits 16]
 switch_to_32bit:

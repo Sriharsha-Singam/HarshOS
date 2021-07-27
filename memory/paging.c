@@ -64,6 +64,10 @@ static void page_fault_interrupt_handler(interrupt_inputs_t input) {
     //PANIC("Page fault");
 }
 
+void print_page_status() {
+
+}
+
 page_directory_t* get_current_page_directory() {
     return currently_used_directory;
 }
@@ -102,6 +106,7 @@ page_directory_t* create_new_page_directory(u8 is_kernel_page_directory) {
     page_directory_t* new_page_directory = (page_directory_t*)kernel_heap_calloc_page_aligned(sizeof(page_directory_t), 0, &new_page_directory_physical);
 
     LOG_DEBUG("New Kernel Page Directory: ", (u32)new_page_directory);
+    LOG_DEBUG("Checking KERNEL_VIRTUAL_ADDRESS: ", KERNEL_VIRTUAL_ADDRESS);
 //    LOG_DEBUG("New Kernel Page Directory -- Physical: ", (u32)new_page_directory_physical);
 //    LOG_DEBUG("Page Directory Kernel Address: ", (u32)&(new_page_directory->page_directory_entries[KERNEL_PAGE_NUMBER]));
 

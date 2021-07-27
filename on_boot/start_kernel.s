@@ -7,6 +7,7 @@ NEW_KERNEL_STACK_SIZE equ 0x4000
 section .text
 
 EDIT_GDT_STARTING_ADDRESS:
+;jmp $
 pop eax
 mov ebx, [eax + 2]
 add ebx, KERNEL_VIRTUAL_MAPPED_BASE
@@ -21,6 +22,7 @@ INVALIDATE_IDENTITY_MAPPED_KERNEL_REGION:
 mov eax, cr3
 mov ebx, 0
 mov [eax], ebx
+;jmp $
 invlpg [0]
 
 START_VIRTUAL_KERNEL:

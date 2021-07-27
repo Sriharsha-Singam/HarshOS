@@ -10,9 +10,15 @@ extern u32 code;
 
 void kernel_main() {
 
+//    HALT_THE_CPU();
+
     setup_interrupts();
 
+//    HALT_THE_CPU();
+
     clear_screen();
+
+//    HALT_THE_CPU();
 
     LOG_DEBUG("Currently Loading The Kernel at address: ", (u32)&code);
 

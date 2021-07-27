@@ -38,7 +38,7 @@ disk_read:
 
     mov ah, 0x02 ;read
 
-    mov ch, 0x00
+    ;mov ch, 0x00
 
     mov dh, 0x00
     mov dl, [BOOT_DRIVE]
