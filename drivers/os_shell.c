@@ -14,9 +14,27 @@
 #include "../memory/kernel_heap.h"
 #include "../initrd/harshfs.h"
 
-u8 number_of_instructions = 21;
+u8 number_of_instructions = 22;
 
-//void (*end_of_user_input_pointer)() = end_of_user_input;
+//typedef struct {
+//    const char name;
+//    kernel_level_instructions_function function_pointer;
+//} kernel_shell_functions;
+//
+////#define xstr(s) str(s)
+////#define str(s) #s
+//#define str(x) #x
+//#define KERNEL_SHELL_INSTRUCTION(names, function_pointers) \
+//    { \
+//        .name = names, \
+//        .function_pointer = function_pointers \
+//    }
+//
+////void (*end_of_user_input_pointer)() = end_of_user_input;
+//kernel_shell_functions kernel_level_instructionsp[] = {
+//        KERNEL_SHELL_INSTRUCTION(str(help), help_instruction),
+//        KERNEL_SHELL_INSTRUCTION(str(hello), help_instruction),
+//};
 
 char *kernel_level_instructions[] = {
         "help\0",
@@ -39,7 +57,8 @@ char *kernel_level_instructions[] = {
         "print heap\0",
         "test heap\0",
         "wait_ms\0",
-        "harshfs\0"
+        "harshfs\0",
+        "jump"
 };
 
 //"free heap entry\0",
@@ -67,7 +86,8 @@ kernel_level_instructions_function kernel_level_instructions_functions[] = {
         print_heap_entries_instruction,
         test_heap_instruction,
         wait_ms_instruction,
-        harshfs_instruction
+        harshfs_instruction,
+        jump_instruction
 };
 
 char buffer[256];
@@ -630,6 +650,11 @@ void print_heap_entries_instruction(char* buffer) {
 
 void wait_ms_instruction(char* buffer) {
     u32 ms = hex_ascii_to_u32(buffer);
+    char thingy[5] = {0};
+    int_to_ascii(ms, thingy);
+    kernel_print_string("Wait Number: ");
+    kernel_print_string(thingy);
+    kernel_print_string("\n");
     wait_ms(ms);
 }
 
@@ -643,7 +668,13 @@ void harshfs_instruction(char* buffer) {
 //        kernel_print_string("\n");
         return;
     }
+}
 
+typedef void (*jump_to_location) (void);
+void jump_instruction(char* buffer) {
+//    u32 address = hex_ascii_to_u32(buffer);
+    jump_to_location jump_to_function = (jump_to_location) 0xc0009258; //address;
+    jump_to_function();
 }
 
 void operation_not_found(char* buffer) {

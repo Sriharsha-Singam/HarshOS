@@ -68,6 +68,7 @@ global interrupt_service_request28
 global interrupt_service_request29
 global interrupt_service_request30
 global interrupt_service_request31
+global interrupt_service_request128
 
 global interrupt_request_pic0
 global interrupt_request_pic1
@@ -305,7 +306,14 @@ interrupt_service_request31:
     push byte 0
     push byte 31
     jmp interrupt_service_hander_caller
-    
+
+; 128: Reserved
+interrupt_service_request128:
+    cli
+    push 0
+    push 128
+    jmp interrupt_service_hander_caller
+
 
 ; IRQ handlers
 interrupt_request_pic0:
@@ -403,3 +411,7 @@ interrupt_request_pic15:
 	push byte 15
 	push byte 47
 	jmp interrupt_request_pic_hander_caller
+
+custom_func:
+    mov eax, 0
+    int 0x80

@@ -1,3 +1,4 @@
 /build_os/
 .idea
 CMakeLists.txt
+final.img

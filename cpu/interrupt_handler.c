@@ -70,6 +70,7 @@ void interrupt_service_request_install() {
     set_idt_interrupt_entry(29, (u32)interrupt_service_request29);
     set_idt_interrupt_entry(30, (u32)interrupt_service_request30);
     set_idt_interrupt_entry(31, (u32)interrupt_service_request31);
+    set_idt_interrupt_entry(128, (u32)interrupt_service_request128);
 
 //    u8 original_pic1_data = port_byte_read(PIC1_DATA);
 //    u8 original_pic2_data = port_byte_read(PIC2_DATA);
@@ -121,9 +122,15 @@ void interrupt_request_pic_install() {
     init_keyboard();
 }
 
+void thingy(void) {
+    kernel_print_string("SYSCALL");
+    kernel_print_string("\n");
+}
+
 void setup_interrupts() {
     interrupt_service_request_install();
     interrupt_request_pic_install();
+    set_interrupt_handler(128, thingy);
 }
 
 char *exception_messages[] = {

@@ -15,8 +15,10 @@ static void timer_callback(interrupt_inputs_t interruptInputs) {
     tick++;
     number_of_timer_cycles++;
 
-    char tick_ascii[256];
-    int_to_ascii(tick, tick_ascii);
+//    char tick_ascii[256];
+//    int_to_ascii(tick, tick_ascii);
+//    kernel_print_string(tick_ascii);
+//    kernel_print_string("\n");
 }
 
 void init_timer(u32 freq) {

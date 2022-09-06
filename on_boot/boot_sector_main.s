@@ -1,11 +1,13 @@
+%ifdef BIN
 [org 0x7c00] ; bootloader offset
+%endif
 
 SECONDARY_BOOTLOADER_ADDRESS equ 0x1000
 KERNEL_PHYSICAL_ADDRESS equ 0x9000
 KERNEL_VIRTUAL_ADDRESS equ 0xc0009000
 TEMP_STACK_SIZE equ 0x100
 
-
+harshos_start:
 mov [BOOT_DRIVE], dl
 
 ; Setting up Boot Stack using the TEMP_STACK memory location. The stack moves from higher addresses
@@ -42,7 +44,7 @@ START_32_BITS:
     ;jmp 1b
     ;cli
     ;hlt
-    ;jmp ecx
+    jmp ecx
     jmp $
 
 ; data

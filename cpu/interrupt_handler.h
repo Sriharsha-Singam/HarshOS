@@ -41,6 +41,7 @@ extern void interrupt_service_request28();
 extern void interrupt_service_request29();
 extern void interrupt_service_request30();
 extern void interrupt_service_request31();
+extern void interrupt_service_request128();
 
 extern void interrupt_request_pic0();
 extern void interrupt_request_pic1();

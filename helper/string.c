@@ -114,10 +114,14 @@ u32 hex_ascii_to_u32(char array[]) {
     u32 value = 0x0;
     while(array[i] != '\0') {
         value = value << 4;
-        if (array[i] < 0x3A) {
+        if (array[i] > 0x2F && array[i] < 0x3A) {
             value = value | (array[i] - 0x30);
-        } else {
+        } else if (array[i] > 0x40 && array[i] < 0x47) {
             value = value | (array[i] - 0x37);
+        } else if (array[i] > 0x60 && array[i] < 0x67) {
+            value = value | (array[i] - 0x57);
+        } else {
+            return -1;
         }
         i++;
     }
